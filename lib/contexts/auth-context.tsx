@@ -3,13 +3,11 @@ import React, {useContext, createContext, useState, useEffect} from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import {auth, db} from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { FirebaseUser } from '@/services/users/types';
+import { AppUserType } from '@/services/users/types';
+import { useRouter } from 'next/navigation';
 
-interface AppUser extends User {
-  uid: string;
-}
 interface AuthContextType {
-    user: AppUser | FirebaseUser | null ;
+    user: AppUserType | null ;
     loading: boolean
 }
 
@@ -19,7 +17,8 @@ const AuthContext = createContext<AuthContextType>({
 })
 
 const AuthProvider = ({children} : {children: React.ReactNode}) => {
-    const [user, setUser] = useState<AppUser | FirebaseUser | null>(null);
+    const router = useRouter();
+    const [user, setUser] = useState<AppUserType | null>(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: User | null) => {
@@ -29,10 +28,10 @@ const AuthProvider = ({children} : {children: React.ReactNode}) => {
           const docSnap = await getDoc(docRef);
   
           if (docSnap.exists()) {
-            setUser({ uid: firebaseUser.uid, ...docSnap.data() } as AppUser);
+            setUser({ uid: firebaseUser.uid, ...docSnap.data() } as AppUserType);
           } else {
-            // fallback if doc doesn’t exist
-            setUser({uid: firebaseUser.uid, email: firebaseUser.email});
+            setUser(null);
+            router.push('/auth/signup')
           }
         } else {
           setUser(null); // signed out

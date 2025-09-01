@@ -21,6 +21,7 @@ import { useMutation } from '@tanstack/react-query';
 import { saveUserToDB } from '@/services/users/api';
 import { toast } from 'react-toastify';
 import { LoaderCircle } from 'lucide-react';
+import { toastStyles } from '@/lib/utils';
 
 
 
@@ -30,43 +31,6 @@ const page = () => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const toastStyles = {
-        error: {
-            position: "top-right" as const,
-            autoClose: false as const,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            theme: "light" as const,
-            style: {
-                background: '#ffffff',
-                color: '#dc2626',
-                border: '2px solid #dc2626',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: '500',
-                minWidth: '300px'
-            }
-        },
-        errorSimple: {
-            position: "top-right" as const,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            theme: "light" as const,
-            style: {
-                background: '#ffffff',
-                color: '#dc2626',
-                border: '2px solid #dc2626',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: '500'
-            }
-        }
-    };
 
     const formSchema = z.object({
         username: z.string().min(1, 'Name is required').min(3, 'Name must be at least 3 characters long.'),

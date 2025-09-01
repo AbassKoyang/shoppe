@@ -21,6 +21,7 @@ export const UserSchema = z.object({
     createdAt: z.iso.datetime(), // Firestore Timestamp
     updatedAt: z.iso.datetime(),
   });
+
 export const AppUserSchema = z.object({
       uid: z.string().min(1, "Uid is required"),
       profile: z.object({
@@ -45,7 +46,7 @@ export const AppUserSchema = z.object({
     updatedAt: z.iso.datetime(),
   });
 
-  export const FirebaseUserSchema = z.object({
-    uid: z.string().min(1, "Uid is required"),
-    email: z.string().min(1, "email is required").nullable(),
-  })
+  // export const FirebaseUserSchema = z.object({
+  //   uid: z.string().min(1, "Uid is required"),
+  //   email: z.string().min(1, "email is required").nullable(),
+  // })

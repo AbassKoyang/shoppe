@@ -3,7 +3,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme inline {
+@theme {
+  --font-nunito-sans: var(--font-nunito-sans), ui-sans-serif, system-ui;
+  --font-raleway: var(--font-raleway), Arial, sans-serif;
   --color-dark-blue: rgba(0, 76, 255, 1);
   --color-light-blue: rgba(217, 228, 255, 1);
   --color-sidebar-ring: var(--sidebar-ring);

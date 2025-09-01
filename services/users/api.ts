@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase';
-import {doc, collection, setDoc, addDoc, getDocs, where, query} from 'firebase/firestore';
+import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc} from 'firebase/firestore';
 import { User } from './types';
 
 export const saveUserToDB = async (data: User, uid: string) => {
@@ -29,3 +29,17 @@ export const fetchUserByEmail = async (email: string) : Promise<User | null> => 
         throw error;
     }
 }
+
+export const updateUserProfile = async ({uid, name, email} : {uid: string; name: string; email: string;}) => {
+    try {
+        await updateDoc(doc(db, 'users', uid), {
+            profile: {
+                name,
+                email,
+            }
+        });
+        console.log('user profile updated succesfully')
+    } catch (error) {
+        console.error(error);
+    }
+};
