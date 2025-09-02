@@ -12,17 +12,15 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [isRedirecting, setIsRedirecting] = useState(false);
 
-  console.log('ProtectedRoute: Current state', { user, loading, isRedirecting }); // Debug log
+  console.log('ProtectedRoute: Current state', { user, loading }); // Debug log
 
   useEffect(() => {
-    if (!loading && !user && !isRedirecting) {
+    if (!loading && !user) {
       console.log('ProtectedRoute: Redirecting to auth'); // Debug log
-      setIsRedirecting(true);
       router.push('/auth');
     }
-  }, [user, loading, router, isRedirecting]);
+  }, [user, loading, router]);
 
   if (loading) {
     return (

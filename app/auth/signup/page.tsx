@@ -1,5 +1,5 @@
 'use client'
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,6 +22,7 @@ import { saveUserToDB } from '@/services/users/api';
 import { toast } from 'react-toastify';
 import { LoaderCircle } from 'lucide-react';
 import { toastStyles } from '@/lib/utils';
+import UploadImageButton from '@/components/UploadImageComponent';
 
 
 
@@ -29,9 +30,15 @@ import { toastStyles } from '@/lib/utils';
 const page = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [loading, setLoading] = useState(false);
+    const [imageUrl, setImageUrl] = useState('');
+    const [hasImageUrlChanged, setHasImageUrlChanged] = useState(false);
+
     const router = useRouter();
 
-
+    useEffect(() => {
+        setImageUrl((prev) => prev);
+    }, [hasImageUrlChanged])
+    
     const formSchema = z.object({
         username: z.string().min(1, 'Name is required').min(3, 'Name must be at least 3 characters long.'),
         email: z.string().min(1, {error: 'Email is required.'}).email({error: 'Invalid email address.'}),
@@ -73,7 +80,7 @@ const page = () => {
                     try {
                         await createUserMutaion.mutateAsync({
                             data: {
-                                profile: {name: username.trim(), email: email.trim(), imageUrl: '', language: 'English'}, shopPrefrences: {country: 'Nigeria', currency: '₦ NGN', size: 'US'}, shippingAddress: {
+                                profile: {name: username.trim(), email: email.trim(), imageUrl: imageUrl, language: 'English'}, shopPrefrences: {country: 'Nigeria', currency: '₦ NGN', size: 'US'}, shippingAddress: {
                                     country: '', city: '', address: '', postalCode: '', phoneNumber: ''
                                 }, 
                                 createdAt: new Date().toISOString(),
@@ -168,9 +175,13 @@ return (
         <Image width={250} height={294} src={signUpBubble2} alt='bubble' className='absolute top-0 left-0' />
         <div className='w-full px-6 z-50'>
             <h1 className='text-[#202020] text-[50px] font-bold leading-[1.1]'>Create<br/>Account</h1>
-            <button className='outline-0 mt-8'>
-                <Image width={90} src={uploadPhotoIcon} alt='upload photo icon' />
-            </button>
+            <UploadImageButton onComplete={
+                        (url) => {
+                            console.log("Uploaded Image URL:", url);
+                            setImageUrl(url); // ✅ Store in local state
+                            setHasImageUrlChanged(true);
+                          }
+                    } buttonLabel={ <Image width={90} height={90} src={ imageUrl ? imageUrl : uploadPhotoIcon} alt='upload photo icon' className='rounded-xl' />} className="outline-0 mt-8" />
 
             <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='mt-6 w-full'>

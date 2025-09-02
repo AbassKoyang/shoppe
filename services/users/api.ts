@@ -30,12 +30,13 @@ export const fetchUserByEmail = async (email: string) : Promise<User | null> => 
     }
 }
 
-export const updateUserProfile = async ({uid, name, email} : {uid: string; name: string; email: string;}) => {
+export const updateUserProfile = async ({uid, name, email, imageUrl} : {uid: string; name: string; email: string; imageUrl: string;}) => {
     try {
         await updateDoc(doc(db, 'users', uid), {
             profile: {
                 name,
                 email,
+                imageUrl
             }
         });
         console.log('user profile updated succesfully')

@@ -22,9 +22,12 @@ import { toast } from 'react-toastify';
 import { toastStyles } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { updateUserProfile } from '@/services/users/api';
+import UploadImageButton from '@/components/UploadImageComponent';
 
 const page = () => {
     const [loading, setLoading] = useState(false);
+    const [imageUrl, setImageUrl] = useState('');
+    const [hasImageUrlChanged, setHasImageUrlChanged] = useState(false);
     const {user} = useAuth();
     console.log(user);
 
@@ -53,6 +56,12 @@ const page = () => {
                         watchedValues.email !== originalValues.email;
 
       useEffect(() => {
+        if(user){
+            setImageUrl(user.profile.imageUrl || '');
+        }
+      }, [user]);
+      
+      useEffect(() => {
         if (user?.profile) {
             form.reset({
                 name: user.profile.name || '',
@@ -70,19 +79,19 @@ const page = () => {
 
     const updateUserProfileMutation = useMutation({
         mutationKey: ['updateUserProfile'],
-        mutationFn: ({uid, name, email} : {uid: string; name: string; email: string;}) =>  updateUserProfile({uid, name, email}),
+        mutationFn: ({uid, name, email, imageUrl} : {uid: string; name: string; email: string; imageUrl: string;}) =>  updateUserProfile({uid, name, email, imageUrl}),
     })
 
     const handleUserProfileUpdate = async (data: z.infer<typeof profileSchema>) => {
         const {name, email} = data;
         const uid = user?.uid;
-        if (hasChanges && uid) {
+        if ((hasChanges || hasImageUrlChanged) && uid) {
             console.log('Updating profile with:', data);
             setLoading(true);
             try {
-                await updateUserProfileMutation.mutateAsync({uid, name, email});
+                await updateUserProfileMutation.mutateAsync({uid, name, email, imageUrl});
                 console.log('Profile updated successfully');
-                toast.success('User created successfully')
+                toast.success('User profile updated successfully')
             } catch (error: any) {
                 console.error('Profile update error:', error);
                 
@@ -120,11 +129,16 @@ const page = () => {
             <div>
                 <h4 className='text-[16px] font-medium font-raleway'>Your Profile</h4>
                 <div className='relative mt-4 size-[115px] rounded-full border-[6px] border-white shadow-md'>
-                    <div className="absolute top-0 right-0 z-20 size-[35px] rounded-full border-[4px] border-white shadow-md flex items-center justify-center bg-dark-blue">
-                    <BiSolidPencil className='size-[18px] text-white' />
-                    </div>
+                    <UploadImageButton onComplete={
+                        (url) => {
+                            console.log("Uploaded Image URL:", url);
+                            setImageUrl(url); // ✅ Store in local state
+                            setHasImageUrlChanged(true);
+                          }
+                    } buttonLabel={<BiSolidPencil className='size-[18px] text-white' />} className="absolute top-0 right-0 z-20 size-[35px] rounded-full border-[4px] border-white shadow-md flex items-center justify-center bg-dark-blue" />
+ 
                     <div className='size-full rounded-full overflow-hidden object-contain object-center'>
-                    <Image src={user?.profile.imageUrl || defaultProfileAvatar} className='size-full z-10' alt='Profile avatar' />
+                    <Image key={imageUrl} src={imageUrl ? imageUrl : defaultProfileAvatar} width={115} height={115}  className='size-full z-10' alt='Profile avatar' />
                     </div>
                 </div>
 
@@ -158,7 +172,7 @@ const page = () => {
                     </div>
 
                         <div className={`absolute bottom-5 left-0 w-full px-6`}>
-                        <PrimaryButton additionalStyles='w-full disabled:opacity-70 disabled:cursor-not-allowed'  text={loading ? <LoaderCircle className='animate-spin' /> : 'Save Changes'} disabled={!hasChanges} primaryButtonFunction={() => form.handleSubmit(onSubmit)()} />
+                        <PrimaryButton additionalStyles='w-full disabled:opacity-70 disabled:cursor-not-allowed'  text={loading ? <LoaderCircle className='animate-spin' /> : 'Save Changes'} disabled={!hasChanges && !hasImageUrlChanged} primaryButtonFunction={() => form.handleSubmit(onSubmit)()} />
                     </div>
                     </form>
             </Form>
