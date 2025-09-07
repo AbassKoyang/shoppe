@@ -2,7 +2,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { loginArrow, logo } from '@/public/assets/images/exports'
-import PrimaryButton from '@/auth/components/PrimaryButton'
+import PrimaryButton from '@/components/PrimaryButton'
 import { useRouter } from 'next/navigation'
 
 const WelcomeScreen = () => {

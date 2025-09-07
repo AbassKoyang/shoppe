@@ -10,7 +10,7 @@ import {
   } from "@/components/ui/carousel"
 import Image from 'next/image'
 import { welcomeBubble, welcomeImage1, welcomeImage2 } from '@/public/assets/images/exports'
-import PrimaryButton from '@/auth/components/PrimaryButton'
+import PrimaryButton from '@/components/PrimaryButton'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 

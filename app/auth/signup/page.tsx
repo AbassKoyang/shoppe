@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {createUserWithEmailAndPassword} from 'firebase/auth'
-import PrimaryButton from '@/auth/components/PrimaryButton'
+import PrimaryButton from '@/components/PrimaryButton'
 import Image from 'next/image'
 import { eyeIcon, signUpBubble1, signUpBubble2, uploadPhotoIcon } from '@/public/assets/images/exports'
 import { useRouter } from 'next/navigation'
@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 import { LoaderCircle } from 'lucide-react';
 import { toastStyles } from '@/lib/utils';
 import UploadImageButton from '@/components/UploadImageComponent';
+import RetryToast from '@/components/RetryToast';
 
 
 
@@ -34,10 +35,6 @@ const page = () => {
     const [hasImageUrlChanged, setHasImageUrlChanged] = useState(false);
 
     const router = useRouter();
-
-    useEffect(() => {
-        setImageUrl((prev) => prev);
-    }, [hasImageUrlChanged])
     
     const formSchema = z.object({
         username: z.string().min(1, 'Name is required').min(3, 'Name must be at least 3 characters long.'),
@@ -59,10 +56,12 @@ const page = () => {
     });
 
 
-
     const createUserMutaion = useMutation({
         mutationKey: ['createUser'],
         mutationFn: ({data, uid} : {data: any; uid: string}) => saveUserToDB(data, uid),
+        onSuccess: (data) => {
+            toast.success(`User created successfully`);
+        }
     });
 
      const onSubmit = (data: z.infer<typeof formSchema>) => {
@@ -88,35 +87,17 @@ const page = () => {
                             },
                             uid: user.uid
                         })
-                        console.log('User created successfully');
-                        toast.success('User created successfully')
-                        router.push('/welcome')
+                        router.replace('/welcome')
                     } catch (dbError : any) {
                         if (dbError.code === 'unavailable' || dbError.message?.includes('network')) {
                             console.error('Error occured:', dbError);
                             toast.error(
-                                <div>
-                                    <p>Network error: Profile data couldn't be saved.</p>
-                                    <button 
-                                        onClick={() => handleSignUp(data)}
-                                        className="cursor-pointer mt-2 px-4 py-2 bg-[#004CFF] text-white rounded-lg hover:bg-blue-600 transition-colors"
-                                    >
-                                        Try Again
-                                    </button>
-                                </div>,
+                                <RetryToast label='Try again' message="Network error: Profile data couldn't be saved." retry={() => handleSignUp(data)} />,
                                 toastStyles.error
                             );
                         } else {
                             toast.error(
-                                <div>
-                                    <p>Profile creation failed. Please contact support.</p>
-                                    <button 
-                                        onClick={() => handleSignUp(data)}
-                                        className="cursor-pointer mt-2 px-4 py-2 bg-[#004CFF] text-white rounded-lg hover:bg-blue-600 transition-colors"
-                                    >
-                                        Try Again
-                                    </button>
-                                </div>,
+                                <RetryToast label='Try again' message='Profile creation failed. Please contact support.' retry={() => handleSignUp(data)} />,
                                 toastStyles.error
                             );
                         }
@@ -124,30 +105,14 @@ const page = () => {
                 }
             } catch (error : any) {
                 console.log('Error details:', error);
-                if(error.code === 'auth/email-already-exists'){
-                    toast.error(<div>
-                        <p>This email is already registered. Please use a different email or try logging in.</p>
-                        <button 
-                            onClick={() => router.push('/auth/login')}
-                            className="cursor-pointer mt-2 px-4 py-2 bg-[#004CFF] text-white rounded-lg hover:bg-blue-600 transition-colors"
-                        >
-                            Log In
-                        </button>
-                    </div>, toastStyles.error);
+                if(error.code === 'auth/email-already-in-use'){
+                    toast.error(
+                        <RetryToast label='Log in' message="This email is already registered. Please use a different email or try logging in." retry={() => router.push('/auth/login')} />, toastStyles.error);
                 } else if (error.code === 'auth/weak-password') {
                     toast.error('Password is too weak. Please choose a stronger password.', toastStyles.errorSimple);
                 } else if (error.code === 'auth/network-request-failed') {
                     toast.error(
-                        <div>
-                            <p>Network error: Please check your internet connection and try again.</p>
-                            <button 
-                                onClick={() => handleSignUp(data)}
-                                className="cursor-pointer mt-2 px-4 py-2 bg-[#004CFF] text-white rounded-lg hover:bg-blue-600 transition-colors"
-                            >
-                                Try Again
-                            </button>
-                        </div>,
-                        toastStyles.error
+                        <RetryToast label='Try again' message="Network error: Please check your internet connection and try again." retry={() => handleSignUp(data)} />, toastStyles.error
                     );
                 // } else if(error.code !== 'auth/email-already-in-use' && error.code !== 'auth/network-request-failed' && error.code !== 'auth/weak-password') {
                 //     toast.error(
@@ -175,13 +140,24 @@ return (
         <Image width={250} height={294} src={signUpBubble2} alt='bubble' className='absolute top-0 left-0' />
         <div className='w-full px-6 z-50'>
             <h1 className='text-[#202020] text-[50px] font-bold leading-[1.1]'>Create<br/>Account</h1>
-            <UploadImageButton onComplete={
-                        (url) => {
-                            console.log("Uploaded Image URL:", url);
-                            setImageUrl(url); // ✅ Store in local state
-                            setHasImageUrlChanged(true);
-                          }
-                    } buttonLabel={ <Image width={90} height={90} src={ imageUrl ? imageUrl : uploadPhotoIcon} alt='upload photo icon' className='rounded-xl' />} className="outline-0 mt-8" />
+            <UploadImageButton
+            onComplete={(url: string) => {
+            setImageUrl(`${url}?t=${Date.now()}`);
+          }}
+          buttonLabel={
+            <div className='size-[90px] rounded-full overflow-hidden object-fill object-center'>
+                <Image
+              width={90}
+              height={90}
+              src={imageUrl || uploadPhotoIcon}
+              alt="Upload profile photo"
+              className=""
+              unoptimized // ✅ Cloudinary already optimizes
+            />
+            </div>
+          }
+          className="outline-0 mt-8"
+        />
 
             <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='mt-6 w-full'>
@@ -237,7 +213,7 @@ return (
                         </FormItem>
                     )}
                 />
-                <PrimaryButton additionalStyles='mt-8' text={loading ? <LoaderCircle className='animate-spin' /> : 'Done'} primaryButtonFunction={onSubmit} />
+                <PrimaryButton disabled={loading} additionalStyles='mt-8' text={loading ? <LoaderCircle className='animate-spin' /> : 'Done'} type='submit' />
             </form>
             </Form>
             <div className='w-full flex items-center justify-center my-3'>

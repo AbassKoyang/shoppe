@@ -1,6 +1,6 @@
 'use client'
-import { PasswordOTP } from '@/auth/components/password-otp';
-import PrimaryButton from '@/auth/components/PrimaryButton';
+import { PasswordOTP } from '@/components/password-otp';
+import PrimaryButton from '@/components/PrimaryButton';
 import { Input } from '@/components/ui/input';
 import { auth } from '@/lib/firebase';
 import { defaultProfileAvatar, loginArrow, loginProfilePic, resetPasswordBubble } from '@/public/assets/images/exports';

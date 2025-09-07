@@ -16,14 +16,14 @@ import {
 } from '@/components/ui/form';
 
 import { Input } from '@/components/ui/input';
-import PrimaryButton from '@/auth/components/PrimaryButton';
+import PrimaryButton from '@/components/PrimaryButton';
 import { defaultProfileAvatar, loginArrow, loginBubble1, loginBubble2, loginHeartIcon, loginProfilePic, logo } from '@/public/assets/images/exports';
 import Image from 'next/image';
 import { fetchUserByEmail } from '@/services/users/api';
 import { LoaderCircle } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { PasswordOTP } from '@/auth/components/password-otp';
+import { PasswordOTP } from '@/components/password-otp';
 
 const page = () => {
   const [loading, setLoading] = useState(false);

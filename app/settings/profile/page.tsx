@@ -16,13 +16,14 @@ import {
 import { Input } from '@/components/ui/input';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { LoaderCircle } from 'lucide-react';
-import PrimaryButton from '@/auth/components/PrimaryButton';
+import PrimaryButton from '@/components/PrimaryButton';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
 import { toastStyles } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { updateUserProfile } from '@/services/users/api';
 import UploadImageButton from '@/components/UploadImageComponent';
+import RetryToast from '@/components/RetryToast';
 
 const page = () => {
     const [loading, setLoading] = useState(false);
@@ -80,18 +81,18 @@ const page = () => {
     const updateUserProfileMutation = useMutation({
         mutationKey: ['updateUserProfile'],
         mutationFn: ({uid, name, email, imageUrl} : {uid: string; name: string; email: string; imageUrl: string;}) =>  updateUserProfile({uid, name, email, imageUrl}),
+        onSuccess: () => {
+            toast.success('User profile updated successfully');
+        }
     })
 
     const handleUserProfileUpdate = async (data: z.infer<typeof profileSchema>) => {
         const {name, email} = data;
         const uid = user?.uid;
         if ((hasChanges || hasImageUrlChanged) && uid) {
-            console.log('Updating profile with:', data);
             setLoading(true);
             try {
                 await updateUserProfileMutation.mutateAsync({uid, name, email, imageUrl});
-                console.log('Profile updated successfully');
-                toast.success('User profile updated successfully')
             } catch (error: any) {
                 console.error('Profile update error:', error);
                 
@@ -99,15 +100,7 @@ const page = () => {
                     toast.error('You do not have permission to update your profile');
                 } else if (error.code === 'unavailable' || error.message?.includes('network')) {
                     toast.error(
-                        <div>
-                            <p>Network error: Profile couldn't be updated.</p>
-                            <button 
-                                onClick={() => handleUserProfileUpdate(data)}
-                                className="cursor-pointer mt-2 px-4 py-2 bg-[#004CFF] text-white rounded-lg hover:bg-blue-600 transition-colors"
-                            >
-                                Try Again
-                            </button>
-                        </div>,
+                        <RetryToast label='Try again' message="Network error: Profile couldn't be updated" retry={() => handleUserProfileUpdate(data)} />,
                         toastStyles.error
                     );
                 } else if (error.message?.includes('email')) {
@@ -172,7 +165,7 @@ const page = () => {
                     </div>
 
                         <div className={`absolute bottom-5 left-0 w-full px-6`}>
-                        <PrimaryButton additionalStyles='w-full disabled:opacity-70 disabled:cursor-not-allowed'  text={loading ? <LoaderCircle className='animate-spin' /> : 'Save Changes'} disabled={!hasChanges && !hasImageUrlChanged} primaryButtonFunction={() => form.handleSubmit(onSubmit)()} />
+                        <PrimaryButton additionalStyles='w-full'  text={loading ? <LoaderCircle className='animate-spin' /> : 'Save Changes'} disabled={!hasChanges && !hasImageUrlChanged} primaryButtonFunction={() => form.handleSubmit(onSubmit)()} />
                     </div>
                     </form>
             </Form>

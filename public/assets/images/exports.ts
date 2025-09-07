@@ -15,6 +15,7 @@ import defaultProfileAvatar from '@/public/assets/images/profile-avatar.webp';
 import welcomeImage1 from '@/public/assets/images/welcome-image-1.png';
 import welcomeImage2 from '@/public/assets/images/welcome-image-2.png';
 import welcomeBubble from '@/public/assets/images/welcome-bubble.png';
+import visaLogo from '@/public/assets/images/visa-logo.png';
 export {
     logo,
     loginArrow,
@@ -32,5 +33,6 @@ export {
     defaultProfileAvatar,
     welcomeImage1,
     welcomeImage2,
-    welcomeBubble
+    welcomeBubble,
+    visaLogo
 };
