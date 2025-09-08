@@ -17,15 +17,21 @@ import { visaLogo } from '@/public/assets/images/exports';
 import AddPaymentMethodForm from '../components/AddPaymentMethodForm';
 import { usePaymentMethods } from '@/services/users/queries';
 import { useAuth } from '@/lib/contexts/auth-context';
+import EditPaymentMethodForm from '../components/EditPaymentMethod';
+import { paymentMethodType } from '@/services/users/types';
 
 
 const PaymentMethodsPage = () => {
     const {user} = useAuth();
     const { data: paymentMethods = [], isLoading, error } = usePaymentMethods(user?.uid || '');
-    const [isOpenModal, setIsOpenModal] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<paymentMethodType>();
+
     const plugin = React.useRef(
         Autoplay({ delay: 2000, stopOnInteraction: true })
-      )
+    );
+    
 
   return (
     <ProtectedRoute>
@@ -37,7 +43,7 @@ const PaymentMethodsPage = () => {
                 )}
 
                 {isLoading && (
-                    <div className='w-[88%]  h-[155px] rounded-xl animate-pulse'></div>
+                    <div className='w-[88%] h-[155px] rounded-xl animate-pulse'></div>
                 )}
                 {paymentMethods && (
                     <Carousel
@@ -53,7 +59,9 @@ const PaymentMethodsPage = () => {
                                     <CardContent className="size-full flex flex-col justify-between p-4 pb-6">
                                         <div className='w-full flex items-center justify-between'>
                                             <img src='/assets/images/visa-logo.png' alt="Visa Logo" />
-                                            <button className='cursor-pointer size-[35px] flex items-center justify-center bg-[#E5EBFC] rounded-full'>
+                                            <button onClick={() =>{
+                                                setSelectedPaymentMethod(paymentMethod)
+                                                setIsEditModalOpen(true)}} className='cursor-pointer size-[35px] flex items-center justify-center bg-[#E5EBFC] rounded-full'>
                                                 <Settings className='text-dark-blue size-[14px]' />
                                             </button>
                                         </div>
@@ -91,12 +99,12 @@ const PaymentMethodsPage = () => {
                         </CarouselContent>
                     </Carousel>
                 )}
-                <AddPaymentMethodButton openModal={() => setIsOpenModal(true)} />
+                <AddPaymentMethodButton openModal={() => setIsAddModalOpen(true)} />
             </div>
-            <AddPaymentMethodForm  open = {isOpenModal} closeModal={() => setIsOpenModal(false)} />
+            <AddPaymentMethodForm  open = {isAddModalOpen} closeModal={() => setIsAddModalOpen(false)} />
+            <EditPaymentMethodForm paymentMethod={selectedPaymentMethod || { id: '', userId: '', cardHolder: '', brand: '', last4: '', expiryDate: '', cvv: '', token: '', createdAt: ''}} open = {isEditModalOpen} closeModal={() => setIsEditModalOpen(false)} />
         </section>
     </ProtectedRoute>
   )
-}
-
+};
 export default PaymentMethodsPage

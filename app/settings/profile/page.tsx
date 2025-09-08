@@ -70,8 +70,7 @@ const page = () => {
             });
         }
     }, [user, form]);
-    console.log('User data:', user);
-    console.log('Form values:', form.getValues());
+  
 
     const onSubmit = (data: z.infer<typeof profileSchema>) => {
         console.log('submitted')

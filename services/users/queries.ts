@@ -8,3 +8,4 @@ export const usePaymentMethods = (userId: string) => {
     enabled: !!userId, // ✅ only fetch if userId exists
   });
 };
+
