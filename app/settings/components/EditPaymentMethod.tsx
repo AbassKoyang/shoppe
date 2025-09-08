@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 import { useAuth } from '@/lib/contexts/auth-context';
 import {LoaderCircle, Trash2 } from 'lucide-react';
 import {motion} from 'framer-motion';
+import ConfirmDelete from './ConfirmDelete';
 
 const formSchema = z.object({
     cardNumber: z
@@ -54,6 +55,9 @@ const EditPaymentMethodForm = ({paymentMethod, open, closeModal} : EditPaymentMe
     const {user} = useAuth();
     const [loading, setloading] = useState(false);
     const [deleteLoading, setDeleteloading] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+
     const queryClient = useQueryClient();
 
         const form = useForm<z.infer<typeof formSchema>>({
@@ -160,6 +164,7 @@ const EditPaymentMethodForm = ({paymentMethod, open, closeModal} : EditPaymentMe
           if(success){
             closeModal();
             form.reset();
+            setIsConfirmModalOpen(false);
           }
         } catch (error: any) {
           console.error("❌ Error edit payment method:", error);
@@ -188,7 +193,10 @@ const EditPaymentMethodForm = ({paymentMethod, open, closeModal} : EditPaymentMe
             <div className='mb-6 px-6 flex items-center justify-between'>
                 <h3 className='text-[22px] font-raleway font-bold'>Edit Card</h3>
                  <button
-                 onClick={() => handleDeletePaymentMethod(paymentMethod.id || '')}
+                 onClick={() =>{
+                    setSelectedPaymentMethod(paymentMethod.id || '');
+                    setIsConfirmModalOpen(true);
+                 }}
                  className='cursor-pointer size-[35px] flex items-center justify-center rounded-full'
                  ><Trash2 className='text-red-300 text-[14px]' /></button>
             </div>
@@ -260,6 +268,7 @@ const EditPaymentMethodForm = ({paymentMethod, open, closeModal} : EditPaymentMe
                         </form>
                 </Form>)}
         </div>
+        <ConfirmDelete isDeleting={deleteLoading} open={isConfirmModalOpen} deletePaymentMethod={() => handleDeletePaymentMethod(paymentMethod.id || '')} closeModal={() => setIsConfirmModalOpen(false)} />
     </motion.div>
   )
 }
