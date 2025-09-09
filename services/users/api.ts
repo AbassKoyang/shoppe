@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase';
-import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc} from 'firebase/firestore';
+import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc} from 'firebase/firestore';
 import { paymentMethodType, User } from './types';
 import { id } from 'zod/v4/locales';
 
@@ -32,13 +32,14 @@ export const fetchUserByEmail = async (email: string) : Promise<User | null> => 
     }
 }
 
-export const updateUserProfile = async ({uid, name, email, imageUrl} : {uid: string; name: string; email: string; imageUrl: string;}) => {
+export const updateUserProfile = async ({uid, name, email, imageUrl, language} : {uid: string; name: string; email: string; imageUrl: string; language: 'English' | 'Français'}) => {
     try {
         await updateDoc(doc(db, 'users', uid), {
             profile: {
                 name,
                 email,
-                imageUrl
+                imageUrl,
+                language
             }
         });
         console.log('user profile updated succesfully')
@@ -112,6 +113,33 @@ export const updateUserShippingAddress = async ({uid, country, address, city, po
             }
         });
         console.log('User shipping address updated succesfully')
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export const fetchLanguage = async (uid: string) => {
+      const docRef = doc(db, "users", uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        // Return language OR null, but never undefined
+        console.log('Doc', docSnap.data().l);
+        const {profile} = docSnap.data()
+        return  profile.language;
+      }
+
+      return null;
+  };
+  
+export const updateLanguage = async ({uid, language} : {uid: string; language: 'Français' | 'English';}) => {
+    try {
+        await updateDoc(doc(db, 'users', uid), {
+            profile: {
+                language
+            }
+        });
+        console.log('Language updated succesfully')
     } catch (error) {
         console.error(error);
     }

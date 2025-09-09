@@ -7,7 +7,7 @@ export const UserSchema = z.object({
       language: z.literal(['English', 'Français'])
     }),
     shopPrefrences: z.object({
-        country: z.string().min(1),
+        country: z.literal(['Nigeria', 'USA', 'Spain']),
         currency: z.literal(['$ USD', '€ EURO', '₦ NGN']),
         size: z.literal(['US', 'UK', 'EU']),
     }),
@@ -31,9 +31,9 @@ export const AppUserSchema = z.object({
       language: z.literal(['English', 'Français'])
     }),
     shopPrefrences: z.object({
-        country: z.string().min(1),
-        currency: z.literal(['$ USD', '€ EURO', '₦ NGN']),
-        size: z.literal(['US', 'UK', 'EU']),
+      country: z.literal(['Nigeria', 'USA', 'Spain']),
+      currency: z.literal(['$ USD', '€ EURO', '₦ NGN']),
+      size: z.literal(['US', 'UK', 'EU']),
     }),
     shippingAddress: z.object({
       country: z.string(),

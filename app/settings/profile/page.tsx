@@ -79,7 +79,7 @@ const page = () => {
 
     const updateUserProfileMutation = useMutation({
         mutationKey: ['updateUserProfile'],
-        mutationFn: ({uid, name, email, imageUrl} : {uid: string; name: string; email: string; imageUrl: string;}) =>  updateUserProfile({uid, name, email, imageUrl}),
+        mutationFn: ({uid, name, email, imageUrl, language} : {uid: string; name: string; email: string; imageUrl: string; language: 'English' | 'Français'}) =>  updateUserProfile({uid, name, email, imageUrl, language}),
         onSuccess: () => {
             toast.success('User profile updated successfully');
         }
@@ -88,10 +88,11 @@ const page = () => {
     const handleUserProfileUpdate = async (data: z.infer<typeof profileSchema>) => {
         const {name, email} = data;
         const uid = user?.uid;
+        const language = user?.profile.language || 'English';
         if ((hasChanges || hasImageUrlChanged) && uid) {
             setLoading(true);
             try {
-                await updateUserProfileMutation.mutateAsync({uid, name, email, imageUrl});
+                await updateUserProfileMutation.mutateAsync({uid, name, email, imageUrl, language});
             } catch (error: any) {
                 console.error('Profile update error:', error);
                 
