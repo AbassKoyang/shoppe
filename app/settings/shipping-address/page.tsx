@@ -224,7 +224,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>
 
-const ShippingAddressPage = () => {
+const page = () => {
     const {user} = useAuth();
     const [loading, setLoading] = useState(false);
 
@@ -425,4 +425,4 @@ const ShippingAddressPage = () => {
   )
 }
 
-export default ShippingAddressPage;
+export default page;
