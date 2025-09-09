@@ -11,6 +11,7 @@ export const saveUserToDB = async (data: User, uid: string) => {
         console.error(error)
     }
 }
+
 export const fetchUserByEmail = async (email: string) : Promise<User | null> => {
     const userRef = collection(db, 'users');
     try {
@@ -45,6 +46,7 @@ export const updateUserProfile = async ({uid, name, email, imageUrl} : {uid: str
         console.error(error);
     }
 };
+
 export const addPaymentMethod = async ({userId, cardHolder, brand, last4, expiryDate, cvv, token} : paymentMethodType) => {
     try {
         const colRef = collection(db, "payment-methods");
@@ -57,6 +59,7 @@ export const addPaymentMethod = async ({userId, cardHolder, brand, last4, expiry
         console.error(error);
     }
 };
+
 export const updatePaymentMethod = async ({id, userId, cardHolder, brand, last4, expiryDate, cvv, token} : paymentMethodType) => {
     try {
         const docRef = doc(db, "payment-methods", (id || ''));
@@ -85,6 +88,7 @@ export const fetchPaymentMethods = async (userId: string) : Promise<paymentMetho
         throw error;
     }
 }
+
 export const deletePaymentMethodById = async (paymentMethodId: string) => {
     console.log('PaymentId:', paymentMethodId)
         const docRef = doc(db, "payment-methods", paymentMethodId);
@@ -95,3 +99,20 @@ export const deletePaymentMethodById = async (paymentMethodId: string) => {
         throw error;
     }
 }
+
+export const updateUserShippingAddress = async ({uid, country, address, city, postalCode, phoneNumber = ''} : {uid: string; country: string; address: string; city: string; postalCode: string; phoneNumber?: string;}) => {
+    try {
+        await updateDoc(doc(db, 'users', uid), {
+            shippingAddress: {
+                country,
+                address,
+                city,
+                postalCode,
+                phoneNumber
+            }
+        });
+        console.log('User shipping address updated succesfully')
+    } catch (error) {
+        console.error(error);
+    }
+};
