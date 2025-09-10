@@ -2,6 +2,7 @@
 import { useAuth } from "@/lib/contexts/auth-context";
 import { updateLanguage } from "@/services/users/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { BsCheck } from "react-icons/bs";
 import { toast } from "react-toastify";
@@ -34,6 +35,9 @@ const SelectCountryButton = ({language, isCurrentLang} : {language: 'English' | 
         onSettled: () => {
           queryClient.invalidateQueries({ queryKey: ["language"] });
         },
+        onSuccess: () => {
+            toast.success('Preferred langauge updated successfully')
+        }
       });
       
     const handleUpdateLanguage = async ({uid, language} : {uid: string; language: 'English' | 'Français'}) => {
@@ -57,10 +61,14 @@ const SelectCountryButton = ({language, isCurrentLang} : {language: 'English' | 
   return (
     <button disabled={loading} onClick={() => handleUpdateLanguage({uid: user?.uid || '', language})} className={`cursor-pointer mt-4 w-full ${isCurrentLang ? 'bg-[#E5EBFC]' : 'bg-[#F9F9F9]'} hover:bg-[#E5EBFC] duration-200 ease-in-out transition-all rounded-xl p-4 pl-6 flex items-center justify-between disabled:opacity-70`}>
         <p className="font-nunito-sans font-semibold text-[16px] text-black">{language}</p>
-        <span className={`${isCurrentLang ? 'bg-dark-blue' : 'bg-[#F8CECE]'} size-[22px] rounded-full border-2 border-white flex items-center justify-between`}>
+        {loading? (
+          <LoaderCircle className="animate-spin text-dark-blue" />
+        ) : (
+          <span className={`${isCurrentLang ? 'bg-dark-blue' : 'bg-[#F8CECE]'} size-[22px] rounded-full border-2 border-white flex items-center justify-between`}>
             {isCurrentLang && (
             <BsCheck className="text-white" />)}
-        </span>
+          </span>
+        )}
     </button>
   )
 }

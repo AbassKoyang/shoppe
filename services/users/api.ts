@@ -131,6 +131,32 @@ export const fetchLanguage = async (uid: string) => {
 
       return null;
   };
+export const fetchCurrency = async (uid: string) => {
+      const docRef = doc(db, "users", uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        // Return language OR null, but never undefined
+        console.log('Doc', docSnap.data().l);
+        const {shopPrefrences} = docSnap.data()
+        return  shopPrefrences.currency;
+      }
+
+      return null;
+  };
+export const fetchSize = async (uid: string) => {
+      const docRef = doc(db, "users", uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        // Return language OR null, but never undefined
+        console.log('Doc', docSnap.data().l);
+        const {shopPrefrences} = docSnap.data()
+        return  shopPrefrences.size;
+      }
+
+      return null;
+  };
   
 export const updateLanguage = async ({uid, language} : {uid: string; language: 'Français' | 'English';}) => {
     try {
@@ -140,6 +166,30 @@ export const updateLanguage = async ({uid, language} : {uid: string; language: '
             }
         });
         console.log('Language updated succesfully')
+    } catch (error) {
+        console.error(error);
+    }
+};
+export const updateCurrency = async ({uid, currency} : {uid: string; currency: '$ USD' | '€ EURO' | '₦ NGN';}) => {
+    try {
+        await updateDoc(doc(db, 'users', uid), {
+            shopPrefrences: {
+                currency
+            }
+        });
+        console.log('Language currency succesfully')
+    } catch (error) {
+        console.error(error);
+    }
+};
+export const updateSize = async ({uid, size} : {uid: string; size: 'US'| 'UK'| 'EU';}) => {
+    try {
+        await updateDoc(doc(db, 'users', uid), {
+            shopPrefrences: {
+                size
+            }
+        });
+        console.log('Language size succesfully')
     } catch (error) {
         console.error(error);
     }
