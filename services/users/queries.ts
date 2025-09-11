@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchCurrency, fetchLanguage, fetchPaymentMethods, fetchSize } from "@/services/users/api";
+import { fetchCountry, fetchCurrency, fetchLanguage, fetchPaymentMethods, fetchSize } from "@/services/users/api";
 
 export const usePaymentMethods = (userId: string) => {
   return useQuery({
@@ -26,6 +26,13 @@ export const useFetchSize = (userId: string) => {
   return useQuery({
     queryKey: ["size", userId], // ✅ cache per user
     queryFn: () => fetchSize(userId),
+    enabled: !!userId, // ✅ only fetch if userId exists
+  });
+};
+export const useFetchCountry = (userId: string) => {
+  return useQuery({
+    queryKey: ["country", userId], // ✅ cache per user
+    queryFn: () => fetchCountry(userId),
     enabled: !!userId, // ✅ only fetch if userId exists
   });
 };
