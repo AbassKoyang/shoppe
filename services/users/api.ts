@@ -211,3 +211,13 @@ export const updateCountry = async ({uid, country} : {uid: string; country: stri
         console.error(error);
     }
 };
+export const deleteAccount = async (uid: string) => {
+    console.log('Uid:', uid)
+        const docRef = doc(db, "users", uid);
+    try {
+        await deleteDoc(docRef);
+    } catch (error) {
+        console.error('Error deleting user account:', error);
+        throw error;
+    }
+}

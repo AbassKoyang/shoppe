@@ -1,6 +1,6 @@
 'use client'
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -31,6 +31,7 @@ const page = () => {
   const [user, setUser] = useState<User | null>(null);
   const [password, setPassword] = useState('');
   const [isWrongPassword, setIsWrongPassword] = useState(false);
+  const searchParams = useSearchParams();
 
 
   const router = useRouter();
@@ -138,7 +139,11 @@ const page = () => {
             try {
                 await signInWithEmailAndPassword(auth, user?.profile.email!, password);
                 toast.success("Signed in successfully!");
-                router.push("/welcome");
+                let redirectPath = searchParams.get("redirect") || "/";
+                if (redirectPath === "/login" || redirectPath === "/signup") {
+                    redirectPath = "/"; // or your default home
+                }
+                router.push(redirectPath);
               } catch (error: any) {
                 console.log(error, error.code);
                 switch (error.code) {
@@ -206,7 +211,7 @@ const page = () => {
         <>
          <div className='w-full min-h-dvh px-6 flex flex-col items-center justify-between z-50'>
             <div className='mb-8 flex flex-col items-center justify-center mt-20'>
-              <Image width={125} src={user?.profile.imageUrl || defaultProfileAvatar} alt='Profile picture' className='border-white border-8 rounded-full' />
+              <Image width={125} height={125} src={user?.profile.imageUrl || defaultProfileAvatar} alt='Profile picture' className='border-white border-8 rounded-full' />
               <h1 className='text-[#202020] text-[28px] font-bold leading-[1.1] mt-8'>Hello, {user?.profile.name.split(' ')[0]}!</h1>
               <p className='font-light text-xl text-black mt-14 mb-6'>Type your password</p>
               <PasswordOTP 

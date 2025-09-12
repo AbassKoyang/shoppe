@@ -1,6 +1,7 @@
 import {motion} from 'framer-motion';
 import { FaExclamation } from "react-icons/fa6";
-const ConfirmSignout = ({open, signOut, closeModal, isSigningOut} : {open: boolean; signOut: () => void; closeModal: () => void; isSigningOut: boolean;}) => {
+
+const ConfirmDeleteAccount = ({open, deleteAccount, closeModal, isDeleting} : {open: boolean; deleteAccount: () => void; closeModal: () => void; isDeleting: boolean;}) => {
   return (
     <motion.div className={`${open ? 'flex' : 'hidden'} w-[100vw] h-dvh fixed top-0 left-0 items-center justify-center bg-transparent z-30`}>
         <div onClick={() => closeModal()} className='z-10 absolute top-0 left-0 w-full h-full bg-[#E9E9E9] opacity-75'></div>
@@ -16,15 +17,15 @@ const ConfirmSignout = ({open, signOut, closeModal, isSigningOut} : {open: boole
                     </div>
                 </div>
             </div>
-            <h3 className='text-black font-raleway font-semibold text-xl mt-5 text-center max-w-[250px]'>Are you sure you want to sign out?</h3>
-            <p className='text-black font-nunitosans font-semibold text-xs mt-1 text-center'>You will be signed out permanently</p>
+            <h3 className='text-black font-raleway font-semibold text-xl mt-5 text-center max-w-[250px]'>You are going to delete your account</h3>
+            <p className='text-black font-nunitosans font-semibold text-xs mt-1 text-center'>You won't be able to restore your data</p>
             <div className="w-full flex items-center justify-center gap-3 mt-5">
-                <button disabled={isSigningOut} className='cursor-pointer px-6 py-1 rounded-lg bg-red-500 disabled:opacity-70 text-white' onClick={() => signOut()}>{isSigningOut ? 'Signing Out...' : 'Sign Out'}</button>
-                <button disabled={isSigningOut} className='cursor-pointer px-6 py-1 rounded-lg text-white bg-black disabled:opacity-70' onClick={() => closeModal()}>Cancel</button>
+                <button disabled={isDeleting} className='cursor-pointer px-6 py-1 rounded-lg bg-red-500 disabled:opacity-70 text-white' onClick={() => deleteAccount()}>{isDeleting ? 'Deleting...' : 'Delete'}</button>
+                <button disabled={isDeleting} className='cursor-pointer px-6 py-1 rounded-lg text-white disabled:opacity-70 bg-black' onClick={() => closeModal()}>Cancel</button>
             </div>
         </motion.div>
     </motion.div>
   )
 }
 
-export default ConfirmSignout
+export default ConfirmDeleteAccount;
