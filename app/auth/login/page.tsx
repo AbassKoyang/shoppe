@@ -25,7 +25,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { PasswordOTP } from '@/components/password-otp';
 
-const page = ({ searchParams }: { searchParams: { redirect?: string }) => {
+const page = ({ searchParams }: { searchParams: { redirect?: string }}) => {
   const [loading, setLoading] = useState(false);
   const [loginStep, setLoginStep] = useState(1);
   const [user, setUser] = useState<User | null>(null);
