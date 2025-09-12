@@ -1,6 +1,6 @@
 'use client'
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -25,13 +25,12 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { PasswordOTP } from '@/components/password-otp';
 
-const page = () => {
+const page = ({ searchParams }: { searchParams: { redirect?: string }) => {
   const [loading, setLoading] = useState(false);
   const [loginStep, setLoginStep] = useState(1);
   const [user, setUser] = useState<User | null>(null);
   const [password, setPassword] = useState('');
   const [isWrongPassword, setIsWrongPassword] = useState(false);
-  const searchParams = useSearchParams();
 
 
   const router = useRouter();
