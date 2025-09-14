@@ -1,5 +1,6 @@
 import z, { } from "zod";
 export const UserSchema = z.object({
+    role: z.literal(["buyer", "vendor", "admin"]),
     profile: z.object({
       name: z.string().min(1, "Name is required"),
       email: z.string().email("Invalid email format"),
@@ -24,6 +25,7 @@ export const UserSchema = z.object({
 
 export const AppUserSchema = z.object({
       uid: z.string().min(1, "Uid is required"),
+      role: z.literal(["buyer", "vendor", "admin"]),
       profile: z.object({
       name: z.string().min(1, "Name is required"),
       email: z.string().email("Invalid email format"),
