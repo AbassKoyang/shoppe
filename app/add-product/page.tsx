@@ -23,15 +23,15 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ImagePlus, LoaderCircle, Plus, X } from 'lucide-react';
 import PrimaryButton from '@/components/PrimaryButton';
 import ProtectedRoute from '@/components/ProtectedRoute';
-export const ALPHA_SIZES = [
+const ALPHA_SIZES = [
   "XS",
   "S",
   "M",
   "L",
   "XL",
   "XXL",
-] as const;
-export const NUMERIC_SIZES = Array.from({ length: 50 }, (_, i) => `${i + 1}`);
+];
+const NUMERIC_SIZES = Array.from({ length: 50 }, (_, i) => `${i + 1}`);
 const CATEGORIES = [
   { value: "tops", label: "Tops" },
   { value: "bottoms", label: "Bottoms" },
@@ -44,10 +44,10 @@ const CATEGORIES = [
   { value: "swimwear", label: "Swimwear" },
   { value: "activewear", label: "Activewear" },
   { value: "other", label: "Other" },
-] as const
+];
 
 
-const page = () => {
+const Page = () => {
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof ProductSchema>>({
@@ -421,4 +421,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page;
