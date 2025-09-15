@@ -1,7 +1,6 @@
 import { db } from '@/lib/firebase';
 import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc} from 'firebase/firestore';
 import { paymentMethodType, User } from './types';
-import { id } from 'zod/v4/locales';
 
 export const saveUserToDB = async (data: User, uid: string) => {
     try {

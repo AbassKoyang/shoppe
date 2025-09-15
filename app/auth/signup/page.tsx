@@ -79,7 +79,6 @@ const page = () => {
                     try {
                         await createUserMutaion.mutateAsync({
                             data: {
-                                role: 'buyer',
                                 profile: {name: username.trim(), email: email.trim(), imageUrl: imageUrl, language: 'English'}, shopPrefrences: {country: 'Nigeria', currency: '₦ NGN', size: 'US'}, shippingAddress: {
                                     country: '', city: '', address: '', postalCode: '', phoneNumber: ''
                                 }, 

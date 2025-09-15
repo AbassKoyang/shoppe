@@ -11,7 +11,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -23,6 +22,13 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ImagePlus, LoaderCircle, Plus, X } from 'lucide-react';
 import PrimaryButton from '@/components/PrimaryButton';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { addProduct } from '@/services/products/api';
+import { ProductType } from '@/services/products/types';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/contexts/auth-context';
+
 const ALPHA_SIZES = [
   "XS",
   "S",
@@ -48,49 +54,128 @@ const CATEGORIES = [
 
 
 const Page = () => {
+  const {user} = useAuth();
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+
     const form = useForm<z.infer<typeof ProductSchema>>({
         resolver: zodResolver(ProductSchema),
         defaultValues: {
             title: '',
             description: '',
-            price: 0,
-            currency: '$ USD',
+            price: '',
+            discount: '',
             images: [],
-            category: 'Tops',
-            condition: 'new',
-            size: 'One Size',
             gender: 'Men',
             brand: '',
             color: '',
             material: '',
             sku: '',
-            sellerId: '',
-            id: '',
         },
     });
 
-    const onSubmit = (values: z.infer<typeof ProductSchema>) => {
-        console.log(values);
+    const onSubmit = (data: z.infer<typeof ProductSchema>) => {
+        console.log('clicked 2')
+        handleAddProduct(data);
+        console.log('clicked 2')
     }
 
-    const handleImageUpload = (
+    const handleImageUpload  = (
         e: React.ChangeEvent<HTMLInputElement>
       ) => {
         const files = e.target.files ? Array.from(e.target.files) : [];
         if (files.length === 0) return;
         const urls = files.map(file => URL.createObjectURL(file));
-        form.setValue('images', urls, { shouldValidate: true });
+        form.setValue('images', files, { shouldValidate: true });
         setPreviewUrls(urls);
-      };
+    };
+
+    const addProductMutation = useMutation({
+      mutationFn: (data: ProductType) => addProduct(data),
+      onSuccess: () => {
+        toast.success('Product aded succesfully');
+        queryClient.invalidateQueries({ queryKey: ['products']});
+        router.push('/')
+      }
+    });
+
+    const handleAddProduct = async (data: ProductType) =>{
+      console.log('Clickeddd')
+      if(!user){
+        toast.error("You must be logged in to add a product.");
+        return;
+      }
+      try {
+        setLoading(true);
+        // if(Number(data.price) <= 0){
+        //   form.setError('price', {message: "Price must be > 0"});
+        //   return;
+        // }
+        // if(Number(data.discount) < 0){
+        //   form.setError('discount', {message: "Discount must be >= 0"});
+        //   return;
+        // }
+        const uploadedUrls = await Promise.all(
+          data.images.map(async (file: File) => {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", "product-preset");
+    
+            const res = await fetch(
+              `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+    
+            const data = await res.json();
+            return data.secure_url as string;
+          })
+        );
+
+        const productDetails = {
+          ...data,
+          images: uploadedUrls,
+          sellerId: user.uid,
+        }
+
+        const success = await addProductMutation.mutateAsync(productDetails);
+        if(success){
+          form.reset();
+        }
+      } catch (error: any) {
+        console.error("❌ Error adding product:", error);
+    
+        if (error?.code === "permission-denied") {
+          toast.error("You don’t have permission to add product.");
+        } else if (error?.message?.includes("network")) {
+          toast.error("Network error — check your connection and try again.");
+        } else {
+          toast.error("Something went wrong while adding your product. Please try again.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
 
   return (
     <ProtectedRoute>
     <section className='w-full px-6 '>
         <h1 className='text-2xl my-4 font-bold font-raleway'>Add New Product</h1>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='mt-6 w-full'>
+            <form onSubmit={form.handleSubmit(
+    (data) => {
+      console.log("✅ SUBMIT CALLED with data:", data);
+      onSubmit(data);
+    },
+    (errors) => {
+      console.log("❌ FORM ERRORS:", errors);
+    }
+  )} className='mt-6 w-full'>
                 <div className="w-full bg-[#F8FAFF] rounded-md p-4">
                   <h4 className='text-lg font-nunito-sans font-bold mb-4'>Upload Image</h4>
                       <FormField
@@ -120,7 +205,7 @@ const Page = () => {
                                   </div>
                                 </div>
                                 <div className="flex gap-2 flex-wrap mt-3">
-                                  {field.value?.map((url, i) => (
+                                  {previewUrls.map((url, i) => (
                                     <div className='h-20 w-20 relative'>
                                       <img
                                       key={i}
@@ -146,9 +231,10 @@ const Page = () => {
                                         const files = e.target.files ? Array.from(e.target.files) : [];
                                         if (files.length === 0) return;
                                         const urls = files.map(file => URL.createObjectURL(file));
-                                        const updated = [...previewUrls, ...urls];
-                                        form.setValue('images', updated, { shouldValidate: true });
-                                        setPreviewUrls(updated);
+                                        const updatedUrls = [...previewUrls, ...urls];
+                                        const updatedFiles = [...files, ...field.value];
+                                        form.setValue('images', updatedFiles, { shouldValidate: true });
+                                        setPreviewUrls(updatedUrls);
                                         }
                                       }
                                       className='w-full h-full opacity-0 z-30 absolute left-0 top-0'
@@ -224,6 +310,30 @@ const Page = () => {
                         </FormItem>
                     )}
                     />
+                   <FormField
+                    control={form.control}
+                    name='condition'
+                    render={({field}) => (
+                        <FormItem className='mb-5'>
+                          <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Product Condition</FormLabel>
+                          <FormControl>
+                          <Select onValueChange={field.onChange}>
+                            <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
+                              <SelectValue placeholder="Select product condition" />
+                            </SelectTrigger>
+                            <SelectContent className='w-full'>
+                              <SelectGroup className='w-full'>
+                                <SelectLabel>Conditions</SelectLabel> 
+                                  <SelectItem value='used'>Used</SelectItem>
+                                  <SelectItem value='new'>New</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                    )}
+                    />
 
                    <FormField
                     control={form.control}
@@ -270,7 +380,7 @@ const Page = () => {
                           <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Gender</FormLabel>
                           <FormDescription className='text-xs text-black/85'>Pick available gender</FormDescription>
                             <FormControl>
-                            <RadioGroup className='flex items-center justify-between' defaultValue="men" onValueChange={field.onChange}>
+                            <RadioGroup className='flex items-center justify-between' defaultValue="Men" onValueChange={field.onChange}>
                             <div className="flex items-center gap-3">
                               <RadioGroupItem value="Men" id="r1" />
                               <Label htmlFor="r1">Men</Label>
@@ -300,7 +410,7 @@ const Page = () => {
                       <FormItem className=''>
                         <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Base Price</FormLabel>
                           <FormControl>
-                          <Input type='number' className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Price' />
+                          <Input className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Price' />
                           </FormControl>
                           <FormMessage />
                       </FormItem>
@@ -314,7 +424,7 @@ const Page = () => {
                     <FormItem className='mt-6'>
                     <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Discount</FormLabel>
                       <FormControl>
-                      <Input type='number' className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Discount' />
+                      <Input className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Discount' />
                       </FormControl>
                       <FormMessage />
                   </FormItem>
@@ -334,7 +444,7 @@ const Page = () => {
                           </SelectTrigger>
                           <SelectContent className='w-full'>
                             <SelectGroup className='w-full'>
-                              <SelectLabel>Categories</SelectLabel>
+                              <SelectLabel>Currencies</SelectLabel>
                               <SelectItem value='₦ NGN'>₦ NGN</SelectItem>
                               <SelectItem value='$ USD'>$ USD</SelectItem>
                               <SelectItem value='€ EURO'>€ EURO</SelectItem>
@@ -413,7 +523,7 @@ const Page = () => {
                   </FormItem>
                   )}/>
               </div>
-              <PrimaryButton disabled={loading} text={loading ? <LoaderCircle className='animate-spin' /> : 'Add Product'} type="submit" additionalStyles="w-full mt-6" />
+              <PrimaryButton disabled={loading} text={loading ? <LoaderCircle className='animate-spin' /> : 'Add Product'} type="submit" additionalStyles="w-full my-6" />
               </form>
         </Form>
     </section>
