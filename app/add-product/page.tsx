@@ -5,7 +5,8 @@ import {
     FormField,
     FormItem,
     FormMessage,
-    FormLabel
+    FormLabel,
+    FormDescription
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,27 +20,18 @@ import { useState } from 'react';
 import { SelectGroup, SelectLabel } from '@radix-ui/react-select';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-const ALL_SIZES = [
-  // One Size
-  "One Size",
-
-  // Alpha Sizes
+import { ImagePlus, LoaderCircle, Plus, X } from 'lucide-react';
+import PrimaryButton from '@/components/PrimaryButton';
+import ProtectedRoute from '@/components/ProtectedRoute';
+export const ALPHA_SIZES = [
   "XS",
   "S",
   "M",
   "L",
   "XL",
   "XXL",
-
-  // Numeric Sizes (extend if needed)
-  "28",
-  "30",
-  "32",
-  "34",
-  "36",
-  "38",
-  "40",
 ] as const;
+export const NUMERIC_SIZES = Array.from({ length: 50 }, (_, i) => `${i + 1}`);
 const CATEGORIES = [
   { value: "tops", label: "Tops" },
   { value: "bottoms", label: "Bottoms" },
@@ -57,6 +49,7 @@ const CATEGORIES = [
 
 const page = () => {
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof ProductSchema>>({
         resolver: zodResolver(ProductSchema),
         defaultValues: {
@@ -73,11 +66,6 @@ const page = () => {
             color: '',
             material: '',
             sku: '',
-            tags: [],
-            location: {
-                country: '',
-                city: '',
-            },
             sellerId: '',
             id: '',
         },
@@ -98,208 +86,338 @@ const page = () => {
       };
 
   return (
-    <section>
-        <h1>Add New Product</h1>
+    <ProtectedRoute>
+    <section className='w-full px-6 '>
+        <h1 className='text-2xl my-4 font-bold font-raleway'>Add New Product</h1>
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='mt-6 w-full'>
+                <div className="w-full bg-[#F8FAFF] rounded-md p-4">
+                  <h4 className='text-lg font-nunito-sans font-bold mb-4'>Upload Image</h4>
+                      <FormField
+                      control={form.control}
+                      name="images"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div>
+                              <div className="w-full h-[250px] bg-[#F1F4FE] rounded-md overflow-hidden relative border border-[#9297e7] border-dashed">
+                                <Input
+                                  type="file"
+                                  multiple
+                                  accept="image/*"
+                                  onChange={handleImageUpload}
+                                  className='w-full h-full opacity-0 z-30 absolute left-0 top-0'
+                                />
+                                  <div className="size-full flex flex-col items-center justify-center absolute top-0 left-0 z-10 object-contain object-center">
+                                    {previewUrls.length > 0 ? (
+                                      <img className='size-full' src={previewUrls[0]}/>
+                                    ) : (
+                                      <>
+                                        <ImagePlus strokeWidth={1} className='text-[#9EB4E8] size-[130px]' />
+                                        <p className='text-[#9EB4E8] mt-3'>Click to add image</p>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="flex gap-2 flex-wrap mt-3">
+                                  {field.value?.map((url, i) => (
+                                    <div className='h-20 w-20 relative'>
+                                      <img
+                                      key={i}
+                                      src={url}
+                                      alt={`Product ${i}`}
+                                      className="size-full object-cover rounded-md border border-[#9297e7]"
+                                       />
+                                       <span onClick={() => {
+                                          const updated = field.value.filter((_, index) => index !== i);
+                                          form.setValue("images", updated, { shouldValidate: true });
+                                          setPreviewUrls(updated);
+                                        }} className='absolute top-[-5%] right-[-5%] rounded-full bg-red-600 flex items-center justify-center p-0.5'>
+                                        <X className='size-[14px] text-white' />
+                                       </span>
+                                    </div>
+                                  ))}
+                                  <button className='size-20 rounded-md bg-transparent border border-[#9297e7] border-dashed flex items-center justify-center relative'>
+                                    <Input
+                                      type="file"
+                                      multiple
+                                      accept="image/*"
+                                      onChange={(e) => {
+                                        const files = e.target.files ? Array.from(e.target.files) : [];
+                                        if (files.length === 0) return;
+                                        const urls = files.map(file => URL.createObjectURL(file));
+                                        const updated = [...previewUrls, ...urls];
+                                        form.setValue('images', updated, { shouldValidate: true });
+                                        setPreviewUrls(updated);
+                                        }
+                                      }
+                                      className='w-full h-full opacity-0 z-30 absolute left-0 top-0'
+                                    />
+                                    <span className='rounded-full bg-dark-blue flex items-center justify-center p-0.5'>
+                                    <Plus className='text-[14px] text-white' />
+                                    </span>
+                                  </button>
+                                </div>
+                              </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                </div>
+
+                <div className="w-full bg-[#F8FAFF] rounded-md p-4 mt-4">
+                  <h4 className='text-lg font-nunito-sans font-bold mb-5'>General Information</h4>
+                  <FormField
+                  control={form.control}
+                  name='title'
+                  render={({field}) => (
+                    <FormItem className='mb-5'>
+                      <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Product Title</FormLabel>
+                      <FormControl>
+                        <Input className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Puffer Jacket Made With Pocket Detail' />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='description'
+                    render={({field}) => (
+                        <FormItem className=''>
+                        <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Product Description</FormLabel>
+                            <FormControl>
+                                <Textarea className='w-full min-h-[120px] px-2 py-1 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 border focus:border-dark-blue transition-all duration-300 ease-in-out' {...field} placeholder='Cropped puffer jacket made of technical fabric...' />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                </div>
+
+                <div className="w-full bg-[#F8FAFF] rounded-md p-4 mt-4">
+                  <h4 className='text-lg font-nunito-sans font-bold mb-5'>Category</h4>
+                   <FormField
+                    control={form.control}
+                    name='category'
+                    render={({field}) => (
+                        <FormItem className='mb-5'>
+                          <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Product Category</FormLabel>
+                          <FormControl>
+                          <Select onValueChange={field.onChange}>
+                            <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
+                              <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            <SelectContent className='w-full'>
+                              <SelectGroup className='w-full'>
+                                <SelectLabel>Categories</SelectLabel>
+                                {CATEGORIES.map((cat) => (
+                                  <SelectItem key={cat.label} value={cat.label}>{cat.label}</SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+
+                   <FormField
+                    control={form.control}
+                    name='size'
+                    render={({field}) => (
+                        <FormItem className='mb-5'>
+                            <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Size</FormLabel>
+                            <FormDescription className='text-xs text-black/85'>Pick available size</FormDescription>
+                            <FormControl>
+                            <Select onValueChange={field.onChange}>
+                              <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
+                                <SelectValue placeholder="Select a size" />
+                              </SelectTrigger>
+                              <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Alpha</SelectLabel>
+                                {ALPHA_SIZES.map((size) => (
+                                <SelectItem value={size}>{size}</SelectItem>
+                                ))}
+                              </SelectGroup>
+                              <SelectGroup>
+                                <SelectLabel>Numeric</SelectLabel>
+                                {NUMERIC_SIZES.map((size) => (
+                                <SelectItem value={size}>{size}</SelectItem>
+                                ))}
+                              </SelectGroup>
+                              <SelectGroup>
+                                <SelectLabel>One Size</SelectLabel>
+                                <SelectItem value="One Size">One Size</SelectItem>
+                              </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+
+                  <FormField
+                    control={form.control}
+                    name='gender'
+                    render={({field}) => (
+                        <FormItem className=''>
+                          <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Gender</FormLabel>
+                          <FormDescription className='text-xs text-black/85'>Pick available gender</FormDescription>
+                            <FormControl>
+                            <RadioGroup className='flex items-center justify-between' defaultValue="men" onValueChange={field.onChange}>
+                            <div className="flex items-center gap-3">
+                              <RadioGroupItem value="Men" id="r1" />
+                              <Label htmlFor="r1">Men</Label>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <RadioGroupItem value="Women" id="r2" />
+                              <Label htmlFor="r2">Women</Label>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <RadioGroupItem value="Unisex" id="r3" />
+                              <Label htmlFor="r3">Unisex</Label>
+                            </div>
+                          </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+              </div>
+
+              <div className="w-full bg-[#F8FAFF] rounded-md p-4 mt-4">
+                <h4 className='text-lg font-nunito-sans font-bold mb-5'>Pricing</h4>
                 <FormField
-                control={form.control}
-                name="images"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Product Images</FormLabel>
-                    <FormControl>
-                      <div className="space-y-2">
-                        <Input
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                        />
-                        <div className="flex gap-2 flex-wrap">
-                          {field.value?.map((url, i) => (
-                            <img
-                              key={i}
-                              src={url}
-                              alt={`Product ${i}`}
-                              className="h-20 w-20 object-cover rounded-md border"
-                            />
-                          ))}
-                        </div>
-                      </div>
+                  control={form.control}
+                  name='price'
+                  render={({field}) => (
+                      <FormItem className=''>
+                        <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Base Price</FormLabel>
+                          <FormControl>
+                          <Input type='number' className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Price' />
+                          </FormControl>
+                          <FormMessage />
+                      </FormItem>
+                  )}
+                  />
+
+                <FormField
+                  control={form.control}
+                  name='discount'
+                  render={({field}) => (
+                    <FormItem className='mt-6'>
+                    <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Discount</FormLabel>
+                      <FormControl>
+                      <Input type='number' className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Discount' />
+                      </FormControl>
+                      <FormMessage />
+                  </FormItem>
+                  )}
+                  />
+
+                <FormField
+                  control={form.control}
+                  name='currency'
+                  render={({field}) => (
+                    <FormItem className='mt-6'>
+                      <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Currency</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={field.onChange}>
+                          <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
+                            <SelectValue placeholder="Select a currency" />
+                          </SelectTrigger>
+                          <SelectContent className='w-full'>
+                            <SelectGroup className='w-full'>
+                              <SelectLabel>Categories</SelectLabel>
+                              <SelectItem value='₦ NGN'>₦ NGN</SelectItem>
+                              <SelectItem value='$ USD'>$ USD</SelectItem>
+                              <SelectItem value='€ EURO'>€ EURO</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
-                )}
-              />
+                  )}/>
+              </div>
+              <div className="w-full bg-[#F8FAFF] rounded-md p-4 mt-4">
+                <h4 className='text-lg font-nunito-sans font-bold mb-5'>Others</h4>
+                <FormField
+                  control={form.control}
+                  name='brand'
+                  render={({field}) => (
+                      <FormItem className=''>
+                        <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Brand</FormLabel>
+                          <FormControl>
+                          <Input className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Louiv Vuitton (Optional)' />
+                          </FormControl>
+                          <FormMessage />
+                      </FormItem>
+                  )}
+                  />
 
-              <FormField
-              control={form.control}
-              name='title'
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder='Title' />
-                  </FormControl>
-                </FormItem>
-              )}
-              />
+                <FormField
+                  control={form.control}
+                  name='color'
+                  render={({field}) => (
+                    <FormItem className='mt-6'>
+                    <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Color</FormLabel>
+                      <FormControl>
+                      <Input className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Blue (Optional)' />
+                      </FormControl>
+                      <FormMessage />
+                  </FormItem>
+                  )}
+                  />
 
-              <FormField
-                control={form.control}
-                name='description'
-                render={({field}) => (
-                    <FormItem>
-                        <FormControl>
-                            <Textarea {...field} placeholder='description' />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-                />
-              <FormField
-                control={form.control}
-                name='category'
-                render={({field}) => (
-                    <FormItem>
-                        <FormControl>
-                        <Select onValueChange={field.onChange}>
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select a fruit" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Categories</SelectLabel>
-                              {CATEGORIES.map((cat) => (
-                                <SelectItem key={cat.label} value={cat.label}>{cat.label}</SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-                />
-              <FormField
-                control={form.control}
-                name='size'
-                render={({field}) => (
-                    <FormItem>
-                        <FormControl>
-                        <Select onValueChange={field.onChange}>
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select a size" />
-                          </SelectTrigger>
-                          <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Alpha</SelectLabel>
-                            <SelectItem value="9">9</SelectItem>
-                            <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
-                            <SelectItem value="mst">Mountain Standard Time (MST)</SelectItem>
-                            <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
-                            <SelectItem value="akst">Alaska Standard Time (AKST)</SelectItem>
-                            <SelectItem value="hst">Hawaii Standard Time (HST)</SelectItem>
-                          </SelectGroup>
-                          <SelectGroup>
-                            <SelectLabel>Numeric</SelectLabel>
-                            <SelectItem value="gmt">Greenwich Mean Time (GMT)</SelectItem>
-                            <SelectItem value="cet">Central European Time (CET)</SelectItem>
-                            <SelectItem value="eet">Eastern European Time (EET)</SelectItem>
-                            <SelectItem value="west">
-                              Western European Summer Time (WEST)
-                            </SelectItem>
-                            <SelectItem value="cat">Central Africa Time (CAT)</SelectItem>
-                            <SelectItem value="eat">East Africa Time (EAT)</SelectItem>
-                          </SelectGroup>
-                          <SelectGroup>
-                            <SelectLabel>One Size</SelectLabel>
-                            <SelectItem value="n">Greenwich Mean Time (GMT)</SelectItem>
-                            <SelectItem value="cmjet">Central European Time (CET)</SelectItem>
-                            <SelectItem value="ejet">Eastern European Time (EET)</SelectItem>
-                            <SelectItem value="wejst">
-                              Western European Summer Time (WEST)
-                            </SelectItem>
-                            <SelectItem value="nbhm">Central Africa Time (CAT)</SelectItem>
-                            <SelectItem value="ejnhat">East Africa Time (EAT)</SelectItem>
-                          </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-                />
-
-              <FormField
-                control={form.control}
-                name='gender'
-                render={({field}) => (
-                    <FormItem>
-                        <FormControl>
-                        <RadioGroup defaultValue="men" onValueChange={field.onChange}>
-                        <div className="flex items-center gap-3">
-                          <RadioGroupItem value="Men" id="r1" />
-                          <Label htmlFor="r1">Men</Label>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <RadioGroupItem value="Women" id="r2" />
-                          <Label htmlFor="r2">Women</Label>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <RadioGroupItem value="Unisex" id="r3" />
-                          <Label htmlFor="r3">Unisex</Label>
-                        </div>
-                      </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-                />
-              <FormField
-                control={form.control}
-                name='brand'
-                render={({field}) => (
-                    <FormItem>
-                        <FormControl>
-                            <Input {...field} placeholder='Brand' />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-                />
-
-              <FormField
-                control={form.control}
-                name='color'
-                render={({field}) => (
-                    <FormItem>
-                        <FormControl>
-                            <Input {...field} placeholder='Color' />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-                />
-
-              <FormField
-                control={form.control}
-                name='material'
-                render={({field}) => (
-                    <FormItem>
-                        <FormControl>
-                            <Input {...field} placeholder='Material' />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-                />
-                <button type='submit'>Submit</button>
-
-            </form>
+                <FormField
+                  control={form.control}
+                  name='material'
+                  render={({field}) => (
+                    <FormItem className='mt-6'>
+                      <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Material</FormLabel>
+                      <FormControl>
+                      <Input  className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Wool (Optional)' />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                  )}/>
+                <FormField
+                  control={form.control}
+                  name='sku'
+                  render={({field}) => (
+                    <FormItem className='mt-6'>
+                      <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>SKU</FormLabel>
+                      <FormControl>
+                      <Input className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='NIKE-AMX-BLU-40 (Optional)' />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                  )}/>
+                <FormField
+                  control={form.control}
+                  name='location'
+                  render={({field}) => (
+                    <FormItem className='mt-6'>
+                      <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Location</FormLabel>
+                      <FormControl>
+                      <Input  className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='Lagos, Nigeria (Optional)' />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                  )}/>
+              </div>
+              <PrimaryButton disabled={loading} text={loading ? <LoaderCircle className='animate-spin' /> : 'Add Product'} type="submit" additionalStyles="w-full mt-6" />
+              </form>
         </Form>
     </section>
+    </ProtectedRoute>
   )
 }
 
