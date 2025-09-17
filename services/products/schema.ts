@@ -22,4 +22,5 @@ export const ProductSchema = z
     material: z.string().optional(),
     sku: z.string().optional(),
     location: z.string().optional(),
+    views: z.number().optional(),
   });

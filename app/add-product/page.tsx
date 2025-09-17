@@ -74,6 +74,7 @@ const Page = () => {
             color: '',
             material: '',
             sku: '',
+            views: 0,
         },
     });
 

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import QueryProvider from "@/lib/tanstackConfig";
-import { Nunito_Sans, Raleway } from "next/font/google";
+import { Maiden_Orange, Nunito_Sans, Raleway } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/lib/contexts/auth-context";
 import {ToastContainer} from 'react-toastify'
 import TransitionProvider from "@/lib/transition-provider";
+import Navbar from "@/components/Navbar";
 
 const raleway = Raleway({
   variable: "--font-geist-sans",
@@ -33,7 +34,10 @@ export default function RootLayout({
         <TransitionProvider>
             <AuthProvider>
             <QueryProvider>
-                {children}
+                <main className="w-full min-h-dvh relative">
+                  {children}
+                  <Navbar />
+                </main>
             </QueryProvider>
             </AuthProvider>
             <ToastContainer/>
