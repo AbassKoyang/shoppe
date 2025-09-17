@@ -1,21 +1,33 @@
-import { Search } from "lucide-react";
-import Image from "next/image";
+
+import CategoryPreview from "@/components/CategoryPreview";
+import HomeHeader from "@/components/HomeHeader";
+import SponsoredBanner from "@/components/SponsoredBanner";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
   return (
     <section className="w-full min-h-full px-6">
-      <header className="w-full flex items-center justify-between py-4">
-        <h3 className="font-bold font-raleway text-[30px]">Shop</h3>
-        <div className="w-[250px] h-[36px] rounded-2xl bg-[#F8F8F8] flex items-center justify-between overflow-hidden">
-          <input type="text" placeholder="Search" className="h-full w-[80%] pl-4 bg-transparent placeholder:text-[#C7C7C7]" />
-          <button className="flex items-center justify-center mr-2">
-            <Search strokeWidth={1} className="size-[19px] text-dark-blue" />
-          </button>
+      <HomeHeader />
+      <SponsoredBanner />
+      <section className="w-full mt-4">
+        <div className="w-full flex items-center justify-between">
+          <h3 className="text-[22px] font-raleway font-bold text-black">Categories</h3>
+          <Link className="flex items-center gap-3" href='/'>
+            <p className="text-[15px] font-raleway font-bold">See All</p>
+            <button className="size-[30px] rounded-full bg-dark-blue flex items-center justify-center">
+              <ArrowRight className="text-white size-[16px]" />
+            </button>
+          </Link>
         </div>
-      </header>
-      <section className="w-full h-[140px] rounded-lg bg-[#f1b11c]">
-
+        <div className="w-full h-[660px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-2">
+          <CategoryPreview />
+          <CategoryPreview />
+          <CategoryPreview />
+          <CategoryPreview />
+          <CategoryPreview />
+          <CategoryPreview />
+        </div>
       </section>
     </section>
   );

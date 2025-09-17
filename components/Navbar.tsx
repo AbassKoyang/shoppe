@@ -8,7 +8,7 @@ const Navbar = () => {
     const pathname = usePathname();
     const router = useRouter();
   return (
-    <nav className="w-full bg-white flex items-center justify-between px-6 py-4 absolute bottom-0 left-0 ">
+    <nav className="w-full bg-white flex items-center justify-between px-6 py-4 fixed bottom-0 left-0 ">
         <Link href='/' className="p-2 flex flex-col items-center">
             <House className={`${pathname == '/' ? 'text-black' : 'text-dark-blue'} size-[32px] transition-colors duration-200 ease-in-out`} />
             <div className={`${pathname == '/' ? 'w-[14px]' : 'w-0'} h-[3px] rounded-xl bg-black transition-all duration-200 ease-in-out mt-2`}></div>
