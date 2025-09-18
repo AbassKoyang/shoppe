@@ -12,4 +12,22 @@ export const addProduct = async (data : ProductType) => {
     } catch (error) {
         console.error(error);
     }
-}
+};
+
+export const fetchProductCategoryCount = async (label: string) => {
+    const colRef = collection(db, "products");
+    try {
+        const q = query(colRef, where('category', '==', label ));
+        const querySnapshot = await getDocs(q);
+        
+        if(!querySnapshot.empty){
+            const count = querySnapshot.docs.length;
+            return count;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error('Error category count:', error);
+        throw error;
+    }
+};
