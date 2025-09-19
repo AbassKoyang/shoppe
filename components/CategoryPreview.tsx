@@ -8,32 +8,32 @@ const CategoryPreview = ({label, images} : {label: string; images: string[]}) =>
   return (
         <>
             {isLoading && (
-                <div className='size-full bg-gray-200 animate-pulse rounded-lg grid grid-cols-2 grid-rows-2 gap-1.5 p-1.5'>
-                    <div className="col-span-1 row-span-1 rounded-lg bg-gray-300 animate-pulse"></div>
-                    <div className="col-span-1 row-span-1 rounded-lg bg-gray-300 animate-pulse"></div>
-                    <div className="col-span-1 row-span-1 rounded-lg bg-gray-300 animate-pulse"></div>
-                    <div className="col-span-1 row-span-1 rounded-lg bg-gray-300 animate-pulse"></div>
+                <div className='size-full bg-gray-200 animate-pulse rounded-[9px] grid grid-cols-2 grid-rows-2 gap-1.5 p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]'>
+                    <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
+                    <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
+                    <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
+                    <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
                 </div>
             )}
 
             {isError && (
                 <div className='w-full h-full flex items-center justify-center'>
-                    <p>Failed to load cateories.</p>
+                    <p>Failed to load category.</p>
                 </div>
             )}
             {!isError && !isLoading && (
-                <button className='col-span-1 row-span-1 rounded-lg p-1.5 shadow-sm'>
+                <button className='col-span-1 row-span-1 rounded-[9px] p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]'>
                 <div className="w-full h-[83%] grid grid-cols-2 grid-rows-2 gap-1">
-                    <div className="col-span-1 row-span-1 gap-1 rounded-lg object-center object-contain overflow-hidden">
+                    <div className="col-span-1 row-span-1 gap-1 rounded-[5px] object-center object-contain overflow-hidden">
                         <img className='size-full' src="/assets/images/clothing-1.png" alt="clothing picture" />
                     </div>
-                    <div className="col-span-1 row-span-1 gap-1 rounded-lg object-center object-contain overflow-hidden">
+                    <div className="col-span-1 row-span-1 gap-1 rounded-[5px] object-center object-contain overflow-hidden">
                         <img className='size-full' src="/assets/images/clothing-3.png" alt="clothing picture" />
                     </div>
-                    <div className="col-span-1 row-span-1 gap-1 rounded-lg object-center object-contain overflow-hidden">
+                    <div className="col-span-1 row-span-1 gap-1 rounded-[5px] object-center object-contain overflow-hidden">
                         <img className='size-full' src="/assets/images/clothing-3.png" alt="clothing picture" />
                     </div>
-                    <div className="col-span-1 row-span-1 gap-1 rounded-lg object-center object-contain overflow-hidden">
+                    <div className="col-span-1 row-span-1 gap-1 rounded-[5px] object-center object-contain overflow-hidden">
                         <img className='size-full' src="/assets/images/clothing-1.png" alt="clothing picture" />
                     </div>
                 </div>
