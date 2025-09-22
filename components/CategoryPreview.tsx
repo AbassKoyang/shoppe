@@ -1,10 +1,12 @@
 'use client';
 import { useFetchProductCategoryCount } from '@/services/products/queries';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 const CategoryPreview = ({label, images} : {label: string; images: string[]}) => {
     const {isLoading, isError, data: productCount} = useFetchProductCategoryCount(label);
+    const router = useRouter();
   return (
         <>
             {isLoading && (
@@ -22,7 +24,7 @@ const CategoryPreview = ({label, images} : {label: string; images: string[]}) =>
                 </div>
             )}
             {!isError && !isLoading && (
-                <button className='col-span-1 row-span-1 rounded-[9px] p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]'>
+                <button onClick={() => router.push('/categories/bottoms')} className='col-span-1 row-span-1 rounded-[9px] p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]'>
                 <div className="w-full h-[83%] grid grid-cols-2 grid-rows-2 gap-1">
                     <div className="col-span-1 row-span-1 gap-1 rounded-[5px] object-center object-contain overflow-hidden">
                         <img className='size-full' src="/assets/images/clothing-1.png" alt="clothing picture" />

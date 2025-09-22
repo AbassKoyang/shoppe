@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ProductSchema } from '@/services/products/schema';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SelectGroup, SelectLabel } from '@radix-ui/react-select';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -51,6 +51,140 @@ const CATEGORIES = [
   { value: "activewear", label: "Activewear" },
   { value: "other", label: "Other" },
 ];
+export const SUB_CATEGORIES = {
+  "Tops": [
+    "T-Shirts",
+    "Polo Shirts",
+    "Tank Tops",
+    "Blouses",
+    "Dress Shirts",
+    "Henleys",
+    "Sweatshirts",
+    "Hoodies",
+    "Crop Tops",
+    "Tunics"
+  ],
+  "Bottoms": [
+    "Jeans",
+    "Chinos",
+    "Dress Pants",
+    "Joggers",
+    "Leggings",
+    "Shorts",
+    "Cargo Pants",
+    "Skirts",
+    "Capris",
+    "Overalls"
+  ],
+  "Dresses": [
+    "Casual Dresses",
+    "Evening Gowns",
+    "Cocktail Dresses",
+    "Maxi Dresses",
+    "Mini Dresses",
+    "Bodycon Dresses",
+    "Wrap Dresses",
+    "Shirt Dresses",
+    "Sundresses",
+    "Work Dresses"
+  ],
+  "Outerwear": [
+    "Jackets",
+    "Blazers",
+    "Coats",
+    "Trench Coats",
+    "Parkas",
+    "Bomber Jackets",
+    "Leather Jackets",
+    "Denim Jackets",
+    "Cardigans",
+    "Vests"
+  ],
+  "Shoes": [
+    "Sneakers",
+    "Boots",
+    "Sandals",
+    "Loafers",
+    "Heels",
+    "Flats",
+    "Wedges",
+    "Espadrilles",
+    "Oxfords",
+    "Slippers"
+  ],
+  "Bags": [
+    "Backpacks",
+    "Tote Bags",
+    "Crossbody Bags",
+    "Clutches",
+    "Shoulder Bags",
+    "Messenger Bags",
+    "Satchels",
+    "Duffle Bags",
+    "Belt Bags",
+    "Laptop Bags"
+  ],
+  "Accessories": [
+    "Hats & Caps",
+    "Scarves",
+    "Gloves",
+    "Belts",
+    "Ties & Bowties",
+    "Watches",
+    "Jewelry",
+    "Sunglasses",
+    "Wallets",
+    "Hair Accessories"
+  ],
+  "Underwear": [
+    "Boxers",
+    "Briefs",
+    "Trunks",
+    "Bras",
+    "Panties",
+    "Camisoles",
+    "Thermal Underwear",
+    "Shapewear",
+    "Bralettes",
+    "Lingerie"
+  ],
+  "Swimwear": [
+    "Bikinis",
+    "One-Piece Swimsuits",
+    "Tankinis",
+    "Swim Trunks",
+    "Boardshorts",
+    "Rash Guards",
+    "Swim Dresses",
+    "Monokinis",
+    "Swim Skirts",
+    "Cover-Ups"
+  ],
+  "Activewear": [
+    "Gym Shorts",
+    "Sports Bras",
+    "Leggings",
+    "Tracksuits",
+    "Compression Wear",
+    "Athletic T-Shirts",
+    "Tank Tops",
+    "Joggers",
+    "Hoodies",
+    "Yoga Pants"
+  ],
+  "Other": [
+    "Custom Wear",
+    "Uniforms",
+    "Costumes",
+    "Maternity Wear",
+    "Workwear",
+    "Ethnic Wear",
+    "Festival Outfits",
+    "Seasonal Clothing",
+    "Vintage",
+    "Miscellaneous"
+  ]
+}
 
 
 const Page = () => {
@@ -59,8 +193,7 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
-
-
+  
     const form = useForm<z.infer<typeof ProductSchema>>({
         resolver: zodResolver(ProductSchema),
         defaultValues: {
@@ -69,6 +202,7 @@ const Page = () => {
             price: '',
             discount: '',
             images: [],
+            category: 'Tops',
             gender: 'Men',
             brand: '',
             color: '',
@@ -83,6 +217,10 @@ const Page = () => {
         handleAddProduct(data);
         console.log('clicked 2')
     }
+
+    // useEffect(() => {
+    //   setSelectedCategory(form.getValues('category'));
+    // }, [form.watch('category')]);
 
     const handleImageUpload  = (
         e: React.ChangeEvent<HTMLInputElement>
@@ -302,6 +440,31 @@ const Page = () => {
                                 <SelectLabel>Categories</SelectLabel>
                                 {CATEGORIES.map((cat) => (
                                   <SelectItem key={cat.label} value={cat.label}>{cat.label}</SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                   <FormField
+                    control={form.control}
+                    name='subCategory'
+                    render={({field}) => (
+                        <FormItem className='mb-5'>
+                          <FormLabel className='text-sm text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Sub Category</FormLabel>
+                          <FormControl>
+                          <Select onValueChange={field.onChange}>
+                            <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
+                              <SelectValue placeholder="Select a sub-category" />
+                            </SelectTrigger>
+                            <SelectContent className='w-full'>
+                              <SelectGroup className='w-full'>
+                                <SelectLabel>Categories</SelectLabel>
+                                {SUB_CATEGORIES[form.watch('category')].map((sub) => (
+                                  <SelectItem key={sub} value={sub}>{sub}</SelectItem>
                                 ))}
                               </SelectGroup>
                             </SelectContent>

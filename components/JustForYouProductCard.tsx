@@ -2,7 +2,7 @@ import React from 'react'
 
 const JustForYouProductCard = () => {
   return (
-        <button className='col-span-1 row-span-1'>
+        <button className='col-span-1 row-span-1 mb-1'>
             <div className="w-full h-[171px] p-1.5 rounded-[9px] bg-white object-contain object-center overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
                 <img src="/assets/images/new-item-nike.png" alt="Product image" className="size-full rounded-[5px]"/>
             </div>
