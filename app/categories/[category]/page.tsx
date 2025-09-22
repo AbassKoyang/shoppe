@@ -1,7 +1,7 @@
 'use client';
-import { SUB_CATEGORIES } from "@/app/add-product/page";
 import AllCategoriesFilterModal from "@/components/AllCategoriesFilter";
 import JustForYouProductCard from "@/components/JustForYouProductCard";
+import { SUB_CATEGORIES } from "@/lib/utils";
 import { CategoryType } from "@/services/products/types";
 import { ArrowLeft, ChevronLeft, Link, Settings2 } from "lucide-react";
 import { useParams } from "next/navigation";

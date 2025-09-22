@@ -239,3 +239,151 @@ export const countries : CountryType[] = [
   { value: "zambia", label: "Zambia" },
   { value: "zimbabwe", label: "Zimbabwe" },
 ]
+
+export const CATEGORIES = [
+  { value: "tops", label: "Tops" },
+  { value: "bottoms", label: "Bottoms" },
+  { value: "dresses", label: "Dresses" },
+  { value: "outerwear", label: "Outerwear" },
+  { value: "shoes", label: "Shoes" },
+  { value: "bags", label: "Bags" },
+  { value: "accessories", label: "Accessories" },
+  { value: "underwear", label: "Underwear" },
+  { value: "swimwear", label: "Swimwear" },
+  { value: "activewear", label: "Activewear" },
+  { value: "other", label: "Other" },
+];
+export const SUB_CATEGORIES = {
+  "Tops": [
+    "T-Shirts",
+    "Polo Shirts",
+    "Tank Tops",
+    "Blouses",
+    "Dress Shirts",
+    "Henleys",
+    "Sweatshirts",
+    "Hoodies",
+    "Crop Tops",
+    "Tunics"
+  ],
+  "Bottoms": [
+    "Jeans",
+    "Chinos",
+    "Dress Pants",
+    "Joggers",
+    "Leggings",
+    "Shorts",
+    "Cargo Pants",
+    "Skirts",
+    "Capris",
+    "Overalls"
+  ],
+  "Dresses": [
+    "Casual Dresses",
+    "Evening Gowns",
+    "Cocktail Dresses",
+    "Maxi Dresses",
+    "Mini Dresses",
+    "Bodycon Dresses",
+    "Wrap Dresses",
+    "Shirt Dresses",
+    "Sundresses",
+    "Work Dresses"
+  ],
+  "Outerwear": [
+    "Jackets",
+    "Blazers",
+    "Coats",
+    "Trench Coats",
+    "Parkas",
+    "Bomber Jackets",
+    "Leather Jackets",
+    "Denim Jackets",
+    "Cardigans",
+    "Vests"
+  ],
+  "Shoes": [
+    "Sneakers",
+    "Boots",
+    "Sandals",
+    "Loafers",
+    "Heels",
+    "Flats",
+    "Wedges",
+    "Espadrilles",
+    "Oxfords",
+    "Slippers"
+  ],
+  "Bags": [
+    "Backpacks",
+    "Tote Bags",
+    "Crossbody Bags",
+    "Clutches",
+    "Shoulder Bags",
+    "Messenger Bags",
+    "Satchels",
+    "Duffle Bags",
+    "Belt Bags",
+    "Laptop Bags"
+  ],
+  "Accessories": [
+    "Hats & Caps",
+    "Scarves",
+    "Gloves",
+    "Belts",
+    "Ties & Bowties",
+    "Watches",
+    "Jewelry",
+    "Sunglasses",
+    "Wallets",
+    "Hair Accessories"
+  ],
+  "Underwear": [
+    "Boxers",
+    "Briefs",
+    "Trunks",
+    "Bras",
+    "Panties",
+    "Camisoles",
+    "Thermal Underwear",
+    "Shapewear",
+    "Bralettes",
+    "Lingerie"
+  ],
+  "Swimwear": [
+    "Bikinis",
+    "One-Piece Swimsuits",
+    "Tankinis",
+    "Swim Trunks",
+    "Boardshorts",
+    "Rash Guards",
+    "Swim Dresses",
+    "Monokinis",
+    "Swim Skirts",
+    "Cover-Ups"
+  ],
+  "Activewear": [
+    "Gym Shorts",
+    "Sports Bras",
+    "Leggings",
+    "Tracksuits",
+    "Compression Wear",
+    "Athletic T-Shirts",
+    "Tank Tops",
+    "Joggers",
+    "Hoodies",
+    "Yoga Pants"
+  ],
+  "Other": [
+    "Custom Wear",
+    "Uniforms",
+    "Costumes",
+    "Maternity Wear",
+    "Workwear",
+    "Ethnic Wear",
+    "Festival Outfits",
+    "Seasonal Clothing",
+    "Vintage",
+    "Miscellaneous"
+  ]
+}
