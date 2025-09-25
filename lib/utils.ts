@@ -1,3 +1,4 @@
+import { CategoryType } from "@/services/products/types";
 import { CountryType } from "@/services/users/types";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
@@ -240,7 +241,7 @@ export const countries : CountryType[] = [
   { value: "zimbabwe", label: "Zimbabwe" },
 ]
 
-export const CATEGORIES = [
+export const CATEGORIES : Array<{value: string; label: CategoryType}> = [
   { value: "tops", label: "Tops" },
   { value: "bottoms", label: "Bottoms" },
   { value: "dresses", label: "Dresses" },
@@ -387,3 +388,13 @@ export const SUB_CATEGORIES = {
     "Miscellaneous"
   ]
 }
+
+export const ALPHA_SIZES = [
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "XXL",
+];
+export const NUMERIC_SIZES = Array.from({ length: 50 }, (_, i) => `${i + 1}`);

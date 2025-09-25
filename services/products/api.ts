@@ -16,8 +16,13 @@ export const addProduct = async (data : ProductType) => {
 
 export const fetchProductCategoryCount = async (label: string) => {
     const colRef = collection(db, "products");
+    const blabla = () => {
+        if (label) {
+            return where('category', '==', label);
+        }
+    }
     try {
-        const q = query(colRef, where('category', '==', label ));
+        const q = query(colRef, where('category', '==', label ), where('category', '==', label ));
         const querySnapshot = await getDocs(q);
         
         if(!querySnapshot.empty){

@@ -54,6 +54,7 @@ const page = () => {
             confirmPassword: '',
         },
     });
+    const isDirty = form.formState.isDirty;
 
 
     const createUserMutaion = useMutation({
@@ -213,7 +214,7 @@ return (
                         </FormItem>
                     )}
                 />
-                <PrimaryButton disabled={loading} additionalStyles='mt-8' text={loading ? <LoaderCircle className='animate-spin' /> : 'Done'} type='submit' />
+                <PrimaryButton disabled={loading || !isDirty} additionalStyles='mt-8' text={loading ? <LoaderCircle className='animate-spin' /> : 'Done'} type='submit' />
             </form>
             </Form>
             <div className='w-full flex items-center justify-center my-3'>

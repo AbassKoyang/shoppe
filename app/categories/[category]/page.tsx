@@ -1,5 +1,6 @@
 'use client';
 import AllCategoriesFilterModal from "@/components/AllCategoriesFilter";
+import FilterModal from "@/components/FilterModal";
 import JustForYouProductCard from "@/components/JustForYouProductCard";
 import { SUB_CATEGORIES } from "@/lib/utils";
 import { CategoryType } from "@/services/products/types";
@@ -9,23 +10,26 @@ import { useState } from "react";
 import { FaChevronLeft } from "react-icons/fa6";
 
 const Page = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
+    const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const param = useParams<{category: string}>();
     const category = param.category as CategoryType;
     const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1) as CategoryType;
     const subCategories  = SUB_CATEGORIES[`${formattedCategory}`];
   return (
     <section className='w-full mt-6 relative overflow-x-hidden'>
-        <AllCategoriesFilterModal open={isModalOpen} closeModal={() => setIsModalOpen(false)} />
+        <AllCategoriesFilterModal open={isCategoriesModalOpen} closeModal={() => setIsCategoriesModalOpen(false)} />
+        <FilterModal open={isFilterModalOpen} closeModal={() => setIsFilterModalOpen(false)} />
         <div className="w-full flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
                 <button className="flex items-center justify-center">
                     <ArrowLeft className="size-[30px]" />
                 </button>
                 <h2 className='font-semibold font-raleway text-[30px]'>{formattedCategory}</h2>
             </div>
-            <button onClick={() => setIsModalOpen(true)} className="flex items-center justify-center">
-                <Settings2 strokeWidth={2} className="size-[24px] rotate-90" />
+            <button onClick={() => setIsCategoriesModalOpen(true)} className="px-3 py-1 rounded-3xl bg-dark-blue flex items-center justify-center gap-1">
+                <p className="text-white text-sm">Filter</p>
+                <Settings2 strokeWidth={2} className="size-[16px] text-white" />
              </button>
         </div>
         <div className="w-full mt-4">
@@ -53,8 +57,11 @@ const Page = () => {
 
         <section className="w-full mt-6">
             <div className="w-full flex items-center justify-between">
-                    <h3 className="text-[22px] font-raleway font-semibold text-[#202020]">Categories</h3>
-                <Settings2 strokeWidth={2} className="size-[24px] rotate-90" />
+                    <h3 className="text-[22px] font-raleway font-semibold text-[#202020]">All Items</h3>
+                    <button onClick={() => setIsFilterModalOpen(true)} className="px-3 py-1 rounded-3xl bg-dark-blue flex items-center justify-center gap-1">
+                    <p className="text-white text-sm">Filter</p>
+                    <Settings2 strokeWidth={2} className="size-[16px] text-white" />
+                    </button>
             </div>
             <div className="w-full h-fit grid grid-cols-2 gap-1.5 mt-3">
                 <JustForYouProductCard />

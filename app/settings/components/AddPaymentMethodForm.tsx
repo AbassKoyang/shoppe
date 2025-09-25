@@ -64,6 +64,8 @@ const AddPaymentMethodForm = ({open, closeModal} : AddPaymentMethodFormType) => 
         },
         });
 
+      const isDirty = form.formState.isDirty;
+
         const AddPaymentMethodMutation = useMutation({
             mutationKey: ['addPaymentMethod'],
             mutationFn: (data : paymentMethodType) => addPaymentMethod(data),
@@ -192,7 +194,7 @@ const AddPaymentMethodForm = ({open, closeModal} : AddPaymentMethodFormType) => 
                             />
                             </div>
 
-                            <PrimaryButton disabled={loading} text={loading ? <LoaderCircle className='animate-spin' /> : 'Save Changes'} type="submit" additionalStyles="w-full mt-6" />
+                            <PrimaryButton disabled={loading || !isDirty} text={loading ? <LoaderCircle className='animate-spin' /> : 'Save Changes'} type="submit" additionalStyles="w-full mt-6" />
                         </form>
                 </Form>
         </div>

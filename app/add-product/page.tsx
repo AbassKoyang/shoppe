@@ -28,17 +28,7 @@ import { ProductType } from '@/services/products/types';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/auth-context';
-import { CATEGORIES, SUB_CATEGORIES } from '@/lib/utils';
-
-const ALPHA_SIZES = [
-  "XS",
-  "S",
-  "M",
-  "L",
-  "XL",
-  "XXL",
-];
-const NUMERIC_SIZES = Array.from({ length: 50 }, (_, i) => `${i + 1}`);
+import { ALPHA_SIZES, CATEGORIES, NUMERIC_SIZES, SUB_CATEGORIES } from '@/lib/utils';
 
 
 
@@ -67,15 +57,15 @@ const Page = () => {
         },
     });
 
+    const isDirty = form.formState.isDirty;
+
+
     const onSubmit = (data: z.infer<typeof ProductSchema>) => {
         console.log('clicked 2')
         handleAddProduct(data);
         console.log('clicked 2')
     }
 
-    // useEffect(() => {
-    //   setSelectedCategory(form.getValues('category'));
-    // }, [form.watch('category')]);
 
     const handleImageUpload  = (
         e: React.ChangeEvent<HTMLInputElement>
@@ -542,7 +532,7 @@ const Page = () => {
                   </FormItem>
                   )}/>
               </div>
-              <PrimaryButton disabled={loading} text={loading ? <LoaderCircle className='animate-spin' /> : 'Add Product'} type="submit" additionalStyles="w-full my-6" />
+              <PrimaryButton disabled={loading || !isDirty} text={loading ? <LoaderCircle className='animate-spin' /> : 'Add Product'} type="submit" additionalStyles="w-full my-6" />
               </form>
         </Form>
     </section>

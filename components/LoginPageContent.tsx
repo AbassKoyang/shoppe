@@ -83,6 +83,7 @@ const LoginPageContent = () => {
             email: '',
         },
     });
+    const isDirty = form.formState.isDirty;
 
 
      const onSubmit = (data: z.infer<typeof formSchema>) => {
@@ -219,7 +220,7 @@ const LoginPageContent = () => {
                 onChange={setPassword}
                 maxLength={6}
                 onComplete={handleUserLogin}
-                disabled={loading}
+                disabled={loading || !isDirty}
                 wrongPassword={isWrongPassword}
              />
              {isWrongPassword ? (

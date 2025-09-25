@@ -157,3 +157,4 @@ export const ProductSchema = z
     location: z.string().optional(),
     views: z.number().optional(),
   });
+

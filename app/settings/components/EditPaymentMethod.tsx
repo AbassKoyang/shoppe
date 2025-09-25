@@ -97,20 +97,7 @@ const EditPaymentMethodForm = ({paymentMethod, open, closeModal} : EditPaymentMe
             }
         });
     
-        const watchedValues = form.watch();    
-      
-        const originalValues  = {
-          cardHolder: paymentMethod.cardHolder || '',
-          cvv: paymentMethod.cvv || '',
-          expiryDate: paymentMethod.expiryDate || '',
-          last4: `**** **** **** ${paymentMethod?.last4}` || '',
-        };
-  
-      const hasChanges = watchedValues.cardHolder !== originalValues.cardHolder || 
-                        watchedValues.cardNumber !== originalValues.last4 ||
-                        watchedValues.expiry !== originalValues.expiryDate ||
-                        watchedValues.cvv !== originalValues.cvv
-                        ;
+        const isDirty = form.formState.isDirty;
 
       const onSubmit = (data: z.infer<typeof formSchema>) => {
         handleEditPaymentMethod(data);
@@ -264,7 +251,7 @@ const EditPaymentMethodForm = ({paymentMethod, open, closeModal} : EditPaymentMe
                             />
                             </div>
 
-                            <PrimaryButton disabled={loading || deleteLoading || !hasChanges} text={loading ? <LoaderCircle className='animate-spin' /> : 'Save Changes'} type="submit" additionalStyles="w-full mt-6" />
+                            <PrimaryButton disabled={loading || deleteLoading || !isDirty} text={loading ? <LoaderCircle className='animate-spin' /> : 'Save Changes'} type="submit" additionalStyles="w-full mt-6" />
                         </form>
                 </Form>)}
         </div>
