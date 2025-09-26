@@ -11,39 +11,21 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { ALPHA_SIZES, NUMERIC_SIZES } from '@/lib/utils';
 import PrimaryButton from './PrimaryButton';
 import { BsCheck } from 'react-icons/bs';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { filterSChema } from '@/services/products/schema';
 
-const filterSChema = z.object({
-    location: z.string(),
-    currency: z.union([z.literal("$ USD"), z.literal("€ EURO"), z.literal("₦ NGN")]),
-    minPrice: z.string(),
-    maxPrice: z.string(),
-    discountPercentage: z.string(),
-    size: z.union([
-        z.literal(["One Size", "XS", "S", "M", "L", "XL", "XXL"]), // alpha + one size
-        z.string().regex(/^\d+$/, "Numeric size must be digits only"), // numeric like 28, 30, 42...
-      ]).array(),
-    gender: z.literal(["Men", "Women", "Unisex"]),
-    condition: z.literal(["new", "used"]),
-    order: z.literal(["Popular", "Newest", "Oldest"]),
-})
 
 const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void}) => {
     const [loading, setLoading] = useState(false);
     const [selectedSizes, setSelectedSizes] = useState(['M']);
     const [selectedSizeType, setSelectedSizeType] = useState<'Alpha' | 'Numeric' | 'One Size'>('Alpha');
     const [order, setOrder] = useState<'Popular' | 'Oldest' | 'Newest'>('Popular');
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
     const form = useForm<z.infer<typeof filterSChema>>({
         resolver: zodResolver(filterSChema),
         defaultValues: {
-            location: '',
-            currency: '₦ NGN',
-            minPrice: '',
-            maxPrice: '',
-            discountPercentage: '',
-            gender: 'Men',
-            condition: 'new',
-            size: selectedSizes,
-            order: order,
         },
     });
 
@@ -58,6 +40,25 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
 
     const isDirty = form.formState.isDirty;
     const OnSubmit = (data: z.infer<typeof filterSChema>) => {
+        const params = new URLSearchParams(searchParams.toString());
+
+  // Update all fields
+        if (data.location) params.set("location", data.location);
+        if (data.currency) params.set("currency", data.currency);
+        if (data.minPrice) params.set("minPrice", data.minPrice);
+        if (data.maxPrice) params.set("maxPrice", data.maxPrice);
+        if (data.discountPercentage) params.set("discount", data.discountPercentage);
+        if (data.gender) params.set("gender", data.gender);
+        if (data.condition) params.set("condition", data.condition);
+        if (data.order) params.set("order", data.order);
+
+        // Sizes → store as comma-separated string
+        if (data.size?.length) {
+            params.set("size", data.size.join(","));
+        } else {
+            params.delete("size");
+        }
+        router.push(`?${params.toString()}`);
         console.log(data);
     }
     return (
@@ -66,8 +67,8 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
         animate={{x:open ? '0%' : '100%'}}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className='w-[100vw] h-dvh fixed top-0 left-0 z-40 flex items-start justify-end'>
-            <div className="size-full z-10 absolute top-0 left-0 bg-[#E9E9E9] opacity-75"></div>
-            <div className="w-[90%] h-full bg-white z-20 pl-4 [@media(min-width:375px)]:pl-6 pr-2 [@media(min-width:375px)]:pr-4">
+            <div onClick={closeModal} className="size-full z-10 absolute top-0 left-0 bg-[#E9E9E9] opacity-75"></div>
+            <div className="w-[95%] h-full bg-white z-20 pl-4 [@media(min-width:375px)]:pl-6 pr-2 [@media(min-width:375px)]:pr-4">
                 <div className="w-full flex items-center justify-between mt-6 mb-5">
                     <h2 className='font-bold font-raleway text-[26px] text-[#202020] mt-0 leading-0'>Filter</h2>
                     <button onClick={closeModal} className='flex items-center justify-center cursor-pointer'><X strokeWidth={2} className='size-[23px] text-black' /></button>
@@ -181,7 +182,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                             </div>
                             <FormControl className='w-full'>
                                 <div className="w-full h-[54px] flex items-center justify-center overflow-x-auto scrollbar-hide">
-                                    <div className="h-[54px] flex items-center gap-8 px-4 w-max justify-between relative">
+                                    <div className="h-[54px] flex items-center gap-6 px-4 w-max justify-between relative">
                                         <div className="z-10 w-full h-[26px] rounded-[20px] bg-light-blue absolute top-[50%] left-0 translate-y-[-50%]"></div>
                                         
                                         {selectedSizeType === 'Alpha' && ALPHA_SIZES.map((size) => (
@@ -229,19 +230,19 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                                 <div className="w-full flex items-center justify-between gap-2">
                                 <button type='button' onClick={() => setOrder('Popular')} className={`${order === 'Popular' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center w-[33%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
                                     <p className={`${order === 'Popular' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Popular</p>
-                                    <div className={`${order === 'Popular' ? 'size-[22px]' : 'size-0'} flex border-2 border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                    <div className={`${order === 'Popular' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
                                         <BsCheck className="text-white" />
                                     </div>
                                 </button>
                                 <button type='button' onClick={() => setOrder('Newest')} className={`${order === 'Newest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center w-[33%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
                                     <p className={`${order === 'Newest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Newest</p>
-                                    <div className={`${order === 'Newest' ? 'size-[22px]' : 'size-0'} flex border-2 border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                    <div className={`${order === 'Newest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
                                         <BsCheck className="text-white" />
                                     </div>
                                 </button>
                                 <button type='button' onClick={() => setOrder('Oldest')} className={`${order === 'Oldest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center w-[33%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
                                     <p className={`${order === 'Oldest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Oldest</p>
-                                    <div className={`${order === 'Oldest' ? 'size-[22px]' : 'size-0'} flex border-2 border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                    <div className={`${order === 'Oldest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
                                         <BsCheck className="text-white" />
                                     </div>
                                 </button>
@@ -259,7 +260,6 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                     render={({field}) => (
                         <FormItem className='mb-5'>
                             <FormLabel className='text-lg text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Discount Percentage</FormLabel>
-                            <FormDescription className='text-xs text-black/85'>Filter discount percentage</FormDescription>
                             <FormControl>
                             <Select onValueChange={field.onChange}>
                               <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
@@ -283,7 +283,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                     )}
                     />
                     <div className="w-full flex items-center justify-between gap-2 mt-6">
-                        <PrimaryButton type='button' disabled={loading || !isDirty} text={loading ? <LoaderCircle className='animate-spin' /> : 'Reset'} additionalStyles="bg-transparent border-2 border-dark-blue text-dark-blue px-0 py-[5px] w-[30%]"  primaryButtonFunction={() => {
+                        <PrimaryButton type='button' disabled={loading || !isDirty} text={loading ? <LoaderCircle className='animate-spin' /> : 'Reset'} additionalStyles="bg-transparent border-2 border-dark-blue text-dark-blue px-0 py-[3px] w-[30%]"  primaryButtonFunction={() => {
                             form.reset(); 
                             setOrder('Popular'); 
                             setSelectedSizes(['M']);

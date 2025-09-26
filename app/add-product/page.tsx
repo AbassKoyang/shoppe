@@ -87,7 +87,7 @@ const Page = () => {
     });
 
     const handleAddProduct = async (data: ProductType) =>{
-      console.log('Clickeddd')
+      console.log('Clickeddd', data)
       if(!user){
         toast.error("You must be logged in to add a product.");
         return;
@@ -158,6 +158,7 @@ const Page = () => {
     },
     (errors) => {
       console.log("❌ FORM ERRORS:", errors);
+      console.log(form.watch())
     }
   )} className='mt-6 w-full'>
                 <div className="w-full bg-[#F8FAFF] rounded-md p-4">
