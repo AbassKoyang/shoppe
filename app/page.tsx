@@ -96,12 +96,12 @@ export default function Home() {
         </div>
 
         <div className="w-full h-[880px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
-              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
-              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
-              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
-              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
-              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
-              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '/assets/images/new-item-nike.png', price: 4000, title: 'Nike Air', location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '/assets/images/new-item-nike.png', price: 4000, title: 'Nike Air', location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '/assets/images/new-item-nike.png', price: 400, title: 'Nike Air', location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '/assets/images/new-item-nike.png', price: 17000, title: 'Nike Air', location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '/assets/images/new-item-nike.png', price: 170000, title: 'Nike Air', location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '/assets/images/new-item-nike.png', price: 8000000, title: 'Nike Air', location: 'Lagos, Nigeria'}} />
         </div>
       </section>
     </section>

@@ -61,6 +61,8 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
             params.delete("size");
         }
         router.replace(`?${params.toString()}`);
+        closeModal();
+        form.reset();
         console.log(data, `?${params.toString()}`);
     }
     return (

@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
   const discountPercentage = searchParams.get("discountPercentage");
-  const size = searchParams.getAll("size"); // array
+  const size = searchParams.getAll("size")[0].split(','); // array
   const gender = searchParams.get("gender");
   const condition = searchParams.get("condition");
   const order = searchParams.get("order"); // Popular | Newest | Oldest
@@ -33,8 +33,12 @@ export async function GET(req: NextRequest) {
  if (condition) facetFilters.push([`condition:${condition}`]);
  
  if (size.length > 0) {
-    facetFilters.push(size.map((s) => `size:${s}`));
-  }
+    const formatSizes = (sizes: string[]) => {
+    return sizes.map((s) => `size:${s}`)
+    } 
+    const formattedSizes = formatSizes(size);
+    facetFilters.push(formattedSizes)
+}
   
 
  // 🔹 numericFilters
@@ -42,13 +46,11 @@ export async function GET(req: NextRequest) {
  if (minPrice) numericFilters.push([`price>=${minPrice}`]);
  if (maxPrice) numericFilters.push([`price<=${maxPrice}`]);
  if (discountPercentage) numericFilters.push([`discountPercentage>=${discountPercentage}`]);
-console.log('unjoibed',facetFilters);
  // 🔹 sort by order
  let sortBy: string | undefined;
  if (order === "Newest") sortBy = "createdAt_desc";
  if (order === "Oldest") sortBy = "createdAt_asc";
  if (order === "Popular") sortBy = "popular_desc";
-console.log(numericFilters, facetFilters)
 
   try {
     const res = await client.search({

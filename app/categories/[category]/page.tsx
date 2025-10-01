@@ -66,11 +66,13 @@ const Page = () => {
                     <Settings2 strokeWidth={2} className="size-[16px] text-white" />
                     </button>
             </div>
-            <div className="w-full h-fit grid grid-cols-2 gap-1.5 mt-3 mb-[500px]">
-            {products && products.length > 0 && products.map((product: any) => (
-                <JustForYouProductCard product={product} />
-            ))}
-            </div>
+            {products && products.length > 0 && (
+                <div className="w-full h-fit grid grid-cols-2 gap-1.5 mt-3 mb-[500px]">
+                        {products.map((product: any) => (
+                        <JustForYouProductCard product={product} />
+                        ))}          
+                </div>
+            ) }
             {isLoading && (
                 <div className="w-full h-[880px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
                 <ProductSkeleton />
