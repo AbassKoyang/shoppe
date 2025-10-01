@@ -39,6 +39,8 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
     
 
     const isDirty = form.formState.isDirty;
+
+    
     const OnSubmit = (data: z.infer<typeof filterSChema>) => {
         const params = new URLSearchParams(searchParams.toString());
 
@@ -58,8 +60,8 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
         } else {
             params.delete("size");
         }
-        router.push(`?${params.toString()}`);
-        console.log(data);
+        router.replace(`?${params.toString()}`);
+        console.log(data, `?${params.toString()}`);
     }
     return (
         <motion.section
@@ -75,7 +77,14 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                 </div>
                 <div className="w-full h-[90%] overflow-y-scroll scrollbar-hide">
                     <Form {...form}>
-                    <form onSubmit={form.handleSubmit(OnSubmit)}>
+                    <form onSubmit={form.handleSubmit((data) => {
+      console.log("✅ SUBMIT CALLED with data:", data);
+      OnSubmit(data);
+    },
+    (errors) => {
+      console.log("❌ FORM ERRORS:", errors);
+      console.log(form.watch())
+    })}>
                          <FormField
                             control={form.control}
                             name='location'
@@ -256,7 +265,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
 
                     <FormField
                     control={form.control}
-                    name='size'
+                    name='discountPercentage'
                     render={({field}) => (
                         <FormItem className='mb-5'>
                             <FormLabel className='text-lg text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Discount Percentage</FormLabel>

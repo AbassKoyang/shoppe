@@ -52,13 +52,14 @@ export default function Home() {
         </div>
 
         <div className="min-w-full mt-2">
-          <div className="w-full overflow-x-auto">
-            <div className="w-[1000px] flex items-start gap-1.5">
+        <div className="w-full overflow-x-auto flex items-start gap-1.5 carousel-container scrollbar-hide">
               <ProductCard/>
               <ProductCard/>
               <ProductCard/>
               <ProductCard/>
-            </div>
+              <ProductCard/>
+              <ProductCard/>
+              <ProductCard/>
           </div>
         </div>
       </section>
@@ -73,13 +74,14 @@ export default function Home() {
         </div>
 
         <div className="min-w-full mt-2">
-          <div className="w-full overflow-x-auto">
-            <div className="w-[1000px] flex items-start gap-1.5">
+          <div className="w-full overflow-x-auto flex items-start gap-1.5 carousel-container scrollbar-hide">
               <ProductCard/>
               <ProductCard/>
               <ProductCard/>
               <ProductCard/>
-            </div>
+              <ProductCard/>
+              <ProductCard/>
+              <ProductCard/>
           </div>
         </div>
       </section>
@@ -94,12 +96,12 @@ export default function Home() {
         </div>
 
         <div className="w-full h-[880px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
-              <JustForYouProductCard />
-              <JustForYouProductCard />
-              <JustForYouProductCard />
-              <JustForYouProductCard />
-              <JustForYouProductCard />
-              <JustForYouProductCard />
+              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
+              <JustForYouProductCard product={{image: '', price: 1000, tilte: "Nike AIR", location: 'Lagos, Nigeria'}} />
         </div>
       </section>
     </section>

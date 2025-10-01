@@ -2,6 +2,7 @@
 import AllCategoriesFilterModal from "@/components/AllCategoriesFilter";
 import FilterModal from "@/components/FilterModal";
 import JustForYouProductCard from "@/components/JustForYouProductCard";
+import ProductSkeleton from "@/components/ProductSkeleton";
 import { SUB_CATEGORIES } from "@/lib/utils";
 import { useFetchProductByCategory, useFetchProductCategoryCount } from "@/services/products/queries";
 import { CategoryType } from "@/services/products/types";
@@ -65,25 +66,33 @@ const Page = () => {
                     <Settings2 strokeWidth={2} className="size-[16px] text-white" />
                     </button>
             </div>
-            <div className="w-full h-fit grid grid-cols-2 gap-1.5 mt-3">
+            <div className="w-full h-fit grid grid-cols-2 gap-1.5 mt-3 mb-[500px]">
+            {products && products.length > 0 && products.map((product: any) => (
+                <JustForYouProductCard product={product} />
+            ))}
+            </div>
             {isLoading && (
-                <div className='size-full bg-gray-200 animate-pulse rounded-[9px] grid grid-cols-2 grid-rows-2 gap-1.5 p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]'>
-                    <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
-                    <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
-                    <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
-                    <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
+                <div className="w-full h-[880px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
+                <ProductSkeleton />
+                <ProductSkeleton />
+                <ProductSkeleton />
+                <ProductSkeleton />
+                <ProductSkeleton />
+                <ProductSkeleton />
                 </div>
             )}
 
+            {products && products.length === 0 && (
+            <div className='w-full h-[50dvh] flex items-center justify-center'>
+                <p>Oops, no results for this search.</p>
+            </div>
+            )}
+
             {isError && (
-                <div className='w-full h-full flex items-center justify-center'>
+                <div className='w-full h-[50dvh] flex items-center justify-center'>
                     <p>Failed to load category.</p>
                 </div>
             )}
-            {products && products.map((product) => (
-                <JustForYouProductCard />
-            ))}
-            </div>
         </section>
      </section>
 )

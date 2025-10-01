@@ -19,10 +19,9 @@ export const useFetchProductByCategory = (category: string) => {
     filters[key] = value;
   });
   console.log('Filters:', filters, category);
-
     return useQuery({
       queryKey: ["productsByCategory", category], // ✅ cache per user
-      queryFn: () => fetchProductsByCategory(category, filters, 24),
+      queryFn: () => fetchProductsByCategory(category, filters),
       enabled: !!category, // ✅ only fetch if userId exists
     });
   };

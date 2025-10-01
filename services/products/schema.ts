@@ -159,6 +159,6 @@ export const ProductSchema = z
       ]).array().optional(),
     gender: z.literal(["Men", "Women", "Unisex"]).optional(),
     condition: z.literal(["new", "used"]).optional(),
-    order: z.literal(["Popular", "Newest", "Oldest"]).optional(),
+    order: z.string().optional(),
 })
 

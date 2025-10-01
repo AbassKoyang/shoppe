@@ -1,4 +1,5 @@
 import { Plus, Search } from "lucide-react"
+import Link from "next/link"
 
 const HomeHeader = () => {
   return (
@@ -11,9 +12,9 @@ const HomeHeader = () => {
               <Search strokeWidth={1} className="size-[19px] text-dark-blue" />
             </button>
           </div>
-          <button className="size-[30px] rounded-full bg-dark-blue flex items-center justify-center">
+          <Link href='/add-product' className="size-[30px] rounded-full bg-dark-blue flex items-center justify-center">
            <Plus className="text-white size-[16px]" />
-          </button>
+          </Link>
        </div>
     </header>
   )

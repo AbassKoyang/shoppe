@@ -398,3 +398,12 @@ export const ALPHA_SIZES = [
   "XXL",
 ];
 export const NUMERIC_SIZES = Array.from({ length: 50 }, (_, i) => `${i + 1}`);
+
+export const formatFilterURL = (filters: Record<string, string>) => {
+  const filterArray = Object.entries(filters);
+      let newFilterArray : string[] = [];
+      filterArray.map(([key, value]) => {
+        newFilterArray.push(`${key}=${value}`)
+      })
+  return newFilterArray.join('&')
+}

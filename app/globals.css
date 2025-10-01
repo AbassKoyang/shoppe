@@ -137,3 +137,10 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
+.carousel-container {
+  scroll-snap-type: x mandatory;
+}
+.product-card {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
