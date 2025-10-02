@@ -139,6 +139,8 @@ body {
 }
 .carousel-container {
   scroll-snap-type: x mandatory;
+  scroll-padding-left: 14px;
+  scroll-padding-right: 14px;
 }
 .product-card {
   flex-shrink: 0;

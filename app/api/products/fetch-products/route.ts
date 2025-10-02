@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
   const discountPercentage = searchParams.get("discountPercentage");
-  const size = searchParams.getAll("size")[0].split(','); // array
+  const size = searchParams.getAll("size")[0]?.split(','); // array
   const gender = searchParams.get("gender");
   const condition = searchParams.get("condition");
   const order = searchParams.get("order"); // Popular | Newest | Oldest
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
  if (gender) facetFilters.push([`gender:${gender}`]);
  if (condition) facetFilters.push([`condition:${condition}`]);
  
- if (size.length > 0) {
+ if (size) {
     const formatSizes = (sizes: string[]) => {
     return sizes.map((s) => `size:${s}`)
     } 

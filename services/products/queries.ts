@@ -20,8 +20,13 @@ export const useFetchProductByCategory = (category: string) => {
   });
   console.log('Filters:', filters, category);
     return useQuery({
-      queryKey: ["productsByCategory", category], // ✅ cache per user
+      queryKey: ["productsByCategory", category, filters],
       queryFn: () => fetchProductsByCategory(category, filters),
-      enabled: !!category, // ✅ only fetch if userId exists
+      enabled: !!category,
+      placeholderData: true,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,     
+      refetchOnMount: false,         
+      staleTime: 1000 * 60 * 5,
     });
   };

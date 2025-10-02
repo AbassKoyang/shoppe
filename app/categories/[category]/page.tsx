@@ -3,10 +3,12 @@ import AllCategoriesFilterModal from "@/components/AllCategoriesFilter";
 import FilterModal from "@/components/FilterModal";
 import JustForYouProductCard from "@/components/JustForYouProductCard";
 import ProductSkeleton from "@/components/ProductSkeleton";
+import SubCategoryAvatar from "@/components/SubCategoryAvatar";
 import { SUB_CATEGORIES } from "@/lib/utils";
 import { useFetchProductByCategory, useFetchProductCategoryCount } from "@/services/products/queries";
 import { CategoryType } from "@/services/products/types";
-import { ArrowLeft, ChevronLeft, Link, Settings2 } from "lucide-react";
+import { ArrowLeft, ChevronLeft, Settings2 } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
@@ -17,7 +19,7 @@ const Page = () => {
     const category = param.category as CategoryType;
     const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1) as CategoryType;
     const subCategories  = SUB_CATEGORIES[`${formattedCategory}`];
-    const {isLoading, isError, data: products} = useFetchProductByCategory(formattedCategory);
+    const {isLoading, isError, isFetching, data: products} = useFetchProductByCategory(formattedCategory);
 
   return (
         <section className='w-full mt-6 relative overflow-x-hidden'>
@@ -25,9 +27,9 @@ const Page = () => {
             <FilterModal open={isFilterModalOpen} closeModal={() => setIsFilterModalOpen(false)} />
             <div className="w-full flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center justify-center">
+                    <Link href="#" className="flex items-center justify-center">
                         <ArrowLeft className="size-[30px]" />
-                    </button>
+                    </Link>
                     <h2 className='font-semibold font-raleway text-[30px]'>{formattedCategory}</h2>
                 </div>
                 <button onClick={() => setIsCategoriesModalOpen(true)} className="px-3 py-1 rounded-3xl bg-dark-blue flex items-center justify-center gap-1 cursor-pointer">
@@ -36,24 +38,15 @@ const Page = () => {
                 </button>
             </div>
             <div className="w-full mt-4">
-            <div className="w-full flex items-center justify-between">
+            <div className="w-full flex items-start justify-between">
                 {subCategories.slice(0, 5).map((subcat) => (
-                        <div className="flex flex-col items-center">
-                            <div className="size-[60px] border-5 border-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] rounded-full object-contain object-center overflow-hidden">
-                            <img src="/assets/images/bags-1.png" alt="Clothing image" className="size-full"/>
-                            </div>
-                            <p className="text-xs font-raleway font-medium text-center mt-2">{subcat}</p>
-                        </div>
+                    <SubCategoryAvatar link="#" subcat={subcat}/>
                 ))}
             </div>
-        <div className="w-full flex items-center justify-between mt-3">
+        <div className="w-full flex items-start justify-between mt-3">
             {subCategories.slice(5).map((subcat) => (
-                    <div className="flex flex-col items-center">
-                        <div className="size-[60px] border-5 border-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] rounded-full object-contain object-center overflow-hidden">
-                        <img src="/assets/images/bags-1.png" alt="Clothing image" className="size-full"/>
-                        </div>
-                        <p className="text-xs font-raleway font-medium text-center mt-2">{subcat}</p>
-                    </div>
+                <SubCategoryAvatar link="#" subcat={subcat}/>
+
             ))}
         </div>
         </div>
@@ -74,6 +67,16 @@ const Page = () => {
                 </div>
             ) }
             {isLoading && (
+                <div className="w-full h-[880px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
+                <ProductSkeleton />
+                <ProductSkeleton />
+                <ProductSkeleton />
+                <ProductSkeleton />
+                <ProductSkeleton />
+                <ProductSkeleton />
+                </div>
+            )}
+            {isFetching && (
                 <div className="w-full h-[880px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
                 <ProductSkeleton />
                 <ProductSkeleton />
