@@ -8,14 +8,15 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {Form,  FormControl, FormMessage, FormField, FormItem, FormLabel, FormDescription } from './ui/form';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select';
-import { ALPHA_SIZES, NUMERIC_SIZES } from '@/lib/utils/index';
+import { ALPHA_SIZES, CATEGORIES, NUMERIC_SIZES, SUB_CATEGORIES } from '@/lib/utils/index';
 import PrimaryButton from './PrimaryButton';
 import { BsCheck } from 'react-icons/bs';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { filterSChema } from '@/services/products/schema';
+import { searchFilterSChema } from '@/services/products/schema';
+import SubCategoryAvatar from './SubCategoryAvatar';
 
 
-const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void}) => {
+const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void}) => {
     const [loading, setLoading] = useState(false);
     const [selectedSizes, setSelectedSizes] = useState(['M']);
     const [selectedSizeType, setSelectedSizeType] = useState<'Alpha' | 'Numeric' | 'One Size'>('Alpha');
@@ -23,8 +24,8 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const form = useForm<z.infer<typeof filterSChema>>({
-        resolver: zodResolver(filterSChema),
+    const form = useForm<z.infer<typeof searchFilterSChema>>({
+        resolver: zodResolver(searchFilterSChema),
         defaultValues: {
         },
     });
@@ -41,7 +42,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
     const isDirty = form.formState.isDirty;
 
     
-    const OnSubmit = (data: z.infer<typeof filterSChema>) => {
+    const OnSubmit = (data: z.infer<typeof searchFilterSChema>) => {
         const params = new URLSearchParams(searchParams.toString());
 
   // Update all fields
@@ -87,97 +88,30 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
       console.log("❌ FORM ERRORS:", errors);
       console.log(form.watch())
     })}>
-                         <FormField
-                            control={form.control}
-                            name='location'
-                            render={({field}) => (
-                                <FormItem className='mb-5'>
-                                <FormLabel className='text-lg text-black/90 font-semibold mt-2 mb-1 leading-0 font-nunito-sans'>Location</FormLabel>
-                                <FormControl>
-                                    <Input className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='e.g Ajah, Lekki, Lagos' />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                         <FormField
-                        control={form.control}
-                        name='currency'
-                        render={({field}) => (
-                            <FormItem className='mb-5'>
-                            <FormLabel className='text-lg text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Currency</FormLabel>
-                            <FormControl>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                                <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
-                                <SelectValue placeholder="Filter currency" />
-                                </SelectTrigger>
-                                <SelectContent className='w-full'>
-                                <SelectGroup className='w-full'>
-                                    <SelectLabel>Currencies</SelectLabel>
-                                    <SelectItem value='₦ NGN'>₦ NGN</SelectItem>
-                                    <SelectItem value='$ USD'>$ USD</SelectItem>
-                                    <SelectItem value='€ EURO'>€ EURO</SelectItem>
-                                </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name='minPrice'
-                            render={({field}) => (
-                                <FormItem className='mb-5'>
-                                <FormLabel className='text-lg text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Min Price</FormLabel>
-                                <FormControl>
-                                    <Input type='number' className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='E.g 7000' />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                         <FormField
-                            control={form.control}
-                            name='maxPrice'
-                            render={({field}) => (
-                                <FormItem className='mb-5'>
-                                <FormLabel className='text-lg text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Max Price</FormLabel>
-                                <FormControl>
-                                    <Input type='number' className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='E.g 7000' />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        
                         <FormField
-                        control={form.control}
-                        name='condition'
-                        render={({field}) => (
-                            <FormItem className='mb-6'>
-                            <FormLabel className='text-lg text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Product Condition</FormLabel>
-                            <FormControl>
-                            <Select onValueChange={field.onChange}>
-                                <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
-                                <SelectValue placeholder="Filter product condition" />
-                                </SelectTrigger>
-                                <SelectContent className='w-full'>
-                                <SelectGroup className='w-full'>
-                                    <SelectLabel>Conditions</SelectLabel> 
-                                    <SelectItem value='used'>Used</SelectItem>
-                                    <SelectItem value='new'>New</SelectItem>
-                                </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                        />
+                            control={form.control}
+                            name='category'
+                            render={({field}) => (
+                                <FormItem className='mb-8'>
+                                <FormControl>
+                                    <div className="w-full">
+                                        <div className="w-full flex items-start justify-between">
+                                            {CATEGORIES.slice(0, 5).map((cat) => (
+                                                <SubCategoryAvatar key={cat.label} link="#" subcat={cat.label}/>
+                                            ))}
+                                        </div>
+                                        <div className="w-full flex items-start justify-between mt-3">
+                                            {CATEGORIES.slice(5).map((cat) => (
+                                                <SubCategoryAvatar key={cat.label} link="#" subcat={cat.label}/>
+
+                                            ))}
+                                        </div>
+                                    </div>
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                            />
 
                     <FormField
                     control={form.control}
@@ -185,7 +119,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                     render={({field}) => (
                         <FormItem className='w-full mb-6'>
                             <div className="w-full flex items-center justify-between mb-1">
-                                <FormLabel className='text-lg text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Size</FormLabel>
+                                <FormLabel className='text-black text-lg font-extrabold mb-1 leading-0 font-nunito-sans'>Size</FormLabel>
                                 <div className="flex items-center gap-1">
                                     <button type='button' onClick={() => setSelectedSizeType('Alpha')} className={`${selectedSizeType === 'Alpha' ? 'bg-light-blue border border-dark-blue text-dark-blue' : 'bg-[#FFEBEB] border  text-black'} px-3 py-0.5 rounded-[4px] font-raleway font-medium text-[13px] transition-all duration-200 ease-in-out cursor-pointer`}>Clothes</button>
                                     <button type='button' onClick={() => setSelectedSizeType('Numeric')} className={`${selectedSizeType === 'Numeric' ? 'bg-light-blue border border-dark-blue text-dark-blue' : 'bg-[#FFEBEB] border  text-black'} px-3 py-0.5 rounded-[4px] font-raleway font-medium text-[13px] transition-all duration-200 ease-in-out cursor-pointer`}>Shoes</button>
@@ -231,12 +165,105 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                         </FormItem>
                     )}
                     />
+                               
+                         <FormField
+                            control={form.control}
+                            name='location'
+                            render={({field}) => (
+                                <FormItem className='mb-5'>
+                                <FormLabel className='text-black text-lg font-extrabold mt-2 mb-1 leading-0 font-nunito-sans'>Location</FormLabel>
+                                <FormControl>
+                                    <Input className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='e.g Ajah, Lekki, Lagos' />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                         <FormField
+                        control={form.control}
+                        name='currency'
+                        render={({field}) => (
+                            <FormItem className='mb-5'>
+                            <FormLabel className='text-black text-lg font-extrabold mb-1 leading-0 font-nunito-sans'>Currency</FormLabel>
+                            <FormControl>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
+                                <SelectValue placeholder="Filter currency" />
+                                </SelectTrigger>
+                                <SelectContent className='w-full'>
+                                <SelectGroup className='w-full'>
+                                    <SelectLabel>Currencies</SelectLabel>
+                                    <SelectItem value='₦ NGN'>₦ NGN</SelectItem>
+                                    <SelectItem value='$ USD'>$ USD</SelectItem>
+                                    <SelectItem value='€ EURO'>€ EURO</SelectItem>
+                                </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name='minPrice'
+                            render={({field}) => (
+                                <FormItem className='mb-5'>
+                                <FormLabel className='text-black text-lg font-extrabold mb-1 leading-0 font-nunito-sans'>Min Price</FormLabel>
+                                <FormControl>
+                                    <Input type='number' className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='E.g 7000' />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                         <FormField
+                            control={form.control}
+                            name='maxPrice'
+                            render={({field}) => (
+                                <FormItem className='mb-5'>
+                                <FormLabel className='text-black text-lg font-extrabold mb-1 leading-0 font-nunito-sans'>Max Price</FormLabel>
+                                <FormControl>
+                                    <Input type='number' className='w-full h-12 px-2 py-3 bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] text-black/80 focus:border-dark-blue transition-all duration-300 ease-in-out]' {...field} placeholder='E.g 7000' />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        
+                        <FormField
+                        control={form.control}
+                        name='condition'
+                        render={({field}) => (
+                            <FormItem className='mb-6'>
+                            <FormLabel className='text-black text-lg font-extrabold mb-1 leading-0 font-nunito-sans'>Product Condition</FormLabel>
+                            <FormControl>
+                            <Select onValueChange={field.onChange}>
+                                <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
+                                <SelectValue placeholder="Filter product condition" />
+                                </SelectTrigger>
+                                <SelectContent className='w-full'>
+                                <SelectGroup className='w-full'>
+                                    <SelectLabel>Conditions</SelectLabel> 
+                                    <SelectItem value='used'>Used</SelectItem>
+                                    <SelectItem value='new'>New</SelectItem>
+                                </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+
                     <FormField
                     control={form.control}
                     name='order'
                     render={({field}) => (
                         <FormItem className='w-full mb-6'>
-                                <FormLabel className='text-lg text-black/90 font-semibold mb-2 leading-0 font-nunito-sans'>Order</FormLabel>
+                                <FormLabel className='text-black text-lg font-extrabold mb-2 leading-0 font-nunito-sans'>Order</FormLabel>
                             <FormControl className='w-full'>
                                 <div className="w-full flex items-center justify-between gap-2">
                                 <button type='button' onClick={() => setOrder('Popular')} className={`${order === 'Popular' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center w-[33%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
@@ -270,7 +297,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                     name='discountPercentage'
                     render={({field}) => (
                         <FormItem className='mb-5'>
-                            <FormLabel className='text-lg text-black/90 font-semibold mb-1 leading-0 font-nunito-sans'>Discount Percentage</FormLabel>
+                            <FormLabel className='text-black text-lg font-extrabold mb-1 leading-0 font-nunito-sans'>Discount Percentage</FormLabel>
                             <FormControl>
                             <Select onValueChange={field.onChange}>
                               <SelectTrigger className="w-full bg-[#F1F4FE] border focus:border-dark-blue stroke-0 transition-all duration-300 ease-in-out">
@@ -309,4 +336,4 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
       )
 }
 
-export default FilterModal
+export default SearchFilterModal

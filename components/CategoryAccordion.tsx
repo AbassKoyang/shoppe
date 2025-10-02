@@ -1,4 +1,4 @@
-import { SUB_CATEGORIES } from "@/lib/utils"
+import { SUB_CATEGORIES } from "@/lib/utils/index"
 import { CategoryType } from "@/services/products/types"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { useState } from "react";

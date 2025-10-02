@@ -3,9 +3,11 @@ import AllCategoriesFilterModal from "@/components/AllCategoriesFilter";
 import FilterModal from "@/components/FilterModal";
 import JustForYouProductCard from "@/components/JustForYouProductCard";
 import ProductSkeleton from "@/components/ProductSkeleton";
+import SearchFilterModal from "@/components/SearchFilterModal";
+import SearchResultHeader from "@/components/SearchResultHeader";
 import SubCategoryAvatar from "@/components/SubCategoryAvatar";
-import { SUB_CATEGORIES } from "@/lib/utils/index";
-import { useFetchProductByCategory, useFetchProductCategoryCount } from "@/services/products/queries";
+import { SUB_CATEGORIES } from "@/lib/utils";
+import { useFetchProductByCategory, useFetchProductCategoryCount, useSearchProductsIndex } from "@/services/products/queries";
 import { CategoryType } from "@/services/products/types";
 import { ArrowLeft, ChevronLeft, Settings2 } from "lucide-react";
 import Link from "next/link";
@@ -13,48 +15,19 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 
 const Page = () => {
-    const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
-    const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-    const param = useParams<{category: string}>();
-    const category = param.category as CategoryType;
-    const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1) as CategoryType;
-    const subCategories  = SUB_CATEGORIES[`${formattedCategory}`];
-    const {isLoading, isError, isFetching, data: products} = useFetchProductByCategory(formattedCategory);
+    const query = useParams<{query: string}>().query;
+
+ const [isModalOpen, setIsModalOpen] = useState(false);  
+ const {isLoading, isError, isFetching, data: products} = useSearchProductsIndex(query);
 
   return (
         <section className='w-full mt-6 relative overflow-x-hidden'>
-            <AllCategoriesFilterModal open={isCategoriesModalOpen} closeModal={() => setIsCategoriesModalOpen(false)} />
-            <FilterModal open={isFilterModalOpen} closeModal={() => setIsFilterModalOpen(false)} />
-            <div className="w-full flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <Link href="#" className="flex items-center justify-center">
-                        <ArrowLeft className="size-[30px]" />
-                    </Link>
-                    <h2 className='font-semibold font-raleway text-[30px]'>{formattedCategory}</h2>
-                </div>
-                <button onClick={() => setIsCategoriesModalOpen(true)} className="px-3 py-1 rounded-3xl bg-dark-blue flex items-center justify-center gap-1 cursor-pointer">
-                    <p className="text-white text-sm">Filter</p>
-                    <Settings2 strokeWidth={2} className="size-[16px] text-white" />
-                </button>
-            </div>
-            <div className="w-full mt-4">
-            <div className="w-full flex items-start justify-between">
-                {subCategories.slice(0, 5).map((subcat) => (
-                    <SubCategoryAvatar link="#" subcat={subcat}/>
-                ))}
-            </div>
-        <div className="w-full flex items-start justify-between mt-3">
-            {subCategories.slice(5).map((subcat) => (
-                <SubCategoryAvatar link="#" subcat={subcat}/>
-
-            ))}
-        </div>
-        </div>
-
+            <SearchFilterModal open={isModalOpen} closeModal={() => setIsModalOpen(false)} />
+            <SearchResultHeader />
         <section className="w-full mt-6">
             <div className="w-full flex items-center justify-between">
-                    <h3 className="text-[22px] font-raleway font-semibold text-[#202020]">All Items</h3>
-                    <button onClick={() => setIsFilterModalOpen(true)} className="px-3 py-1 rounded-3xl bg-dark-blue flex items-center justify-center gap-1 cursor-pointer">
+                    <h3 className="text-[22px] font-raleway font-semibold text-[#202020]">All Items ({products.length})</h3>
+                    <button onClick={() => setIsModalOpen(true)} className="px-3 py-1 rounded-3xl bg-dark-blue flex items-center justify-center gap-1 cursor-pointer">
                     <p className="text-white text-sm">Filter</p>
                     <Settings2 strokeWidth={2} className="size-[16px] text-white" />
                     </button>

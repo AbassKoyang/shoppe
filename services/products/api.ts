@@ -1,7 +1,7 @@
 import { db } from '@/lib/firebase';
 import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc, QueryConstraint, limit, orderBy, DocumentData} from 'firebase/firestore';
 import { ProductType } from './types';
-import { formatFilterURL } from '@/lib/utils';
+import { formatFilterURL } from '@/lib/utils/formatFilterURL';
 export const addProduct = async (data : ProductType) => {
     try {
         const res = await fetch('/api/products/add', {
@@ -36,6 +36,23 @@ export const fetchProductsByCategory = async (
 
     } catch (err: any) {
       console.error("Error fetching category:", err);
+      throw err;
+    }
+  };
+
+export const searchProductsIndex = async (query: string, filters: Record<string, string>) => {
+      const filterUrl = formatFilterURL(filters);
+      console.log(filterUrl)
+
+  try{
+      const res = await fetch(`/api/products/search/?query=${query}&${filterUrl}`);
+      if(!res.ok){
+        throw new Error("Failed to search product index");
+      }
+      return res.json();
+
+    } catch (err: any) {
+      console.error("Error searching product index:", err);
       throw err;
     }
   };

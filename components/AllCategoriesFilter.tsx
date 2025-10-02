@@ -2,7 +2,7 @@ import { X } from 'lucide-react'
 import React from 'react'
 import {motion} from 'framer-motion';
 import CategoryAccordion from './CategoryAccordion';
-import { CATEGORIES } from '@/lib/utils';
+import { CATEGORIES } from '@/lib/utils/index';
 
 const AllCategoriesFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void}) => {
   return (

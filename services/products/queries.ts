@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchProductCategoryCount, fetchProductsByCategory } from "./api";
+import { fetchProductCategoryCount, fetchProductsByCategory, searchProductsIndex } from "./api";
 import { useSearchParams } from "next/navigation";
 
 export const useFetchProductCategoryCount = (label: string) => {
@@ -10,10 +10,10 @@ export const useFetchProductCategoryCount = (label: string) => {
       enabled: !!label, // ✅ only fetch if userId exists
     });
   };
+
+
 export const useFetchProductByCategory = (category: string) => {
   const searchParams = useSearchParams();
-
-  // Build filters object from URL
   const filters: Record<string, string> = {};
   searchParams.forEach((value, key) => {
     filters[key] = value;
@@ -24,6 +24,25 @@ export const useFetchProductByCategory = (category: string) => {
       queryFn: () => fetchProductsByCategory(category, filters),
       enabled: !!category,
       placeholderData: true,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,     
+      refetchOnMount: false,         
+      staleTime: 1000 * 60 * 5,
+    });
+  };
+
+
+export const useSearchProductsIndex = (query: string) => {
+  const searchParams = useSearchParams();
+  const filters: Record<string, string> = {};
+  searchParams.forEach((value, key) => {
+    filters[key] = value;
+  });
+  console.log('Filters:', filters, )
+    return useQuery({
+      queryKey: ["productsBy" ,filters, query],
+      queryFn: () => searchProductsIndex(query, filters),
+      enabled: !!filters,      placeholderData: true,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,     
       refetchOnMount: false,         
