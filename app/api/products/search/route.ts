@@ -15,7 +15,6 @@ export async function GET(req: NextRequest) {
   // ✅ Collect filters
   const query = searchParams.get("query");
   const category = searchParams.get("subCategory");
-  const subCategory = searchParams.get("category");
   const location = searchParams.get("location");
   const currency = searchParams.get("currency");
   const minPrice = searchParams.get("minPrice");
@@ -29,8 +28,6 @@ export async function GET(req: NextRequest) {
  // 🔹 facetFilters (categorical filters)
  const facetFilters: string[][] = [];
  if (location) facetFilters.push([`location:${location}`]);
- if (subCategory) facetFilters.push([`subCategory:${subCategory}`]);
- if (category) facetFilters.push([`category:${category}`]);
  if (currency) facetFilters.push([`currency:${currency}`]);
  if (gender) facetFilters.push([`gender:${gender}`]);
  if (condition) facetFilters.push([`condition:${condition}`]);
@@ -41,6 +38,13 @@ export async function GET(req: NextRequest) {
     } 
     const formattedSizes = formatSizes(size);
     facetFilters.push(formattedSizes)
+}
+ if (category) {
+    const formatCategory = (categories: string[]) => {
+    return categories.map((s) => `category:${s}`)
+    } 
+    const formattedCategories = formatCategory(size);
+    facetFilters.push(formattedCategories)
 }
   
 
@@ -54,6 +58,8 @@ export async function GET(req: NextRequest) {
  if (order === "Newest") sortBy = "createdAt_desc";
  if (order === "Oldest") sortBy = "createdAt_asc";
  if (order === "Popular") sortBy = "popular_desc";
+ if (order === "PriceHighToLow") sortBy = "price_desc";
+ if (order === "PriceLowToHigh") sortBy = "price_asc";
 
   try {
     const res = await client.search({

@@ -35,7 +35,7 @@ const Page = () => {
             {products && products.length > 0 && (
                 <div className="w-full h-fit grid grid-cols-2 gap-1.5 mt-3 mb-[500px]">
                         {products.map((product: any) => (
-                        <JustForYouProductCard product={product} />
+                        <JustForYouProductCard key={product.objectID} product={product} />
                         ))}          
                 </div>
             ) }

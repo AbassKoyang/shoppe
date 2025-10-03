@@ -13,14 +13,16 @@ import PrimaryButton from './PrimaryButton';
 import { BsCheck } from 'react-icons/bs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { searchFilterSChema } from '@/services/products/schema';
-import SubCategoryAvatar from './SubCategoryAvatar';
+import CategoryAvatarButton from './CategoryAvatarButton';
+import { CategoryType } from '@/services/products/types';
 
 
 const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void}) => {
     const [loading, setLoading] = useState(false);
     const [selectedSizes, setSelectedSizes] = useState(['M']);
+    const [selectedCategories, setSelectedCategories] = useState<CategoryType[]>(['Tops']);
     const [selectedSizeType, setSelectedSizeType] = useState<'Alpha' | 'Numeric' | 'One Size'>('Alpha');
-    const [order, setOrder] = useState<'Popular' | 'Oldest' | 'Newest'>('Popular');
+    const [order, setOrder] = useState<'Popular' | 'Oldest' | 'Newest' | 'PriceHighToLow' | 'PriceLowToHigh'>('Popular');
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -33,6 +35,10 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
     useEffect(() => {
         form.setValue('size', selectedSizes, {shouldDirty: true});
     }, [selectedSizes]);
+
+    useEffect(() => {
+        form.setValue('category', selectedCategories, {shouldDirty: true});
+    }, [selectedCategories]);
 
     useEffect(() => {
         form.setValue('order', order, {shouldDirty: true});
@@ -61,10 +67,36 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
         } else {
             params.delete("size");
         }
+        if (data.category?.length) {
+            params.set("category", data.category.join(","));
+        } else {
+            params.delete("category");
+        }
         router.replace(`?${params.toString()}`);
         closeModal();
         form.reset();
         console.log(data, `?${params.toString()}`);
+    }
+
+    const handleSetSize = (size: string) => {
+        if (selectedSizes.includes(size)) {
+            const ss = [...selectedSizes];
+            const sizeindex = ss.findIndex((s, index) => size === s);
+            ss.splice(sizeindex, 1)
+            setSelectedSizes(ss);
+        } else { 
+            setSelectedSizes((prev) => [...prev, size]) 
+        }
+    }
+    const handleSetCategory = (category: CategoryType) => {
+        if (selectedCategories.includes(category)) {
+            const sc : CategoryType[] = [...selectedCategories];
+            const categoryindex = sc.findIndex((s, index) => category === s);
+            sc.splice(categoryindex, 1)
+            setSelectedCategories(sc);
+        } else { 
+            setSelectedCategories((prev) => [...prev, category]) 
+        }
     }
     return (
         <motion.section
@@ -97,12 +129,12 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
                                     <div className="w-full">
                                         <div className="w-full flex items-start justify-between">
                                             {CATEGORIES.slice(0, 5).map((cat) => (
-                                                <SubCategoryAvatar key={cat.label} link="#" subcat={cat.label}/>
+                                                <CategoryAvatarButton key={cat.label} isSelected={selectedCategories.includes(cat.label)} cat={cat.label} setSelectedCategories={() => handleSetCategory(cat.label)}/>
                                             ))}
                                         </div>
                                         <div className="w-full flex items-start justify-between mt-3">
-                                            {CATEGORIES.slice(5).map((cat) => (
-                                                <SubCategoryAvatar key={cat.label} link="#" subcat={cat.label}/>
+                                            {CATEGORIES.slice(5,10).map((cat) => (
+                                                <CategoryAvatarButton key={cat.label} isSelected={selectedCategories.includes(cat.label)} cat={cat.label} setSelectedCategories={() => handleSetCategory(cat.label)}/>
 
                                             ))}
                                         </div>
@@ -126,39 +158,21 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
                                 </div>
                             </div>
                             <FormControl className='w-full'>
-                                <div className="w-full h-[54px] flex items-center justify-center overflow-x-auto scrollbar-hide">
-                                    <div className="h-[54px] flex items-center gap-6 px-4 w-max justify-between relative">
-                                        <div className="z-10 w-full h-[26px] rounded-[20px] bg-light-blue absolute top-[50%] left-0 translate-y-[-50%]"></div>
+                                <div className="w-full h-[54px] flex items-center overflow-x-auto scrollbar-hide gap-6 px-4 justify-between relative">
+                                    {/* <div className="h-[54px] flex items-center gap-6 px-4 w-max justify-between relative"> */}
+                                        <div className={`${selectedSizeType === 'Numeric' ? 'w-[1700px]' : 'w-full'} z-10 h-[26px] rounded-[20px] bg-light-blue absolute top-[50%] left-0 translate-y-[-50%]`}></div>
                                         
                                         {selectedSizeType === 'Alpha' && ALPHA_SIZES.map((size) => (
-                                            <button onClick={() => {
-                                                if (selectedSizes.includes(size)) {
-                                                    const ss = [...selectedSizes];
-                                                    const sizeindex = ss.findIndex((s, index) => size === s);
-                                                    ss.splice(sizeindex, 1)
-                                                    setSelectedSizes(ss);
-                                                } else { 
-                                                    setSelectedSizes((prev) => [...prev, size]) 
-                                                }
-                                            }} type='button' key={size} className={`${selectedSizes.includes(size) ? 'bg-white border-2 border-light-blue shadow-[0_5px_10px_0_rgba(0,0,0,0.16)] text-dark-blue text-[15px] size-[40px]' : 'size-[10px] text-[#AAC3FF] text-[13px]'} z-20 rounded-full flex items-center justify-center font-raleway font-extrabold cursor-pointer transition-all duration-300 ease-in-out`}>
+                                            <button onClick={() => handleSetSize(size)} type='button' key={size} className={`${selectedSizes.includes(size) ? 'bg-white border-2 border-light-blue shadow-[0_5px_10px_0_rgba(0,0,0,0.16)] text-dark-blue text-[15px] size-[40px]' : 'size-[10px] text-[#AAC3FF] text-[13px]'} z-20 rounded-full flex items-center justify-center font-raleway font-extrabold cursor-pointer transition-all duration-300 ease-in-out`}>
                                             <p className=''>{size}</p>
                                             </button>
                                         ))}
                                         {selectedSizeType === 'Numeric' && NUMERIC_SIZES.map((size) => (
-                                            <button onClick={() => {
-                                                if (selectedSizes.includes(size)) {
-                                                    const ss = [...selectedSizes];
-                                                    const sizeindex = ss.findIndex((s, index) => size === s);
-                                                    ss.splice(sizeindex, 1)
-                                                    setSelectedSizes(ss);
-                                                } else { 
-                                                    setSelectedSizes((prev) => [...prev, size]) 
-                                                }
-                                            }} type='button' key={size} className={`${selectedSizes.includes(size) ? 'bg-white border-2 border-light-blue shadow-[0_5px_10px_0_rgba(0,0,0,0.16)] text-dark-blue text-[15px] size-[40px]' : 'size-[10px] text-[#AAC3FF] text-[13px]'} z-20 rounded-full flex items-center justify-center font-raleway font-extrabold cursor-pointer transition-all duration-300 ease-in-out`}>
+                                            <button onClick={() => handleSetSize(size)} type='button' key={size} className={`${selectedSizes.includes(size) ? 'bg-white border-2 border-light-blue shadow-[0_5px_10px_0_rgba(0,0,0,0.16)] text-dark-blue text-[15px] size-[40px]' : 'size-[10px] text-[#AAC3FF] text-[13px]'} z-20 rounded-full flex items-center justify-center font-raleway font-extrabold cursor-pointer transition-all duration-300 ease-in-out`}>
                                             <p className=''>{size}</p>
                                             </button>
                                         ))}
-                                    </div>
+                                    {/* </div> */}
                                 </div>
                             </FormControl>
                             <FormMessage />
@@ -260,40 +274,6 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
 
                     <FormField
                     control={form.control}
-                    name='order'
-                    render={({field}) => (
-                        <FormItem className='w-full mb-6'>
-                                <FormLabel className='text-black text-lg font-extrabold mb-2 leading-0 font-nunito-sans'>Order</FormLabel>
-                            <FormControl className='w-full'>
-                                <div className="w-full flex items-center justify-between gap-2">
-                                <button type='button' onClick={() => setOrder('Popular')} className={`${order === 'Popular' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center w-[33%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
-                                    <p className={`${order === 'Popular' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Popular</p>
-                                    <div className={`${order === 'Popular' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
-                                        <BsCheck className="text-white" />
-                                    </div>
-                                </button>
-                                <button type='button' onClick={() => setOrder('Newest')} className={`${order === 'Newest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center w-[33%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
-                                    <p className={`${order === 'Newest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Newest</p>
-                                    <div className={`${order === 'Newest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
-                                        <BsCheck className="text-white" />
-                                    </div>
-                                </button>
-                                <button type='button' onClick={() => setOrder('Oldest')} className={`${order === 'Oldest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center w-[33%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
-                                    <p className={`${order === 'Oldest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Oldest</p>
-                                    <div className={`${order === 'Oldest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
-                                        <BsCheck className="text-white" />
-                                    </div>
-                                </button>
-                                
-                                </div>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-
-                    <FormField
-                    control={form.control}
                     name='discountPercentage'
                     render={({field}) => (
                         <FormItem className='mb-5'>
@@ -320,12 +300,62 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
                         </FormItem>
                     )}
                     />
+
+                    <FormField
+                    control={form.control}
+                    name='order'
+                    render={({field}) => (
+                        <FormItem className='w-full mb-6'>
+                                <FormLabel className='text-black text-lg font-extrabold mb-2 leading-0 font-nunito-sans'>Order</FormLabel>
+                            <FormControl className='w-full'>
+                                <div className="w-full flex items-center justify-start gap-3 flex-wrap">
+                                <button type='button' onClick={() => setOrder('Popular')} className={`${order === 'Popular' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[162px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                    <p className={`${order === 'Popular' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Popular</p>
+                                    <div className={`${order === 'Popular' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                        <BsCheck className="text-white" />
+                                    </div>
+                                </button>
+                                <button type='button' onClick={() => setOrder('Newest')} className={`${order === 'Newest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[162px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                    <p className={`${order === 'Newest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Newest</p>
+                                    <div className={`${order === 'Newest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                        <BsCheck className="text-white" />
+                                    </div>
+                                </button>
+                                <button type='button' onClick={() => setOrder('Oldest')} className={`${order === 'Oldest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[162px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                    <p className={`${order === 'Oldest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Oldest</p>
+                                    <div className={`${order === 'Oldest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                        <BsCheck className="text-white" />
+                                    </div>
+                                </button>
+                                <button type='button' onClick={() => setOrder('PriceHighToLow')} className={`${order === 'PriceHighToLow' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[162px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                    <p className={`${order === 'PriceHighToLow' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Price High To Low</p>
+                                    <div className={`${order === 'PriceHighToLow' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                        <BsCheck className="text-white" />
+                                    </div>
+                                </button>
+                                <button type='button' onClick={() => setOrder('PriceLowToHigh')} className={`${order === 'PriceLowToHigh' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[162px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                    <p className={`${order === 'PriceLowToHigh' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Price Low To High</p>
+                                    <div className={`${order === 'PriceLowToHigh' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                        <BsCheck className="text-white" />
+                                    </div>
+                                </button>
+                                
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+
+                    
                     <div className="w-full flex items-center justify-between gap-2 mt-6">
-                        <PrimaryButton type='button' disabled={loading || !isDirty} text={loading ? <LoaderCircle className='animate-spin' /> : 'Reset'} additionalStyles="bg-transparent border-2 border-dark-blue text-dark-blue px-0 py-[3px] w-[30%]"  primaryButtonFunction={() => {
+                        <button type='button' disabled={loading || !isDirty} className="w-[150px] cursor-pointer bg-transparent hover:opacity-90 transition-all duration-200 ease-in-out text-[#F3F3F3] text-[22px] font-extralight flex items-center justify-center rounded-xl py-[3px] border-2 border-dark-blue disabled:opacity-70 disabled:cursor-not-allowed"  onClick={() => {
                             form.reset(); 
                             setOrder('Popular'); 
                             setSelectedSizes(['M']);
-                            }}/>
+                            }}>
+                                {loading ? <LoaderCircle className='animate-spin' /> : <p className='text-dark-blue'>Clear</p>}
+                            </button>
                         <PrimaryButton disabled={loading || !isDirty} text={loading ? <LoaderCircle className='animate-spin' /> : 'Apply'} type="submit" additionalStyles="px-0 py-[5px] w-[70%]" />
                     </div>
                     </form>

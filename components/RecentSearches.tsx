@@ -1,10 +1,18 @@
 'use client';
-import { clearRecentSearches, getRecentSearches } from '@/lib/utils/recentSearches'
+import { addRecentSearch, clearRecentSearches, getRecentSearches } from '@/lib/utils/recentSearches'
 import { Trash2 } from 'lucide-react'
+import { useRouter } from 'next/navigation';
 import React from 'react'
 
 const RecentSearches = () => {
+    const router = useRouter();
     const recentSearches = getRecentSearches();
+    const handleButtonClick = (query: string) => {
+        if(query !== ''){
+            router.push(`/search/search-results/${query}`)
+            addRecentSearch(query);
+        }
+    }
   return ( 
     recentSearches ? (
         <div className="w-full mt-3">
@@ -16,7 +24,7 @@ const RecentSearches = () => {
         </div>
         <div className="w-full flex items-center flex-wrap gap-2 mt-3">
             {recentSearches.map((r) => (
-                <button key={r} className='cursor-pointer rounded-[9px] bg-[#F4F4F4] px-3 py-2 text-[17px] font-raleway font-medium text-[#202020]'>
+                <button onClick={() => handleButtonClick(r)} key={r} className='cursor-pointer rounded-[9px] bg-[#F4F4F4] px-3 py-2 text-[17px] font-raleway font-medium text-[#202020]'>
                     {r}
                 </button>
             ))}
