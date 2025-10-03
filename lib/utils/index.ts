@@ -398,3 +398,25 @@ export const ALPHA_SIZES = [
   "XXL",
 ];
 export const NUMERIC_SIZES = Array.from({ length: 50 }, (_, i) => `${i + 1}`);
+
+export const formatPrice = (price: string) => {
+  if (price.length > 3 && price.length < 5){
+    return price.substring(0, 1) + ',' + price.substring(1)
+  }
+  if (price.length > 4 && price.length < 6){
+    return price.substring(0, 2) + ',' + price.substring(2)
+  }
+  if (price.length > 5 && price.length < 7){
+    return price.substring(0, 3) + ',' + price.substring(3)
+  }
+  if (price.length > 6 && price.length < 8){
+    return price.substring(0, 1) + ',' + price.substring(1,4) + ',' + price.substring(4)
+  }
+  return price;
+}
+
+export const formatProductCardImageUrl = (url: string, preset: {
+  width: string; height: string; c_fill: boolean; g_auto: boolean; q_auto: boolean; f_auto: boolean; e_sharpen: boolean;
+}) => {
+  return url.substring(0,50) + `w_${preset.width},h_${preset.height},${preset.c_fill ? 'c_fill' : ''},${preset.c_fill ? 'c_fill' : ''},${preset.g_auto ? 'g_auto' : ''},${preset.q_auto ? 'q_auto' : ''},${preset.f_auto ? 'f_auto' : ''},${preset.e_sharpen ? 'e_sharpen' : ''}/` + url.substring(50);
+}

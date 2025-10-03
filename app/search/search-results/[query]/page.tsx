@@ -21,9 +21,9 @@ const Page = () => {
  const {isLoading, isError, isFetching, data: products} = useSearchProductsIndex(query);
 
   return (
-        <section className='w-full mt-6 relative overflow-x-hidden'>
-            <SearchFilterModal open={isModalOpen} closeModal={() => setIsModalOpen(false)} />
+        <section className='w-full min-h-full'>
             <SearchResultHeader />
+            <SearchFilterModal open={isModalOpen} closeModal={() => setIsModalOpen(false)} />
         <section className="w-full mt-6">
             <div className="w-full flex items-center justify-between">
                     <h3 className="text-[22px] font-raleway font-semibold text-[#202020]">All Items ({products.length})</h3>

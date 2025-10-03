@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 
 const SearchHeader = () => {
   const [query, setQuery] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement | null>(null);
     const handleFormSubmit = (e: FormEvent) => {
@@ -19,15 +18,7 @@ const SearchHeader = () => {
             addRecentSearch(query);
         }
     }
-    useEffect(() => {
-      const handleClickOutside = (e: MouseEvent) => {
-        if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-          setIsOpen(false);
-        }
-      };
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+
 
   return (
     <div ref={containerRef}>
@@ -36,7 +27,6 @@ const SearchHeader = () => {
        <div className="flex items-center gap-2">
           <form onSubmit={handleFormSubmit} className="focus-within:border-1 focus-within:border-dark-blue w-[210px] [@media(min-width:400px)]:w-[220px] h-[36px] rounded-2xl bg-[#F8F8F8] flex items-center justify-between overflow-hidden">
             <input 
-              onFocus={() => setIsOpen(true)}
               onChange={(e) => setQuery(e.target.value)} type="text" placeholder="Search" className="h-full w-[80%] pl-4 bg-transparent placeholder:text-[#C7C7C7] outline-0 stroke-0 border-0" />
               <button type='submit' className="flex items-center justify-center mr-2 cursor-pointer">
                 <Search strokeWidth={1} className="size-[19px] text-dark-blue" />
@@ -45,7 +35,7 @@ const SearchHeader = () => {
        </div>
     </header>
     {
-        isOpen && query == '' && (
+        query == '' && (
         <div className="w-full">
             <RecentSearches />
             <Recommendations />
