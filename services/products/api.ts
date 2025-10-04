@@ -76,3 +76,21 @@ export const fetchProductCategoryCount = async (category: string) => {
         throw error;
     }
 };
+
+export const fetchSingleProduct = async (id: string) : Promise<ProductType | null>  => {
+
+  try {
+      const docRef = doc(db, "products", id);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        console.log('data:', { id: docSnap.id, ...docSnap.data() })
+        return { id: docSnap.id, ...docSnap.data() } as ProductType;
+      } else {
+        return null;
+      }
+  } catch (error) {
+      console.error('Error fetching product:', error);
+      throw error;
+  }
+};

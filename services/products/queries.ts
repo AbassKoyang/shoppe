@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchProductCategoryCount, fetchProductsByCategory, searchProductsIndex } from "./api";
+import { fetchProductCategoryCount, fetchProductsByCategory, fetchSingleProduct, searchProductsIndex } from "./api";
 import { useSearchParams } from "next/navigation";
 
 export const useFetchProductCategoryCount = (label: string) => {
@@ -40,12 +40,20 @@ export const useSearchProductsIndex = (query: string) => {
   });
   console.log('Filters:', filters, )
     return useQuery({
-      queryKey: ["productsBy" ,filters, query],
+      queryKey: ["products" ,filters, query],
       queryFn: () => searchProductsIndex(query, filters),
       enabled: !!filters,      placeholderData: true,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,     
       refetchOnMount: false,         
       staleTime: 1000 * 60 * 5,
+    });
+  };
+
+  export const useFetchSingleProduct = (id: string) => {
+    return useQuery({
+      queryKey: ["product", id], 
+      queryFn: () => fetchSingleProduct(id),
+      enabled: !!id, // ✅ only fetch if userId exists
     });
   };

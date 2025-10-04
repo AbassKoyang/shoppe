@@ -8,7 +8,7 @@ import Recommendations from './Recommendations';
 import { useParams, useRouter } from 'next/navigation';
 
 const SearchResultHeader = () => {
-  const queryParam = useParams().query;
+  const queryParam = decodeURIComponent(useParams<{query: string}>().query);
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -16,7 +16,7 @@ const SearchResultHeader = () => {
     const handleFormSubmit = (e: FormEvent) => {
       e.preventDefault();
         if(query !== ''){
-            router.push(`/search/search-results/${query}`)
+            router.push(`/search/search-results/${encodeURIComponent(query)}`)
             addRecentSearch(query);
         }
     }

@@ -14,7 +14,7 @@ const SearchHeader = () => {
     const handleFormSubmit = (e: FormEvent) => {
       e.preventDefault();
         if(query !== ''){
-            router.push(`/search/search-results/${query}`)
+            router.push(`/search/search-results/${encodeURIComponent(query)}`)
             addRecentSearch(query);
         }
     }
