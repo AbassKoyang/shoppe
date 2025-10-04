@@ -105,7 +105,7 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className='w-[100vw] h-dvh fixed top-0 left-0 z-40 flex items-start justify-end'>
             <div onClick={closeModal} className="size-full z-10 absolute top-0 left-0 bg-[#E9E9E9] opacity-75"></div>
-            <div className="w-[95%] h-full bg-white z-20 pl-4 [@media(min-width:375px)]:pl-6 pr-2 [@media(min-width:375px)]:pr-4">
+            <div className="w-[95%] h-full bg-white z-20 pl-2 [@media(min-width:375px)]:pl-4 pr-2 [@media(min-width:375px)]:pr-4">
                 <div className="w-full flex items-center justify-between mt-6 mb-5">
                     <h2 className='font-bold font-raleway text-[26px] text-[#202020] mt-0 leading-0'>Filter</h2>
                     <button onClick={closeModal} className='flex items-center justify-center cursor-pointer'><X strokeWidth={2} className='size-[23px] text-black' /></button>
@@ -309,33 +309,33 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
                                 <FormLabel className='text-black text-lg font-extrabold mb-2 leading-0 font-nunito-sans'>Order</FormLabel>
                             <FormControl className='w-full'>
                                 <div className="w-full flex items-center justify-start gap-3 flex-wrap">
-                                <button type='button' onClick={() => setOrder('Popular')} className={`${order === 'Popular' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[162px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                <button type='button' onClick={() => setOrder('Popular')} className={`${order === 'Popular' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[122px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
                                     <p className={`${order === 'Popular' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Popular</p>
-                                    <div className={`${order === 'Popular' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                    <div className={`${order === 'Popular' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
                                         <BsCheck className="text-white" />
                                     </div>
                                 </button>
-                                <button type='button' onClick={() => setOrder('Newest')} className={`${order === 'Newest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[162px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                <button type='button' onClick={() => setOrder('Newest')} className={`${order === 'Newest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[122px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
                                     <p className={`${order === 'Newest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Newest</p>
-                                    <div className={`${order === 'Newest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                    <div className={`${order === 'Newest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
                                         <BsCheck className="text-white" />
                                     </div>
                                 </button>
-                                <button type='button' onClick={() => setOrder('Oldest')} className={`${order === 'Oldest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[162px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                <button type='button' onClick={() => setOrder('Oldest')} className={`${order === 'Oldest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[122px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
                                     <p className={`${order === 'Oldest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Oldest</p>
-                                    <div className={`${order === 'Oldest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                    <div className={`${order === 'Oldest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
                                         <BsCheck className="text-white" />
                                     </div>
                                 </button>
-                                <button type='button' onClick={() => setOrder('PriceHighToLow')} className={`${order === 'PriceHighToLow' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[162px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                <button type='button' onClick={() => setOrder('PriceHighToLow')} className={`${order === 'PriceHighToLow' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[180px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
                                     <p className={`${order === 'PriceHighToLow' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Price High To Low</p>
-                                    <div className={`${order === 'PriceHighToLow' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                    <div className={`${order === 'PriceHighToLow' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
                                         <BsCheck className="text-white" />
                                     </div>
                                 </button>
-                                <button type='button' onClick={() => setOrder('PriceLowToHigh')} className={`${order === 'PriceLowToHigh' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[162px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                <button type='button' onClick={() => setOrder('PriceLowToHigh')} className={`${order === 'PriceLowToHigh' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[180px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
                                     <p className={`${order === 'PriceLowToHigh' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Price Low To High</p>
-                                    <div className={`${order === 'PriceLowToHigh' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
+                                    <div className={`${order === 'PriceLowToHigh' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
                                         <BsCheck className="text-white" />
                                     </div>
                                 </button>

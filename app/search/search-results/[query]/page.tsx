@@ -25,6 +25,10 @@ const Page = () => {
             <SearchResultHeader />
             <SearchFilterModal open={isModalOpen} closeModal={() => setIsModalOpen(false)} />
         <section className="w-full mt-6">
+            <div className="w-full flex items-center justify-center flex-col mb-6">
+                <h4 className="text-[#202020] text-[20px] font-semibold font-raleway">Search Results for:</h4>
+                <h2 className="text-[25px] font-bold font-nunito-sans max-w-[200px] text-center mt-1">{query}</h2>
+            </div>
             <div className="w-full flex items-center justify-between">
                     <h3 className="text-[22px] font-raleway font-semibold text-[#202020]">All Items ({products.length})</h3>
                     <button onClick={() => setIsModalOpen(true)} className="px-3 py-1 rounded-3xl bg-dark-blue flex items-center justify-center gap-1 cursor-pointer">
@@ -33,7 +37,7 @@ const Page = () => {
                     </button>
             </div>
             {products && products.length > 0 && (
-                <div className="w-full h-fit grid grid-cols-2 gap-1.5 mt-3 mb-[500px]">
+                <div className="w-full flex justify-between flex-wrap mt-3 mb-[500px]">
                         {products.map((product: any) => (
                         <JustForYouProductCard key={product.objectID} product={product} />
                         ))}          

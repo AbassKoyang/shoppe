@@ -6,7 +6,7 @@ import { BsCheck } from 'react-icons/bs';
 const CategoryAvatarButton = ({cat, isSelected, setSelectedCategories}:{cat:string; isSelected: boolean; setSelectedCategories: () => void;}) => {
   return (
     <button type='button' onClick={setSelectedCategories} className="cursor-pointer flex flex-col items-center relative">
-        <span className={`${isSelected ? 'size-[22px] border-2' : 'size-0 border-0'} bg-dark-blue rounded-full flex items-center justify-between absolute top-0 right-0 z-20 transition-all duration-300 ease-in-out`}>
+        <span className={`${isSelected ? 'size-[22px] border-2' : 'size-0 border-0'} bg-dark-blue rounded-full flex items-center justify-between absolute top-0 right-0 z-20 transition-all duration-300 ease-in-out origin-center`}>
             <BsCheck className="text-white" />
           </span>
         <div className="size-[60px] border-5 border-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] rounded-full object-contain object-center overflow-hidden">

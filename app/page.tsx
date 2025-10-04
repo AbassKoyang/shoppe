@@ -95,7 +95,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="w-full h-[880px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
+        <div className="w-full flex justify-between flex-wrap mt-3">
               <JustForYouProductCard product={{image: 'https://res.cloudinary.com/dsnoyn1h3/image/upload/w_171,h_176,c_fill,c_fill,g_auto,q_auto,f_auto,e_sharpen/v1757934126/h3eh3mojg4soqrjy43yn.jpg', price: 4000, title: 'Nike Air', location: 'Lagos, Nigeria'}} />
               <JustForYouProductCard product={{image: 'https://res.cloudinary.com/dsnoyn1h3/image/upload/w_171,h_176,c_fill,c_fill,g_auto,q_auto,f_auto,e_sharpen/v1757934126/h3eh3mojg4soqrjy43yn.jpg', price: 4000, title: 'Nike Air', location: 'Lagos, Nigeria'}} />
               <JustForYouProductCard product={{image: 'https://res.cloudinary.com/dsnoyn1h3/image/upload/w_171,h_176,c_fill,c_fill,g_auto,q_auto,f_auto,e_sharpen/v1757934126/h3eh3mojg4soqrjy43yn.jpg', price: 400, title: 'Nike Air', location: 'Lagos, Nigeria'}} />
