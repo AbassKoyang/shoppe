@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchProductCategoryCount, fetchProductsByCategory, fetchSingleProduct, searchProductsIndex } from "./api";
+import { fetchProductCategoryCount, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, searchProductsIndex } from "./api";
 import { useSearchParams } from "next/navigation";
 
 export const useFetchProductCategoryCount = (label: string) => {
@@ -23,6 +23,24 @@ export const useFetchProductByCategory = (category: string) => {
       queryKey: ["productsByCategory", category, filters],
       queryFn: () => fetchProductsByCategory(category, filters),
       enabled: !!category,
+      placeholderData: true,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,     
+      refetchOnMount: false,         
+      staleTime: 1000 * 60 * 5,
+    });
+  };
+export const useFetchProductBySubCategory = (subCategory: string) => {
+  const searchParams = useSearchParams();
+  const filters: Record<string, string> = {};
+  searchParams.forEach((value, key) => {
+    filters[key] = value;
+  });
+  console.log('Filters:', filters, subCategory);
+    return useQuery({
+      queryKey: ["productsBySubCategory", subCategory, filters],
+      queryFn: () => fetchProductsBySubCategory(subCategory, filters),
+      enabled: !!subCategory,
       placeholderData: true,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,     

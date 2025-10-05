@@ -40,6 +40,24 @@ export const fetchProductsByCategory = async (
     }
   };
 
+export const fetchProductsBySubCategory = async (
+    subCategory: string, filters: Record<string, string>) => {
+      const filterUrl = formatFilterURL(filters);
+      console.log(filterUrl)
+
+  try{
+      const res = await fetch(`/api/products/fetch-products-by-subcategory/?subCategory=${subCategory}&${filterUrl}`);
+      if(!res.ok){
+        throw new Error("Failed to fethc product");
+      }
+      return res.json();
+
+    } catch (err: any) {
+      console.error("Error fetching subCategory:", err);
+      throw err;
+    }
+  };
+
 export const searchProductsIndex = async (query: string, filters: Record<string, string>) => {
       const filterUrl = formatFilterURL(filters);
       console.log(filterUrl)

@@ -59,11 +59,11 @@ const ProductImagesCarousel = ({viewportWidth, images}: {viewportWidth: number; 
     }
     const newImages: string[] = getImages(images);
   return (
-        <div className='w-full h-[439px]'>
-        <Carousel setApi={setApi} className={`w-full`}> 
-            <CarouselContent className={``}>
+        <div className='w-full h-[439px] rounded-b-2xl overflow-hidden'>
+        <Carousel setApi={setApi} className={`w-full rounded-b-2xl`}> 
+            <CarouselContent className={`rounded-b-2xl`}>
                 {newImages.map((image) => (
-                    <CarouselItem className='w-full h-[439px] bg-gray-300'>
+                    <CarouselItem className='w-full h-[439px] bg-transparent rounded-b-2xl'>
                     <Image
                       src={image}
                        width={viewportWidth} 
@@ -75,20 +75,22 @@ const ProductImagesCarousel = ({viewportWidth, images}: {viewportWidth: number; 
                     </CarouselItem>
                 ))}
             </CarouselContent>
-            <div className="absolute bottom-5 left-[50%] translate-x-[-50%] w-full flex items-center justify-center gap-2 mt-3 z-50">
-                {newImages.map((_, idx) => (
-                    <Button
-                        key={idx}
-                        size="icon"
-                        className={`transition-all duration-100 ease-in-out hover:bg-dark-blue ${
-                        current === idx ? "bg-dark-blue h-2.5 w-10 rounded-xl" : "bg-light-blue size-2.5 rounded-full"
-                        }`}
-                        onClick={() => scrollTo(idx)}
-                    />
-                 ))}
-           </div>
-           <button onClick={() => router.back()} className="cursor-pointer absolute top-5 left-5 flex items-center justify-center bg-[#FFEBEB] rounded-full size-[30px]">
-                        <ArrowLeft className="size-[18px] text-[#B5A2A2]" />
+           {newImages.length > 1  && (
+             <div className="absolute bottom-5 left-[50%] translate-x-[-50%] w-full flex items-center justify-center gap-2 mt-3 z-50">
+             {newImages.map((_, idx) => (
+                 <Button
+                     key={idx}
+                     size="icon"
+                     className={`transition-all duration-100 ease-in-out hover:bg-dark-blue ${
+                     current === idx ? "bg-dark-blue h-2.5 w-10 rounded-xl" : "bg-dark-blue opacity-20 size-2.5 rounded-full"
+                     }`}
+                     onClick={() => scrollTo(idx)}
+                 />
+              ))}
+        </div>
+           )}
+           <button onClick={() => router.back()} className="cursor-pointer absolute top-3 left-3 flex items-center justify-center bg-[#FFEBEB] rounded-full size-[30px]">
+                        <ArrowLeft className="size-[18px] text-[#202020]" />
             </button>
         </Carousel>
         </div>
