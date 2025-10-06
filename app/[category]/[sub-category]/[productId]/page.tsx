@@ -1,6 +1,7 @@
 'use client';
 
 import ProductImagesCarousel from "@/components/ProductImagesCarousel";
+import ProductPageSkeleton from "@/components/ProductPageSkeleton";
 import { formatPrice } from "@/lib/utils";
 import { useFetchSingleProduct } from "@/services/products/queries";
 import { Heart, MessageCircle, MessageSquareText } from "lucide-react";
@@ -28,7 +29,12 @@ const page = () => {
 
   return (
     <section className="w-full relative bg-white">
-      <ProductImagesCarousel viewportWidth={viewportWidth} images={product?.images || []} />
+      {isLoading && (
+        <ProductPageSkeleton />
+      )}
+      {product && (
+        <>
+          <ProductImagesCarousel viewportWidth={viewportWidth} images={product?.images || []} />
       <div className="px-4 [@media(min-width:375px)]:px-6 bg-white mb-[100px]">
         <div className="w-full flex items-center justify-between my-5">
           <h4 className="text-[26px] text-black font-raleway font-extrabold">{currency}{price}</h4>
@@ -117,6 +123,13 @@ const page = () => {
         <button className="bg-[#202020] rounded-4xl px-4 py-2 flex items-center gap-2"><MessageCircle  strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Chat Seller</span></button>
         <button className="bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
       </div>
+        </>
+      )}
+      {isError && (
+        <div className='w-full h-dvh flex items-center justify-center'>
+        <p>Oops, failed to load product.</p>
+       </div>
+      )}
     </section>
   )
 }

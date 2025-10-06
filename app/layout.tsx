@@ -31,7 +31,7 @@ export default function RootLayout({
       <body
         className={`${raleway.variable} ${nunitosans.variable} antialiased`}
       >
-        <TransitionProvider>
+        {/* <TransitionProvider> */}
             <AuthProvider>
             <QueryProvider>
                 <main className="w-full min-h-dvh relative">
@@ -41,7 +41,7 @@ export default function RootLayout({
             </QueryProvider>
             </AuthProvider>
             <ToastContainer/>
-           </TransitionProvider>
+           {/* </TransitionProvider> */}
       </body>
     </html>
   );

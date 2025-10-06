@@ -21,6 +21,18 @@ const JustForYouProductCard = ({product}:{product: any }) => {
   })
 
   const formattedPrice = formatPrice(price);
+  const formatTitle = (title: string) => {
+     const newTitle = title.substring(0, 18);
+     if (title.length > 18 ) return newTitle + '...'
+     return title;
+  }
+  const title = formatTitle(product.title);
+  const formatDescription = (desc: string) => {
+     const newDesc = desc.substring(0, 30);
+     if (desc.length > 30 ) return newDesc + '...'
+     return desc;
+  }
+  const desc = formatDescription(product.description);
   const formatProductLink = (category: string, subCategory: string, id: string) => {
     const formattedCategory = category.toLowerCase().split(' ').join('-');
     const formattedsubCategory = subCategory.toLowerCase().split(' ').join('-');
@@ -42,8 +54,8 @@ const JustForYouProductCard = ({product}:{product: any }) => {
                   className="rounded-[5px] object-cover"/>
             </div>
             <h5 className="text-black text-[17px] font-raleway font-bold mt-1.5 text-left">${formattedPrice}</h5>
-            <h6 className="text-black text-[14px] font-raleway font-bold mt text-left">{product.title}</h6>
-            <p className="text-black text-[12px] font-nunito-sans font-normal max-w-full text-left mt">Lorem ipsum dolor sit amet consectetur.</p>
+            <h6 className="text-black text-[14px] font-raleway font-bold mt text-left">{title}</h6>
+            <p className="text-black text-[12px] font-nunito-sans font-normal max-w-full text-left mt">{desc}</p>
             <div className="w-full max-w-full flex items-center justify-between mt-1">
               <div className="flex items-center gap-1">
               <MapPin className='text-black/85 size-[10px]' />

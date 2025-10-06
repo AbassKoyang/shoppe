@@ -51,7 +51,8 @@ const ProductImagesCarousel = ({viewportWidth, images}: {viewportWidth: number; 
                 g_auto: true,
                 q_auto: true,
                 f_auto: true,
-                e_sharpen: true
+                e_sharpen: true,
+                dpr_auto: true,
               }))
         })
         console.log(newImages);
@@ -63,11 +64,11 @@ const ProductImagesCarousel = ({viewportWidth, images}: {viewportWidth: number; 
         <Carousel setApi={setApi} className={`w-full h-full rounded-b-2xl`}> 
             <CarouselContent className={`rounded-b-2xl h-full`}>
                 {newImages.map((image) => (
-                    <CarouselItem className='w-full aspect-[3/4] rounded-b-2xl'>
+                    <CarouselItem key={image} className='w-full h-[439px] aspect-[3/4] rounded-b-2xl relative'>
                     <Image
                       src={image}
                       fill
-                        sizes='100vw'
+                      sizes='100vw'
                      placeholder="blur"
                      blurDataURL="/assets/images/product-fallback-image.png"
                      alt="Product image" className="rounded-[5px] object-cover"/>
