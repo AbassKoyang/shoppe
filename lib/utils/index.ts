@@ -416,7 +416,7 @@ export const formatPrice = (price: string) => {
 }
 
 export const formatProductCardImageUrl = (url: string, preset: {
-  width: string; height?: string; c_fill: boolean; g_auto: boolean; q_auto: boolean; f_auto: boolean; e_sharpen: boolean; ar_?: string
+  width: string; height?: string; c_fill: boolean; g_auto: boolean; q_auto: boolean; f_auto: boolean; e_sharpen: boolean; ar_?: string; dpr_auto?: boolean;
 }) => {
-  return url.substring(0,50) + `w_${preset.width}${preset.height? `,h_${preset.height}` : ''}${preset.ar_? `,ar_${preset.ar_}` : ''},${preset.c_fill ? 'c_fill' : ''},${preset.g_auto ? 'g_auto' : ''},${preset.q_auto ? 'q_auto' : ''},${preset.f_auto ? 'f_auto' : ''},${preset.e_sharpen ? 'e_sharpen' : ''}/` + url.substring(50);
+  return url.substring(0,50) + `w_${preset.width}${preset.height? `,h_${preset.height}` : ''}${preset.ar_? `,ar_${preset.ar_}` : ''},${preset.c_fill ? 'c_fill' : ''},${preset.g_auto ? 'g_auto' : ''},${preset.q_auto ? 'q_auto' : ''},${preset.f_auto ? 'f_auto' : ''},${preset.e_sharpen ? 'e_sharpen' : ''}${preset.dpr_auto ? ',dpr_auto' : ''}/` + url.substring(50);
 }
