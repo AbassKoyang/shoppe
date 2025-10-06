@@ -10,8 +10,8 @@ const JustForYouProductCard = ({product}:{product: any }) => {
   const price : string = String(product.price);
 
   const imageUrl = formatProductCardImageUrl(product.image, {
-    width: '155',
-    height: '155',
+    width: '150',
+    height: '150',
     c_fill: true,
     g_auto: true,
     q_auto: true,
@@ -27,16 +27,16 @@ const JustForYouProductCard = ({product}:{product: any }) => {
   }
   const productLink = formatProductLink(product.category, product.subCategory, product.objectID)
   return (
-        <Link href={productLink} className='w-[165px] mt-3'>
-            <div className="w-[165px] h-[165px] p-[5px] rounded-[9px] bg-white overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
+        <Link href={productLink} className='w-[160px] mt-3'>
+            <div className="w-[150px] h-[150px] p-[5px] rounded-[9px] bg-white overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
                 <Image
                  src={imageUrl}
-                  width={155} 
-                  height={155}
-                  style={{ width: "155px", height: "155px" }}
+                  width={150} 
+                  height={150}
+                  style={{ width: "150px", height: "150px" }}
                 placeholder="blur"
                 blurDataURL="/assets/images/product-fallback-image.png"
-                alt="Product image" className="rounded-[5px] overflow-hidden"/>
+                alt="Product image" className="rounded-[5px] overflow-hidden object-cover"/>
             </div>
             <h5 className="text-black text-[17px] font-raleway font-bold mt-1.5 text-left">${formattedPrice}</h5>
             <h6 className="text-black text-[14px] font-raleway font-bold mt text-left">{product.title}</h6>

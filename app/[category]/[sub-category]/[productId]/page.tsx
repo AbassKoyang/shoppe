@@ -110,7 +110,7 @@ const page = () => {
         </div>
         </div>
       </div>
-      <div className="w-[97%] fixed bottom-3 left-[50%] translate-x-[-50%] px-4 [@media(min-width:375px)]:px-4 py-4 bg-white flex items-center justify-between rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
+      <div className="w-[97%] fixed bottom-3 left-[50%] translate-x-[-50%] px-3 [@media(min-width:375px)]:px-3 py-3 bg-white flex items-center justify-between rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
         <button className="w-[47px] h-[47px] rounded-full bg-[#F9F9F9] flex items-center justify-center">
           <Heart strokeWidth={1} className="text-black size-[28px]" />
         </button>
