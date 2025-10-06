@@ -46,7 +46,7 @@ const ProductImagesCarousel = ({viewportWidth, images}: {viewportWidth: number; 
         images.map((image) => {
             newImages.push(formatProductCardImageUrl(image, {
                 width: `${viewportWidth}`,
-                height: '439',
+                ar_: '3:4',
                 c_fill: true,
                 g_auto: true,
                 q_auto: true,
@@ -59,19 +59,18 @@ const ProductImagesCarousel = ({viewportWidth, images}: {viewportWidth: number; 
     }
     const newImages: string[] = getImages(images);
   return (
-        <div className='w-full h-[439px] rounded-b-2xl overflow-hidden'>
-        <Carousel setApi={setApi} className={`w-full rounded-b-2xl`}> 
-            <CarouselContent className={`rounded-b-2xl`}>
+        <div className='w-full h-[439px] aspect-[3/4] rounded-b-2xl overflow-hidden'>
+        <Carousel setApi={setApi} className={`w-full h-full rounded-b-2xl`}> 
+            <CarouselContent className={`rounded-b-2xl h-full`}>
                 {newImages.map((image) => (
-                    <CarouselItem className='w-full h-[439px] bg-transparent rounded-b-2xl'>
+                    <CarouselItem className='w-full aspect-[3/4] rounded-b-2xl'>
                     <Image
                       src={image}
-                       width={viewportWidth} 
-                       height={439}
-                       style={{ width: `${viewportWidth}px`, height: "439px" }}
+                      fill
+                        sizes='100vw'
                      placeholder="blur"
                      blurDataURL="/assets/images/product-fallback-image.png"
-                     alt="Product image" className="rounded-[5px] overflow-hidden"/>
+                     alt="Product image" className="rounded-[5px] object-cover"/>
                     </CarouselItem>
                 ))}
             </CarouselContent>

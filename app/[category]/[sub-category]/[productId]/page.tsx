@@ -3,7 +3,7 @@
 import ProductImagesCarousel from "@/components/ProductImagesCarousel";
 import { formatPrice } from "@/lib/utils";
 import { useFetchSingleProduct } from "@/services/products/queries";
-import { Heart, MessageSquareText } from "lucide-react";
+import { Heart, MessageCircle, MessageSquareText } from "lucide-react";
 import { useParams } from "next/navigation"
 import { useState, useEffect } from "react";
 import { IoIosShareAlt } from "react-icons/io";
@@ -66,7 +66,7 @@ const page = () => {
 
           <div className="w-[50%] flex flex-col items-start">
             <h6 className="text-[17px] text-black font-raleway font-bold mt-5 mb-1">Discount</h6>
-            <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product?.discount}%</span>
+            <span className="text-[14px] text-black font-raleway font-medium bg-[#FFEBEB] py-0.5 px-3 rounded-[4px] mt-1">{product?.discount}%</span>
           </div>
 
           {product?.gender && (
@@ -81,7 +81,7 @@ const page = () => {
             <h6 className="text-[17px] text-black font-raleway font-bold mt-5 mb-1">Material</h6>
             <div className="w-full flex flex-wrap gap-2">
             {product?.material.split(',').map((mat) => (
-              <span className="text-[14px] text-black font-raleway font-medium bg-[#FFEBEB] py-0.5 px-3 rounded-[4px] mt-1">
+              <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">
                 {mat}
               </span>
             ))}
@@ -92,7 +92,7 @@ const page = () => {
           {product?.brand && (
           <div className="w-[50%] flex flex-col items-start">
             <h6 className="text-[17px] text-black font-raleway font-bold mt-5 mb-1">Brand</h6>
-            <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product?.brand}</span>
+            <span className="text-[14px] text-black font-raleway font-medium bg-[#FFEBEB] py-0.5 px-3 rounded-[4px] mt-1">{product?.brand}</span>
           </div>
           )}
 
@@ -105,17 +105,17 @@ const page = () => {
           
           <div className="w-[50%] flex flex-col items-start">
             <h6 className="text-[17px] text-black font-raleway font-bold mt-5 mb-1">Location</h6>
-            <span className="text-[14px] text-black font-raleway font-medium bg-[#FFEBEB] py-0.5 px-3 rounded-[4px] mt-1">{product?.location}</span>
+            <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product?.location}</span>
           </div>
         </div>
         </div>
       </div>
-      <div className="w-full fixed bottom-0 left-0 px-4 [@media(min-width:375px)]:px-6 py-4 bg-white flex items-center justify-between">
-        <button className="w-[47px] h-[40px] rounded-[11px] bg-[#F9F9F9] flex items-center justify-center">
+      <div className="w-[97%] fixed bottom-3 left-[50%] translate-x-[-50%] px-4 [@media(min-width:375px)]:px-4 py-4 bg-white flex items-center justify-between rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
+        <button className="w-[47px] h-[47px] rounded-full bg-[#F9F9F9] flex items-center justify-center">
           <Heart strokeWidth={1} className="text-black size-[28px]" />
         </button>
-        <button className="bg-[#202020] rounded-[11px] px-4 py-2 flex items-center gap-2"><MessageSquareText strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Message Seller</span></button>
-        <button className="bg-dark-blue text-white rounded-[11px] px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy Now</button>
+        <button className="bg-[#202020] rounded-4xl px-4 py-2 flex items-center gap-2"><MessageCircle  strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Chat Seller</span></button>
+        <button className="bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
       </div>
     </section>
   )
