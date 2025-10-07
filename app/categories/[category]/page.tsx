@@ -7,7 +7,7 @@ import SubCategoryAvatar from "@/components/SubCategoryAvatar";
 import { SUB_CATEGORIES } from "@/lib/utils/index";
 import { useFetchProductByCategory, useFetchProductCategoryCount } from "@/services/products/queries";
 import { CategoryType } from "@/services/products/types";
-import { ArrowLeft, ChevronLeft, Settings2 } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ListTree, Settings2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -33,9 +33,8 @@ const Page = () => {
                     </button>
                     <h2 className='font-semibold font-raleway text-[30px]'>{formattedCategory}</h2>
                 </div>
-                <button onClick={() => setIsCategoriesModalOpen(true)} className="px-3 py-1 rounded-3xl bg-dark-blue flex items-center justify-center gap-1 cursor-pointer">
-                    <p className="text-white text-sm">Filter</p>
-                    <Settings2 strokeWidth={2} className="size-[16px] text-white" />
+                <button onClick={() => setIsCategoriesModalOpen(true)} aria-label="categories" className="px-1 py-1 rounded-sm bg-dark-blue flex items-center justify-center gap-1 cursor-pointer">
+                    <ListTree strokeWidth={2} className="size-[20px] text-white" />
                 </button>
             </div>
             <div className="w-full mt-4">

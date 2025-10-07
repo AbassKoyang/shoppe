@@ -67,7 +67,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
     }
     return (
         <motion.section
-        initial={{x: 0}}
+        initial={false}
         animate={{x:open ? '0%' : '100%'}}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className='w-[100vw] h-dvh fixed top-0 left-0 z-40 flex items-start justify-end'>

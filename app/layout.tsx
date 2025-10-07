@@ -36,7 +36,7 @@ export default function RootLayout({
             <QueryProvider>
                 <main className="w-full min-h-dvh relative">
                   {children}
-                  {/* <Navbar /> */}
+                  <Navbar />
                 </main>
             </QueryProvider>
             </AuthProvider>

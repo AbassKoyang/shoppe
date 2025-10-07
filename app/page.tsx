@@ -3,6 +3,7 @@ import ArrowRightButton from "@/components/ArrowRightButton";
 import CategoryPreview from "@/components/CategoryPreview";
 import HomeHeader from "@/components/HomeHeader";
 import JustForYouProductCard from "@/components/JustForYouProductCard";
+import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import SponsoredBanner from "@/components/SponsoredBanner";
 import TopProductAvatar from "@/components/TopProductAvatar";
@@ -104,6 +105,7 @@ export default function Home() {
               <JustForYouProductCard product={{image: 'https://res.cloudinary.com/dsnoyn1h3/image/upload/w_171,h_176,c_fill,c_fill,g_auto,q_auto,f_auto,e_sharpen/v1757934126/h3eh3mojg4soqrjy43yn.jpg', price: 8000000, title: 'Nike Air', location: 'Lagos, Nigeria', category: 'Dresses', subCategory: 'Casual Dresses', discount: 20, description: 'Lorem ipsum dolor sit amet consectetur'}} />
         </div>
       </section>
+      {/* <Navbar/> */}
     </section>
   );
 }

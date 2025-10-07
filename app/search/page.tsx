@@ -4,7 +4,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <section className="w-full min-h-full px-4 [@media(min-width:375px)]:px-6 overflow-x-hidden">
+    <section className="w-full min-h-full overflow-x-hidden">
         <SearchHeader />
         <section className="w-full mt-8 mb-[300px]">
         <div className="w-full">
