@@ -14,3 +14,9 @@ export type CategoryType =
   | "Swimwear"
   | "Activewear"
   | "Other";
+
+  export type WishlistType = {
+    id?: string;
+    userId: string;
+    product: ProductType;
+}

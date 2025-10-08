@@ -44,7 +44,7 @@ const Page = () => {
                 </div>
             ) }
             {isLoading && (
-                <div className="w-full h-[880px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
+                <div className="w-full flex justify-between flex-wrap mt-3">
                 <ProductSkeleton />
                 <ProductSkeleton />
                 <ProductSkeleton />
@@ -54,7 +54,7 @@ const Page = () => {
                 </div>
             )}
             {isFetching && (
-                <div className="w-full h-[880px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
+                <div className="w-full flex justify-between flex-wrap mt-3">
                 <ProductSkeleton />
                 <ProductSkeleton />
                 <ProductSkeleton />

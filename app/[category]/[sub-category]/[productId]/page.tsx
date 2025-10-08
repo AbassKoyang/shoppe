@@ -2,18 +2,69 @@
 
 import ProductImagesCarousel from "@/components/ProductImagesCarousel";
 import ProductPageSkeleton from "@/components/ProductPageSkeleton";
+import { useAuth } from "@/lib/contexts/auth-context";
 import { formatPrice } from "@/lib/utils";
+import { addProductToWishlist } from "@/services/products/api";
 import { useFetchSingleProduct } from "@/services/products/queries";
-import { Heart, MessageCircle, MessageSquareText } from "lucide-react";
+import { ProductType, WishlistType } from "@/services/products/types";
+import { QueryClient, useMutation } from "@tanstack/react-query";
+import { Heart, LoaderCircle, MessageCircle, MessageSquareText } from "lucide-react";
 import { useParams } from "next/navigation"
 import { useState, useEffect } from "react";
 import { IoIosShareAlt } from "react-icons/io";
+import { toast } from "react-toastify";
 
 const page = () => {
+  const {user} = useAuth();
   const productId = useParams<{productId: string}>().productId;
   const {isError, isLoading, data: product} = useFetchSingleProduct(productId);
   const [viewportWidth, setViewportWidth] = useState(0);
-  console.log(product);
+  const [loading, setLoading] = useState(false);
+  const queryClient = new QueryClient();
+
+  const addProductToWishlistMutation = useMutation({
+    mutationKey: ['addPaymentMethod'],
+    mutationFn: (data : WishlistType) => addProductToWishlist(data),
+    onSuccess: (data) => {
+        toast.success(`Product added to wishlist succesfully.`);
+        queryClient.invalidateQueries({ queryKey: ['wishlists']});
+    }
+  });
+
+  const handleAddProductToWishList = async (data: ProductType) => {
+  
+    try {
+        setLoading(true);
+      if (!user) {
+        toast.error("You must be logged in to add a product to wishlist method.");
+        return;
+      }
+  
+      const wish: WishlistType = {
+        userId: user.uid,
+        product: data,
+      };
+  
+      const success = await addProductToWishlistMutation.mutateAsync(wish);
+      if(success){
+     
+      }
+    } catch (error: any) {
+      console.error("❌ Error adding product to wishlist:", error);
+  
+      if (error?.code === "permission-denied") {
+        toast.error("You don’t have permission to add product to wishlist.");
+      } else if (error?.message?.includes("network")) {
+        toast.error("Network error — check your connection and try again.");
+      } else if (error?.message?.includes("wishlist")) {
+        toast.error("Item already added to Wishlist");
+      } else {
+        toast.error("Something went wrong while adding product to wishlist. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     setViewportWidth(window.innerWidth);
@@ -117,11 +168,11 @@ const page = () => {
         </div>
       </div>
       <div className="w-[97%] fixed bottom-3 left-[50%] translate-x-[-50%] px-3 [@media(min-width:375px)]:px-3 py-3 bg-white flex items-center justify-between rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
-        <button className="w-[47px] h-[47px] rounded-full bg-[#F9F9F9] flex items-center justify-center">
-          <Heart strokeWidth={1} className="text-black size-[28px]" />
+        <button onClick={() => handleAddProductToWishList(product)} className="cursor-pointer w-[47px] h-[47px] rounded-full bg-[#F9F9F9] flex items-center justify-center">
+         {loading ? (<LoaderCircle className="animate-spin size-[28px] text-black" />) : ( <Heart strokeWidth={1} className="text-black size-[28px]" />)}
         </button>
-        <button className="bg-[#202020] rounded-4xl px-4 py-2 flex items-center gap-2"><MessageCircle  strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Chat Seller</span></button>
-        <button className="bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
+        <button className="cursor-pointer bg-[#202020] rounded-4xl px-4 py-2 flex items-center gap-2"><MessageCircle  strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Chat Seller</span></button>
+        <button className="cursor-pointer bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
       </div>
         </>
       )}

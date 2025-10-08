@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchProductCategoryCount, fetchProductPerUser, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, searchProductsIndex } from "./api";
+import { fetchProductCategoryCount, fetchProductPerUser, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, fetchUserWishlist, searchProductsIndex } from "./api";
 import { useSearchParams } from "next/navigation";
 
 export const useFetchProductCategoryCount = (label: string) => {
@@ -80,5 +80,12 @@ export const useSearchProductsIndex = (query: string) => {
       queryKey: ["productPerUser", id], 
       queryFn: () => fetchProductPerUser(id),
       enabled: !!id, // ✅ only fetch if userId exists
+    });
+  };
+  export const useFetchUserWishlist = (userId: string) => {
+    return useQuery({
+      queryKey: ["wishlists", userId], 
+      queryFn: () => fetchUserWishlist(userId),
+      enabled: !!userId, // ✅ only fetch if userId exists
     });
   };

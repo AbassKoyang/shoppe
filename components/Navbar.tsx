@@ -40,7 +40,7 @@ if(pathname == '/add-product') return null;
                 <RiSearch2Line strokeWidth={1} className={`${pathname.includes('search') ? 'text-white bg-dark-blue size-[20px]' : 'text-black/75 bg-white size-[24px]'} z-20 transition-transform duration-300 ease-in-out`} />
                 <p className={`${pathname.includes('search') ? 'translate-x-0 opacity-100 w-auto ml-1' : '-translate-x-5 opacity-0 w-0 ml-0'} transition-all duration-300 ease-in-out text-[12px] font-nunito-sans text-white font-normal z-10`}>Search</p>
             </Link>
-            <Link href={`/profile/${user?.uid}`} className={`px-3 py-2 rounded-4xl flex items-center ${pathname.includes('profile') ? 'bg-dark-blue' : 'bg-transparent'}`}>
+            <Link href={`/profile/${user?.uid}`} className={`px-3 py-2 rounded-4xl flex items-center ${pathname.includes('profile') || pathname.startsWith('/wishlist') || pathname.startsWith('/settings') ? 'bg-dark-blue' : 'bg-transparent'}`}>
                 <RiUserLine strokeWidth={1} className={`${pathname.includes('profile') ? 'text-white bg-dark-blue size-[20px]' : 'text-black/75 bg-white size-[24px]'} z-20 transition-transform duration-300 ease-in-out`} />
                 <p className={`${pathname.includes('profile') ? 'translate-x-0 opacity-100 w-auto ml-1' : '-translate-x-5 opacity-0 w-0 ml-0'} transition-all duration-300 ease-in-out text-[12px] font-nunito-sans text-white font-normal z-10`}>Profile</p>
             </Link>

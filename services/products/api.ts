@@ -2,6 +2,7 @@ import { db } from '@/lib/firebase';
 import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc, QueryConstraint, limit, orderBy, DocumentData} from 'firebase/firestore';
 import { ProductType } from './types';
 import { formatFilterURL } from '@/lib/utils/formatFilterURL';
+import { WishlistType } from '../products/types';
 export const addProduct = async (data : ProductType) => {
     try {
         const res = await fetch('/api/products/add', {
@@ -18,6 +19,27 @@ export const addProduct = async (data : ProductType) => {
         return res.json();
     } catch (error) {
         console.error('Error from addProduct', error);
+    }
+};
+export const addProductToWishlist = async (data : WishlistType) => {
+  const colRef = collection(db, 'wishlists');
+    try {
+      const q = query(colRef, where('product.id', '==', data.product.id));
+        const querySnapshot = (await getDocs(q));
+  
+      if (!querySnapshot.empty) {
+        console.log('alreayd in wl')
+        throw Error('product-already-in-wishlist');
+      }
+      try {
+        await addDoc(colRef, data);
+        console.log('Product added to wishlist succesfully')
+        return true;
+    } catch (error) {
+        console.error(error)
+    }
+    } catch (error) {
+        console.error('Error adding item to wishlist', error);
     }
 };
 
@@ -94,7 +116,7 @@ export const fetchProductCategoryCount = async (category: string) => {
         throw error;
     }
 };
-export const fetchProductPerUser = async (id: string) : Promise<ProductType[]> => {
+export const fetchProductPerUser = async (id: string) => {
     const colRef = collection(db, "products");
 
     try {
@@ -105,12 +127,32 @@ export const fetchProductPerUser = async (id: string) : Promise<ProductType[]> =
             return querySnapshot.docs.map((doc) => ({
               id: doc.id,
               ...doc.data(),
-            })) as ProductType[]
+            }))
         } else {
             return [];
         }
     } catch (error) {
         console.error('Error fetching  user listed items:', error);
+        throw error;
+    }
+};
+export const fetchUserWishlist = async (userId: string) : Promise<WishlistType[]> => {
+    const colRef = collection(db, "wishlists");
+
+    try {
+        const q = query(colRef, where('userId', '==', userId ));
+        const querySnapshot = (await getDocs(q));
+        
+        if(!querySnapshot.empty){
+            return querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })) as WishlistType[]
+        } else {
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching  user wish list:', error);
         throw error;
     }
 };
