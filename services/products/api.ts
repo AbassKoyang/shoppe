@@ -94,6 +94,26 @@ export const fetchProductCategoryCount = async (category: string) => {
         throw error;
     }
 };
+export const fetchProductPerUser = async (id: string) : Promise<ProductType[]> => {
+    const colRef = collection(db, "products");
+
+    try {
+        const q = query(colRef, where('sellerId', '==', id ));
+        const querySnapshot = (await getDocs(q));
+        
+        if(!querySnapshot.empty){
+            return querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })) as ProductType[]
+        } else {
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching  user listed items:', error);
+        throw error;
+    }
+};
 
 export const fetchSingleProduct = async (id: string) : Promise<ProductType | null>  => {
 
@@ -102,7 +122,6 @@ export const fetchSingleProduct = async (id: string) : Promise<ProductType | nul
       const docSnap = await getDoc(docRef);
   
       if (docSnap.exists()) {
-        console.log('data:', { id: docSnap.id, ...docSnap.data() })
         return { id: docSnap.id, ...docSnap.data() } as ProductType;
       } else {
         return null;

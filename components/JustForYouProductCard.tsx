@@ -9,7 +9,7 @@ import { string } from 'zod';
 const JustForYouProductCard = ({product}:{product: any }) => {
   const price : string = String(product.price);
 
-  const imageUrl = formatProductCardImageUrl(product.image, {
+  const imageUrl = formatProductCardImageUrl(product.image || product.images[0], {
     width: '300',
     height: '300',
     c_fill: true,
@@ -38,7 +38,7 @@ const JustForYouProductCard = ({product}:{product: any }) => {
     const formattedsubCategory = subCategory.toLowerCase().split(' ').join('-');
     return `/${formattedCategory}/${formattedsubCategory}/${id}`
   }
-  const productLink = formatProductLink(product.category, product.subCategory, product.objectID)
+  const productLink = formatProductLink(product.category, product.subCategory, product.objectID || product.id)
   return (
         <Link href={productLink} className='w-[160px] mt-3'>
             <div className="w-full relative h-[160px] aspect-square p-[5px] rounded-[9px] bg-white overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">

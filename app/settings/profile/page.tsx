@@ -125,7 +125,7 @@ const page = () => {
                     <UploadImageButton onComplete={
                         (url) => {
                             console.log("Uploaded Image URL:", url);
-                            setImageUrl(url); // ✅ Store in local state
+                            setImageUrl(url); 
                             setHasImageUrlChanged(true);
                           }
                     } buttonLabel={<BiSolidPencil className='size-[18px] text-white' />} className="absolute top-0 right-0 z-20 size-[35px] rounded-full border-[4px] border-white shadow-md flex items-center justify-center bg-dark-blue" />
