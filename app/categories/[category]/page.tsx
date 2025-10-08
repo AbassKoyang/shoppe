@@ -28,7 +28,7 @@ const Page = () => {
             <FilterModal open={isFilterModalOpen} closeModal={() => setIsFilterModalOpen(false)} />
             <div className="w-full flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <button onClick={() => router.back()} className="flex items-center justify-center">
+                    <button onClick={() => router.back()} className="flex items-center justify-center cursor-pointer">
                         <ArrowLeft className="size-[30px]" />
                     </button>
                     <h2 className='font-semibold font-raleway text-[30px]'>{formattedCategory}</h2>
@@ -53,7 +53,7 @@ const Page = () => {
 
         <section className="w-full mt-6">
             <div className="w-full flex items-center justify-between">
-                    <h3 className="text-[22px] font-raleway font-semibold text-[#202020]">All Items</h3>
+                    <h3 className="text-[22px] font-raleway font-semibold text-[#202020]">All Items ({products.length})</h3>
                     <button onClick={() => setIsFilterModalOpen(true)} className="px-3 py-1 rounded-3xl bg-dark-blue flex items-center justify-center gap-1 cursor-pointer">
                     <p className="text-white text-sm">Filter</p>
                     <Settings2 strokeWidth={2} className="size-[16px] text-white" />

@@ -28,8 +28,8 @@ const JustForYouProductCard = ({product}:{product: any }) => {
   }
   const title = formatTitle(product.title);
   const formatDescription = (desc: string) => {
-     const newDesc = desc.substring(0, 38);
-     if (desc.length > 38 ) return newDesc + '...'
+     const newDesc = desc.substring(0, 45);
+     if (desc.length > 45 ) return newDesc + '...'
      return desc;
   }
   const desc = formatDescription(product.description);

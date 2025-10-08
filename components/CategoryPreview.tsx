@@ -10,7 +10,7 @@ const CategoryPreview = ({label, images} : {label: string; images: string[]}) =>
   return (
         <>
             {isLoading && (
-                <div className='size-full bg-gray-200 animate-pulse rounded-[9px] grid grid-cols-2 grid-rows-2 gap-1.5 p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]'>
+                <div className='size-full bg-gray-200 rounded-[9px] grid grid-cols-2 grid-rows-2 gap-1.5 p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]'>
                     <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
                     <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
                     <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>

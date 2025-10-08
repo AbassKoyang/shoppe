@@ -19,7 +19,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
     const [loading, setLoading] = useState(false);
     const [selectedSizes, setSelectedSizes] = useState(['M']);
     const [selectedSizeType, setSelectedSizeType] = useState<'Alpha' | 'Numeric' | 'One Size'>('Alpha');
-    const [order, setOrder] = useState<'Popular' | 'Oldest' | 'Newest'>('Popular');
+    const [order, setOrder] = useState<'Popular' | 'Oldest' | 'Newest' | 'PriceHighToLow' | 'PriceLowToHigh'>('Popular');
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -44,7 +44,6 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
     const OnSubmit = (data: z.infer<typeof filterSChema>) => {
         const params = new URLSearchParams(searchParams.toString());
 
-  // Update all fields
         if (data.location) params.set("location", data.location);
         if (data.currency) params.set("currency", data.currency);
         if (data.minPrice) params.set("minPrice", data.minPrice);
@@ -54,7 +53,6 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
         if (data.condition) params.set("condition", data.condition);
         if (data.order) params.set("order", data.order);
 
-        // Sizes → store as comma-separated string
         if (data.size?.length) {
             params.set("size", data.size.join(","));
         } else {
@@ -67,7 +65,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
     }
     return (
         <motion.section
-        initial={false}
+        initial={{x: '100%'}}
         animate={{x:open ? '0%' : '100%'}}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className='w-[100vw] h-dvh fixed top-0 left-0 z-40 flex items-start justify-end'>
@@ -79,14 +77,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                 </div>
                 <div className="w-full h-[90%] overflow-y-scroll scrollbar-hide">
                     <Form {...form}>
-                    <form onSubmit={form.handleSubmit((data) => {
-      console.log("✅ SUBMIT CALLED with data:", data);
-      OnSubmit(data);
-    },
-    (errors) => {
-      console.log("❌ FORM ERRORS:", errors);
-      console.log(form.watch())
-    })}>
+                    <form onSubmit={form.handleSubmit(OnSubmit)}>
                          <FormField
                             control={form.control}
                             name='location'
@@ -231,39 +222,6 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                         </FormItem>
                     )}
                     />
-                    <FormField
-                    control={form.control}
-                    name='order'
-                    render={({field}) => (
-                        <FormItem className='w-full mb-6'>
-                                <FormLabel className='text-lg text-black/90 font-semibold mb-2 leading-0 font-nunito-sans'>Order</FormLabel>
-                            <FormControl className='w-full'>
-                                <div className="w-full flex items-center justify-between gap-2">
-                                <button type='button' onClick={() => setOrder('Popular')} className={`${order === 'Popular' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center w-[33%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
-                                    <p className={`${order === 'Popular' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Popular</p>
-                                    <div className={`${order === 'Popular' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
-                                        <BsCheck className="text-white" />
-                                    </div>
-                                </button>
-                                <button type='button' onClick={() => setOrder('Newest')} className={`${order === 'Newest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center w-[33%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
-                                    <p className={`${order === 'Newest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Newest</p>
-                                    <div className={`${order === 'Newest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
-                                        <BsCheck className="text-white" />
-                                    </div>
-                                </button>
-                                <button type='button' onClick={() => setOrder('Oldest')} className={`${order === 'Oldest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center w-[33%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
-                                    <p className={`${order === 'Oldest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Oldest</p>
-                                    <div className={`${order === 'Oldest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out`}>
-                                        <BsCheck className="text-white" />
-                                    </div>
-                                </button>
-                                
-                                </div>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                    />
 
                     <FormField
                     control={form.control}
@@ -293,6 +251,53 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                         </FormItem>
                     )}
                     />
+
+
+                    <FormField
+                    control={form.control}
+                    name='order'
+                    render={({field}) => (
+                        <FormItem className='w-full mb-6'>
+                                <FormLabel className='text-lg text-black/90 font-semibold mb-2 leading-0 font-nunito-sans'>Order</FormLabel>
+                            <FormControl className='w-full'>
+                                <div className="w-full flex items-center justify-between gap-2">
+                                    <button type='button' onClick={() => setOrder('Popular')} className={`${order === 'Popular' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[122px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                        <p className={`${order === 'Popular' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Popular</p>
+                                        <div className={`${order === 'Popular' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
+                                            <BsCheck className="text-white" />
+                                        </div>
+                                    </button>
+                                    <button type='button' onClick={() => setOrder('Newest')} className={`${order === 'Newest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[122px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                        <p className={`${order === 'Newest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Newest</p>
+                                        <div className={`${order === 'Newest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
+                                            <BsCheck className="text-white" />
+                                        </div>
+                                    </button>
+                                    <button type='button' onClick={() => setOrder('Oldest')} className={`${order === 'Oldest' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[122px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                        <p className={`${order === 'Oldest' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Oldest</p>
+                                        <div className={`${order === 'Oldest' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
+                                            <BsCheck className="text-white" />
+                                        </div>
+                                    </button>
+                                    <button type='button' onClick={() => setOrder('PriceHighToLow')} className={`${order === 'PriceHighToLow' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[180px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                        <p className={`${order === 'PriceHighToLow' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Price High To Low</p>
+                                        <div className={`${order === 'PriceHighToLow' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
+                                            <BsCheck className="text-white" />
+                                        </div>
+                                    </button>
+                                    <button type='button' onClick={() => setOrder('PriceLowToHigh')} className={`${order === 'PriceLowToHigh' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[180px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
+                                        <p className={`${order === 'PriceLowToHigh' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Price Low To High</p>
+                                        <div className={`${order === 'PriceLowToHigh' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
+                                            <BsCheck className="text-white" />
+                                        </div>
+                                    </button>
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+
                     <div className="w-full flex items-center justify-between gap-2 mt-6">
                         <PrimaryButton type='button' disabled={loading || !isDirty} text={loading ? <LoaderCircle className='animate-spin' /> : 'Reset'} additionalStyles="bg-transparent border-2 border-dark-blue text-dark-blue px-0 py-[3px] w-[30%]"  primaryButtonFunction={() => {
                             form.reset(); 

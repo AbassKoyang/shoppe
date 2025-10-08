@@ -51,7 +51,6 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
     const OnSubmit = (data: z.infer<typeof searchFilterSChema>) => {
         const params = new URLSearchParams(searchParams.toString());
 
-  // Update all fields
         if (data.location) params.set("location", data.location);
         if (data.currency) params.set("currency", data.currency);
         if (data.minPrice) params.set("minPrice", data.minPrice);
@@ -61,7 +60,6 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
         if (data.condition) params.set("condition", data.condition);
         if (data.order) params.set("order", data.order);
 
-        // Sizes → store as comma-separated string
         if (data.size?.length) {
             params.set("size", data.size.join(","));
         } else {
@@ -100,7 +98,7 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
     }
     return (
         <motion.section
-        initial={{x: 0}}
+        initial={{x: '100%'}}
         animate={{x:open ? '0%' : '100%'}}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className='w-[100vw] h-dvh fixed top-0 left-0 z-40 flex items-start justify-end'>
@@ -112,14 +110,7 @@ const SearchFilterModal = ({open, closeModal}:{open: boolean; closeModal: () => 
                 </div>
                 <div className="w-full h-[90%] overflow-y-scroll scrollbar-hide">
                     <Form {...form}>
-                    <form onSubmit={form.handleSubmit((data) => {
-      console.log("✅ SUBMIT CALLED with data:", data);
-      OnSubmit(data);
-    },
-    (errors) => {
-      console.log("❌ FORM ERRORS:", errors);
-      console.log(form.watch())
-    })}>
+                    <form onSubmit={form.handleSubmit(OnSubmit)}>
                         <FormField
                             control={form.control}
                             name='category'
