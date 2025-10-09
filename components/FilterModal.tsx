@@ -260,7 +260,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                         <FormItem className='w-full mb-6'>
                                 <FormLabel className='text-lg text-black/90 font-semibold mb-2 leading-0 font-nunito-sans'>Order</FormLabel>
                             <FormControl className='w-full'>
-                                <div className="w-full flex items-center justify-between gap-2">
+                                <div className="w-full flex items-center justify-between gap-3 flex-wrap">
                                     <button type='button' onClick={() => setOrder('Popular')} className={`${order === 'Popular' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[122px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
                                         <p className={`${order === 'Popular' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Popular</p>
                                         <div className={`${order === 'Popular' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>

@@ -151,7 +151,6 @@ body {
   display: inline-block;
   position: relative;
   overflow: hidden;
-  border-radius: 6px;
   background-image: linear-gradient(90deg, #e9e9ef 0%, #f5f6fa 40%, #e9e9ef 80%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.2s linear infinite;

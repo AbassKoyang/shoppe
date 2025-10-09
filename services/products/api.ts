@@ -21,14 +21,13 @@ export const addProduct = async (data : ProductType) => {
         console.error('Error from addProduct', error);
     }
 };
-export const addProductToWishlist = async (data : WishlistType) => {
+export const addProductToWishlist = async (data : WishlistType, userId: string) => {
   const colRef = collection(db, 'wishlists');
     try {
-      const q = query(colRef, where('product.id', '==', data.product.id));
+      const q = query(colRef,  where('product.id', '==', data.product.id), where('userId', '==', userId));
         const querySnapshot = (await getDocs(q));
   
       if (!querySnapshot.empty) {
-        console.log('alreayd in wl')
         throw Error('product-already-in-wishlist');
       }
       try {
@@ -40,8 +39,44 @@ export const addProductToWishlist = async (data : WishlistType) => {
     }
     } catch (error) {
         console.error('Error adding item to wishlist', error);
+        throw error;
     }
 };
+export const removeProductFromWishlist = async (wishId : string, userId: string, productId: string) => {
+  console.log('wishid:' , wishId, 'usrid:', userId);
+  const colRef = collection(db, 'wishlists');
+    try {
+      const q = query(colRef, where('product.id', '==', productId), where('userId', '==', userId));
+      const querySnapshot = (await getDocs(q));
+  
+      if (!querySnapshot.empty) {
+        const docRef = doc(db, "wishlists", wishId);
+        await deleteDoc(docRef);
+        return true;
+      }
+      throw Error('failed to remove item')
+    } catch (error) {
+        console.error('Error removing item to wishlist', error);
+        throw error;
+    }
+};
+export const isProductInWishlist = async (productId: string, userId: string) => {
+  const colRef = collection(db, 'wishlists');
+
+  try {
+    const q = query(colRef, where('product.id', '==', productId), where('userId', '==', userId));
+    const querySnapshot = (await getDocs(q));
+    if (!querySnapshot.empty) {
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      })) as WishlistType[];
+    }
+    return null;
+  } catch (error) {
+    console.error('Error checking if product is alreayd in wishlist:', error)
+  }
+}
 
 
 export const fetchProductsByCategory = async (

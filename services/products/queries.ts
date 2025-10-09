@@ -1,13 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchProductCategoryCount, fetchProductPerUser, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, fetchUserWishlist, searchProductsIndex } from "./api";
+import { fetchProductCategoryCount, fetchProductPerUser, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, fetchUserWishlist, isProductInWishlist, searchProductsIndex } from "./api";
 import { useSearchParams } from "next/navigation";
+import { ProductType } from "./types";
 
 export const useFetchProductCategoryCount = (label: string) => {
   
     return useQuery({
       queryKey: ["productsCount", label], // ✅ cache per user
       queryFn: () => fetchProductCategoryCount(label),
-      enabled: !!label, // ✅ only fetch if userId exists
+      enabled: !!label,
     });
   };
 
@@ -72,20 +73,20 @@ export const useSearchProductsIndex = (query: string) => {
     return useQuery({
       queryKey: ["product", id], 
       queryFn: () => fetchSingleProduct(id),
-      enabled: !!id, // ✅ only fetch if userId exists
+      enabled: !!id,
     });
   };
   export const useFetchProductPerUser = (id: string) => {
     return useQuery({
       queryKey: ["productPerUser", id], 
       queryFn: () => fetchProductPerUser(id),
-      enabled: !!id, // ✅ only fetch if userId exists
+      enabled: !!id,
     });
   };
   export const useFetchUserWishlist = (userId: string) => {
     return useQuery({
       queryKey: ["wishlists", userId], 
       queryFn: () => fetchUserWishlist(userId),
-      enabled: !!userId, // ✅ only fetch if userId exists
+      enabled: !!userId,
     });
   };

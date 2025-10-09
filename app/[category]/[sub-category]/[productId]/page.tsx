@@ -4,13 +4,14 @@ import ProductImagesCarousel from "@/components/ProductImagesCarousel";
 import ProductPageSkeleton from "@/components/ProductPageSkeleton";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { formatPrice } from "@/lib/utils";
-import { addProductToWishlist } from "@/services/products/api";
+import { addProductToWishlist, isProductInWishlist, removeProductFromWishlist } from "@/services/products/api";
 import { useFetchSingleProduct } from "@/services/products/queries";
 import { ProductType, WishlistType } from "@/services/products/types";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { Heart, LoaderCircle, MessageCircle, MessageSquareText } from "lucide-react";
+import { IoHeart } from "react-icons/io5";
 import { useParams } from "next/navigation"
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { IoIosShareAlt } from "react-icons/io";
 import { toast } from "react-toastify";
 
@@ -20,16 +21,36 @@ const page = () => {
   const {isError, isLoading, data: product} = useFetchSingleProduct(productId);
   const [viewportWidth, setViewportWidth] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [wish, setWish] = useState<null | WishlistType[]>(null);
   const queryClient = new QueryClient();
 
   const addProductToWishlistMutation = useMutation({
-    mutationKey: ['addPaymentMethod'],
-    mutationFn: (data : WishlistType) => addProductToWishlist(data),
+    mutationKey: ['addProductToWishList'],
+    mutationFn: ({data, userId} : {data : WishlistType; userId: string}) => addProductToWishlist(data, userId),
     onSuccess: (data) => {
-        toast.success(`Product added to wishlist succesfully.`);
         queryClient.invalidateQueries({ queryKey: ['wishlists']});
     }
   });
+  const removeProductFromWishlistMutation = useMutation({
+    mutationKey: ['addProductToWishList'],
+    mutationFn: ({wishId, userId, productId} : {wishId: string; userId: string; productId: string}) => removeProductFromWishlist(wishId, userId, productId),
+    onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: ['wishlists']});
+    }
+  });
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      if (!product?.id) return;
+      const wish = await isProductInWishlist(product.id, user?.uid || '');
+      if(wish){
+        if (mounted) setWish(wish);
+      }
+    })();
+    return () => { mounted = false };
+  }, [product?.id]);
+  
 
   const handleAddProductToWishList = async (data: ProductType) => {
   
@@ -45,9 +66,10 @@ const page = () => {
         product: data,
       };
   
-      const success = await addProductToWishlistMutation.mutateAsync(wish);
-      if(success){
-     
+      const succes = await addProductToWishlistMutation.mutateAsync({data: wish, userId: user?.uid});
+      if(succes){
+        setWish([wish]);
+        toast.success(`Item added to wishlist succesfully.`);
       }
     } catch (error: any) {
       console.error("❌ Error adding product to wishlist:", error);
@@ -56,10 +78,39 @@ const page = () => {
         toast.error("You don’t have permission to add product to wishlist.");
       } else if (error?.message?.includes("network")) {
         toast.error("Network error — check your connection and try again.");
-      } else if (error?.message?.includes("wishlist")) {
-        toast.error("Item already added to Wishlist");
+      } else if(error?.message == 'product-already-in-wishlist') {
+        toast.error("Item already in wishlist")
       } else {
         toast.error("Something went wrong while adding product to wishlist. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveProductFromWishList = async (wishId: string) => {
+  
+    try {
+        setLoading(true);
+      if (!user) {
+        toast.error("You must be logged in to remove a product from wishlist method.");
+        return;
+      }
+  
+      const succes = await removeProductFromWishlistMutation.mutateAsync({wishId, userId: user?.uid, productId: product?.id ?? ''});
+      if(succes){
+        setWish(null);
+        toast.success(`Item removed from wishlist.`);
+      }
+    } catch (error: any) {
+      console.error("❌ Error removing product to wishlist:", error);
+  
+      if (error?.code === "permission-denied") {
+        toast.error("You don’t have permission to remove a product from wishlist.");
+      } else if (error?.message?.includes("network")) {
+        toast.error("Network error — check your connection and try again.");
+      } else {
+        toast.error("Something went wrong while removing product from wishlist. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -89,8 +140,8 @@ const page = () => {
       <div className="px-4 [@media(min-width:375px)]:px-6 bg-white mb-[100px]">
         <div className="w-full flex items-center justify-between my-5">
           <h4 className="text-[26px] text-black font-raleway font-extrabold">{currency}{price}</h4>
-          <button className="size-[30px] flex items-center justify-center bg-[#FFEBEB] rounded-full cursor-pointer">
-          <IoIosShareAlt className="size-[18px] text-[#B5A2A2]" />
+          <button className="size-[43px] flex items-center justify-center bg-[#FFEBEB] rounded-full cursor-pointer">
+          <IoIosShareAlt className="size-[22px] text-[#B5A2A2]" />
           </button>
         </div>
         <div className="w-full">
@@ -138,7 +189,7 @@ const page = () => {
             <h6 className="text-[17px] text-black font-raleway font-bold mt-5 mb-1">Material</h6>
             <div className="w-full flex flex-wrap gap-2">
             {product?.material.split(',').map((mat) => (
-              <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">
+              <span key={mat} className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">
                 {mat}
               </span>
             ))}
@@ -168,10 +219,17 @@ const page = () => {
         </div>
       </div>
       <div className="w-[97%] fixed bottom-3 left-[50%] translate-x-[-50%] px-3 [@media(min-width:375px)]:px-3 py-3 bg-white flex items-center justify-between rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
-        <button onClick={() => handleAddProductToWishList(product)} className="cursor-pointer w-[47px] h-[47px] rounded-full bg-[#F9F9F9] flex items-center justify-center">
-         {loading ? (<LoaderCircle className="animate-spin size-[28px] text-black" />) : ( <Heart strokeWidth={1} className="text-black size-[28px]" />)}
-        </button>
-        <button className="cursor-pointer bg-[#202020] rounded-4xl px-4 py-2 flex items-center gap-2"><MessageCircle  strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Chat Seller</span></button>
+        {wish ? (
+                  <button onClick={() => handleRemoveProductFromWishList(wish?.[0]?.id ?? '')} className="cursor-pointer w-[47px] h-[47px] rounded-full bg-[#F9F9F9] flex items-center justify-center">
+                  {loading ? (<LoaderCircle className="animate-spin size-[28px] text-black" />) : (<IoHeart className="text-black size-[28px]" />)}
+                 </button>
+        ) : (
+                <button onClick={() => handleAddProductToWishList(product)} className="cursor-pointer w-[47px] h-[47px] rounded-full bg-[#F9F9F9] flex items-center justify-center">
+                {loading ? (<LoaderCircle className="animate-spin size-[28px] text-black" />) : ( <Heart strokeWidth={1} className="text-black size-[28px]" />)}
+              </button>
+        )}
+
+        <button className="cursor-pointer bg-black rounded-4xl px-4 py-2 flex items-center gap-2"><MessageCircle  strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Chat Seller</span></button>
         <button className="cursor-pointer bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
       </div>
         </>

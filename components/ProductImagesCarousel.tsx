@@ -89,8 +89,8 @@ const ProductImagesCarousel = ({viewportWidth, images}: {viewportWidth: number; 
               ))}
         </div>
            )}
-           <button onClick={() => router.back()} className="cursor-pointer absolute top-3 left-3 flex items-center justify-center bg-[#FFEBEB] rounded-full size-[30px]">
-                        <ArrowLeft className="size-[18px] text-[#202020]" />
+           <button onClick={() => router.back()} className="cursor-pointer absolute top-3 left-3 flex items-center justify-center bg-[#FFEBEB] rounded-full size-[43px]">
+                        <ArrowLeft className="size-[22px] text-[#202020]" />
             </button>
         </Carousel>
         </div>
