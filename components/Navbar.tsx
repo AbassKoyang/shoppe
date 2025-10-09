@@ -25,6 +25,7 @@ const Navbar = () => {
 
 if(hideNavbar) return null;
 if(pathname == '/add-product') return null;
+if(pathname.includes('/settings')) return null;
 
     return (
         <nav className="w-[calc(100%-32px)] [@media(min-width:375px)]:w-[calc(100%-48px)] bg-white flex items-center justify-between px-4 py-3 fixed bottom-3 left-[50%] translate-x-[-50%] z-30 rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">

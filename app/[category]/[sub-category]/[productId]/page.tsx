@@ -21,7 +21,7 @@ const page = () => {
   const {isError, isLoading, data: product} = useFetchSingleProduct(productId);
   const [viewportWidth, setViewportWidth] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [wish, setWish] = useState<null | WishlistType[]>(null);
+  const [isInWishList, setIsInWishlist] = useState(false);
   const queryClient = new QueryClient();
 
   const addProductToWishlistMutation = useMutation({
@@ -33,7 +33,7 @@ const page = () => {
   });
   const removeProductFromWishlistMutation = useMutation({
     mutationKey: ['addProductToWishList'],
-    mutationFn: ({wishId, userId, productId} : {wishId: string; userId: string; productId: string}) => removeProductFromWishlist(wishId, userId, productId),
+    mutationFn: ({userId, productId} : {userId: string; productId: string}) => removeProductFromWishlist(userId, productId),
     onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ['wishlists']});
     }
@@ -43,9 +43,9 @@ const page = () => {
     let mounted = true;
     (async () => {
       if (!product?.id) return;
-      const wish = await isProductInWishlist(product.id, user?.uid || '');
-      if(wish){
-        if (mounted) setWish(wish);
+      const success = await isProductInWishlist(product.id, user?.uid || '');
+      if(success){
+        if (mounted) setIsInWishlist(true);
       }
     })();
     return () => { mounted = false };
@@ -68,7 +68,7 @@ const page = () => {
   
       const succes = await addProductToWishlistMutation.mutateAsync({data: wish, userId: user?.uid});
       if(succes){
-        setWish([wish]);
+        setIsInWishlist(true);
         toast.success(`Item added to wishlist succesfully.`);
       }
     } catch (error: any) {
@@ -88,18 +88,17 @@ const page = () => {
     }
   };
 
-  const handleRemoveProductFromWishList = async (wishId: string) => {
+  const handleRemoveProductFromWishList = async () => {
   
     try {
         setLoading(true);
       if (!user) {
         toast.error("You must be logged in to remove a product from wishlist method.");
         return;
-      }
-  
-      const succes = await removeProductFromWishlistMutation.mutateAsync({wishId, userId: user?.uid, productId: product?.id ?? ''});
+      }  
+      const succes = await removeProductFromWishlistMutation.mutateAsync({userId: user?.uid, productId: product?.id ?? ''});
       if(succes){
-        setWish(null);
+        setIsInWishlist(false);
         toast.success(`Item removed from wishlist.`);
       }
     } catch (error: any) {
@@ -120,13 +119,7 @@ const page = () => {
   useEffect(() => {
     setViewportWidth(window.innerWidth);
   }, []);
-  const price = formatPrice(product?.price.toString() || '');
-  const formatCurrency = (currency: string) => {
-    if(currency == '₦ NGN') return '₦';
-    if(currency == '€ EURO') return '€';
-    if(currency == '$ USD') return '$';
-  }
-  const currency = formatCurrency(product?.currency || '')
+  const price = formatPrice(product?.price.toString() || '', product?.currency || '');
 
 
   return (
@@ -139,7 +132,7 @@ const page = () => {
           <ProductImagesCarousel viewportWidth={viewportWidth} images={product?.images || []} />
       <div className="px-4 [@media(min-width:375px)]:px-6 bg-white mb-[100px]">
         <div className="w-full flex items-center justify-between my-5">
-          <h4 className="text-[26px] text-black font-raleway font-extrabold">{currency}{price}</h4>
+          <h4 className="text-[26px] text-black font-raleway font-extrabold">{price}</h4>
           <button className="size-[43px] flex items-center justify-center bg-[#FFEBEB] rounded-full cursor-pointer">
           <IoIosShareAlt className="size-[22px] text-[#B5A2A2]" />
           </button>
@@ -219,8 +212,8 @@ const page = () => {
         </div>
       </div>
       <div className="w-[97%] fixed bottom-3 left-[50%] translate-x-[-50%] px-3 [@media(min-width:375px)]:px-3 py-3 bg-white flex items-center justify-between rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
-        {wish ? (
-                  <button onClick={() => handleRemoveProductFromWishList(wish?.[0]?.id ?? '')} className="cursor-pointer w-[47px] h-[47px] rounded-full bg-[#F9F9F9] flex items-center justify-center">
+        {isInWishList ? (
+                  <button onClick={() => handleRemoveProductFromWishList()} className="cursor-pointer w-[47px] h-[47px] rounded-full bg-[#F9F9F9] flex items-center justify-center">
                   {loading ? (<LoaderCircle className="animate-spin size-[28px] text-black" />) : (<IoHeart className="text-black size-[28px]" />)}
                  </button>
         ) : (

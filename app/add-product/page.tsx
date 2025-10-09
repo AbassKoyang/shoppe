@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { SelectGroup, SelectLabel } from '@radix-ui/react-select';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { ImagePlus, LoaderCircle, Plus, X } from 'lucide-react';
+import { ArrowLeft, ImagePlus, LoaderCircle, Plus, X } from 'lucide-react';
 import PrimaryButton from '@/components/PrimaryButton';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -149,18 +149,23 @@ const Page = () => {
   return (
     <ProtectedRoute>
     <section className='w-full px-6 '>
-        <h1 className='text-2xl my-4 font-bold font-raleway'>Add New Product</h1>
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(
-    (data) => {
-      console.log("✅ SUBMIT CALLED with data:", data);
-      onSubmit(data);
-    },
-    (errors) => {
-      console.log("❌ FORM ERRORS:", errors);
-      console.log(form.watch())
-    }
-  )} className='mt-6 w-full'>
+          <div className="w-full flex items-center gap-3">
+              <button onClick={() => router.back()} className="flex items-center justify-center cursor-pointer">
+                  <ArrowLeft className="size-[30px]" />
+              </button>
+              <h1 className='text-2xl my-4 font-bold font-raleway'>Post Item</h1>
+          </div>
+              <Form {...form}>
+                  <form onSubmit={form.handleSubmit(
+          (data) => {
+            console.log("✅ SUBMIT CALLED with data:", data);
+            onSubmit(data);
+          },
+          (errors) => {
+            console.log("❌ FORM ERRORS:", errors);
+            console.log(form.watch())
+          }
+        )} className='mt-6 w-full'>
                 <div className="w-full bg-[#F8FAFF] rounded-md p-4">
                   <h4 className='text-lg font-nunito-sans font-bold mb-4'>Upload Image</h4>
                       <FormField

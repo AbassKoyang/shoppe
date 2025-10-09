@@ -399,20 +399,23 @@ export const ALPHA_SIZES = [
 ];
 export const NUMERIC_SIZES = Array.from({ length: 50 }, (_, i) => `${i + 1}`);
 
-export const formatPrice = (price: string) => {
+export const formatPrice = (price: string, currency: string) => {
+  let newPrice = ''
   if (price.length > 3 && price.length < 5){
-    return price.substring(0, 1) + ',' + price.substring(1)
+    newPrice = price.substring(0, 1) + ',' + price.substring(1)
   }
   if (price.length > 4 && price.length < 6){
-    return price.substring(0, 2) + ',' + price.substring(2)
+    newPrice = price.substring(0, 2) + ',' + price.substring(2)
   }
   if (price.length > 5 && price.length < 7){
-    return price.substring(0, 3) + ',' + price.substring(3)
+    newPrice = price.substring(0, 3) + ',' + price.substring(3)
   }
   if (price.length > 6 && price.length < 8){
-    return price.substring(0, 1) + ',' + price.substring(1,4) + ',' + price.substring(4)
+    newPrice = price.substring(0, 1) + ',' + price.substring(1,4) + ',' + price.substring(4)
   }
-  return price;
+  if(currency == '₦ NGN') return `₦${newPrice}`;
+  if(currency == "$ USD") return `$${newPrice}`;
+  if(currency == "€ EURO") return `€${newPrice}`;
 }
 
 export const formatProductCardImageUrl = (url: string, preset: {
@@ -420,3 +423,18 @@ export const formatProductCardImageUrl = (url: string, preset: {
 }) => {
   return url.substring(0,50) + `w_${preset.width}${preset.height? `,h_${preset.height}` : ''}${preset.ar_? `,ar_${preset.ar_}` : ''},${preset.c_fill ? 'c_fill' : ''},${preset.g_auto ? 'g_auto' : ''},${preset.q_auto ? 'q_auto' : ''},${preset.f_auto ? 'f_auto' : ''},${preset.e_sharpen ? 'e_sharpen' : ''}${preset.dpr_auto ? ',dpr_auto' : ''}/` + url.substring(50);
 }
+export const formatDescription = (desc: string) => {
+  const newDesc = desc.substring(0, 45);
+  if (desc.length > 45 ) return newDesc + '...'
+  return desc;
+}
+export const formatProductLink = (category: string, subCategory: string, id: string) => {
+    const formattedCategory = category.toLowerCase().split(' ').join('-');
+    const formattedsubCategory = subCategory.toLowerCase().split(' ').join('-');
+    return `/${formattedCategory}/${formattedsubCategory}/${id}`
+  }
+export const formatTitle = (title: string) => {
+    const newTitle = title.substring(0, 18);
+    if (title.length > 18 ) return newTitle + '...'
+    return title;
+ }

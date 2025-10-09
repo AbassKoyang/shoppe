@@ -2,11 +2,12 @@
 import ArrowRightButton from '@/components/ArrowRightButton'
 import JustForYouProductCard from '@/components/JustForYouProductCard'
 import ProductCard from '@/components/ProductCard'
-import ProfileSkeleton from '@/components/profile/ProfileSkeleton'
+import ProfileProductCardSkeleton from '@/components/profile/ProfileProductCardSkeleton'
 import UserHeader from '@/components/profile/UserHeader'
 import TopProductAvatar from '@/components/TopProductAvatar'
+import WishlistProductCard from '@/components/wishlist/WishlistProductCard'
 import { useAuth } from '@/lib/contexts/auth-context'
-import { useFetchProductPerUser, useFetchUserWishlist } from '@/services/products/queries'
+import { useFetchUserWishlist } from '@/services/products/queries'
 import Link from 'next/link'
 import React from 'react'
 
@@ -34,7 +35,7 @@ const page = () => {
         <div className="w-full mt-3">
             <div className="w-full flex justify-between flex-wrap">
             {wishlist && wishlist.length > 0 && wishlist.map((wishlist) => (
-              <JustForYouProductCard product={wishlist.product} />
+              <WishlistProductCard product={wishlist.product} />
             ))}
             </div>
             {wishlist && wishlist.length === 0  && (
@@ -90,7 +91,7 @@ const page = () => {
               </div>
             )}
             {isLoading && (
-              <ProfileSkeleton />
+              <ProfileProductCardSkeleton />
             )}
         </div>
         <div className="w-full mt-8">

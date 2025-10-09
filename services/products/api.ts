@@ -42,21 +42,21 @@ export const addProductToWishlist = async (data : WishlistType, userId: string) 
         throw error;
     }
 };
-export const removeProductFromWishlist = async (wishId : string, userId: string, productId: string) => {
-  console.log('wishid:' , wishId, 'usrid:', userId);
+export const removeProductFromWishlist = async (userId: string, productId: string) => {
   const colRef = collection(db, 'wishlists');
     try {
       const q = query(colRef, where('product.id', '==', productId), where('userId', '==', userId));
       const querySnapshot = (await getDocs(q));
   
       if (!querySnapshot.empty) {
-        const docRef = doc(db, "wishlists", wishId);
+        const docId = querySnapshot.docs[0].id;
+          const docRef = doc(db, "wishlists", docId);
         await deleteDoc(docRef);
+        console.log("✅ Product removed from wishlist successfully");
         return true;
       }
-      throw Error('failed to remove item')
     } catch (error) {
-        console.error('Error removing item to wishlist', error);
+        console.error('Error removing item from wishlist', error);
         throw error;
     }
 };
@@ -67,12 +67,9 @@ export const isProductInWishlist = async (productId: string, userId: string) => 
     const q = query(colRef, where('product.id', '==', productId), where('userId', '==', userId));
     const querySnapshot = (await getDocs(q));
     if (!querySnapshot.empty) {
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      })) as WishlistType[];
+      return true
     }
-    return null;
+    return false;
   } catch (error) {
     console.error('Error checking if product is alreayd in wishlist:', error)
   }

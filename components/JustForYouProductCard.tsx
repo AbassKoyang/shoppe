@@ -1,4 +1,4 @@
-import { formatPrice, formatProductCardImageUrl } from '@/lib/utils';
+import { formatDescription, formatPrice, formatProductCardImageUrl, formatProductLink, formatTitle } from '@/lib/utils';
 import { ProductType } from '@/services/products/types'
 import { MapPin, TicketPercent } from 'lucide-react';
 import Image from 'next/image';
@@ -20,25 +20,14 @@ const JustForYouProductCard = ({product}:{product: any }) => {
     dpr_auto: true,
   })
 
-  const formattedPrice = formatPrice(price);
-  const formatTitle = (title: string) => {
-     const newTitle = title.substring(0, 18);
-     if (title.length > 18 ) return newTitle + '...'
-     return title;
-  }
+  const formattedPrice = formatPrice(price, product.currency || '');
+
   const title = formatTitle(product.title);
-  const formatDescription = (desc: string) => {
-     const newDesc = desc.substring(0, 45);
-     if (desc.length > 45 ) return newDesc + '...'
-     return desc;
-  }
+  
   const desc = formatDescription(product.description);
-  const formatProductLink = (category: string, subCategory: string, id: string) => {
-    const formattedCategory = category.toLowerCase().split(' ').join('-');
-    const formattedsubCategory = subCategory.toLowerCase().split(' ').join('-');
-    return `/${formattedCategory}/${formattedsubCategory}/${id}`
-  }
+
   const productLink = formatProductLink(product.category, product.subCategory, product.objectID || product.id)
+
   return (
         <Link href={productLink} className='w-[160px] mt-3'>
             <div className="w-full relative h-[160px] aspect-square p-[5px] rounded-[9px] bg-white overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">

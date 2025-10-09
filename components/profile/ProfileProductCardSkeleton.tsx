@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ProfileSkeleton = () => {
+const ProfileProductCardSkeleton = () => {
   return (
     <div className='w-full flex items-start justify-between flex-wrap'>
         <div className='w-[48%] p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] mt-2 bg-gray-200 rounded-[9px]'>
@@ -31,4 +31,4 @@ const ProfileSkeleton = () => {
   )
 }
 
-export default ProfileSkeleton
+export default ProfileProductCardSkeleton;

@@ -1,7 +1,7 @@
 'use client'
 import ArrowRightButton from '@/components/ArrowRightButton'
 import JustForYouProductCard from '@/components/JustForYouProductCard'
-import ProfileSkeleton from '@/components/profile/ProfileSkeleton'
+import ProfileProductCardSkeleton from '@/components/profile/ProfileProductCardSkeleton'
 import UserHeader from '@/components/profile/UserHeader'
 import TopProductAvatar from '@/components/TopProductAvatar'
 import { useAuth } from '@/lib/contexts/auth-context'
@@ -94,7 +94,7 @@ const page = () => {
               </div>
             )}
             {isLoading && (
-              <ProfileSkeleton />
+              <ProfileProductCardSkeleton />
             )}
         </div>
     </section>
