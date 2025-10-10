@@ -4,7 +4,7 @@ import ProductImagesCarousel from "@/components/ProductImagesCarousel";
 import ProductPageSkeleton from "@/components/ProductPageSkeleton";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { formatPrice } from "@/lib/utils";
-import { addProductToWishlist, isProductInWishlist, removeProductFromWishlist } from "@/services/products/api";
+import { addProductToRecentlyViewed, addProductToWishlist, isProductInWishlist, removeProductFromWishlist } from "@/services/products/api";
 import { useFetchSingleProduct } from "@/services/products/queries";
 import { ProductType, WishlistType } from "@/services/products/types";
 import { QueryClient, useMutation } from "@tanstack/react-query";
@@ -24,6 +24,13 @@ const page = () => {
   const [isInWishList, setIsInWishlist] = useState(false);
   const queryClient = new QueryClient();
 
+  const addProductToRecentlyViewedMutation = useMutation({
+    mutationKey: ['addProductToRecentlyViewed'],
+    mutationFn: ({userId, product} : {userId : string; product: ProductType}) => addProductToRecentlyViewed(userId, product),
+    onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: ['recentlyViewed']});
+    }
+  });
   const addProductToWishlistMutation = useMutation({
     mutationKey: ['addProductToWishList'],
     mutationFn: ({data, userId} : {data : WishlistType; userId: string}) => addProductToWishlist(data, userId),
@@ -93,7 +100,7 @@ const page = () => {
     try {
         setLoading(true);
       if (!user) {
-        toast.error("You must be logged in to remove a product from wishlist method.");
+        toast.error("You must be logged in to remove a product from wishlist.");
         return;
       }  
       const succes = await removeProductFromWishlistMutation.mutateAsync({userId: user?.uid, productId: product?.id ?? ''});
@@ -115,11 +122,36 @@ const page = () => {
       setLoading(false);
     }
   };
+  const handleAddProductToRecentlyViewed = async () => {
+  
+    try {
+      if (!user || !product) {
+        return;
+      }  
+      await addProductToRecentlyViewedMutation.mutateAsync({userId: user?.uid, product: product});
+      toast.success(`Item added to recently viewed.`);
+    } catch (error: any) {
+      console.error("❌ Error adding product to recently viewed:", error);
+  
+      if (error?.code === "permission-denied") {
+        toast.error("You don’t have permission to add product to recently viewed.");
+      } else if (error?.message?.includes("network")) {
+        toast.error("Network error — check your connection and try again.");
+      } else {
+        toast.error("Something went wrong while adding product to recently viewed. Please try again.");
+      }
+    }
+  };
 
   useEffect(() => {
     setViewportWidth(window.innerWidth);
   }, []);
   const price = formatPrice(product?.price.toString() || '', product?.currency || '');
+
+  useEffect(() => {
+    handleAddProductToRecentlyViewed()
+  }, [product])
+  
 
 
   return (

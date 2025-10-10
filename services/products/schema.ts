@@ -177,3 +177,10 @@ export const ProductSchema = z
   order: z.string().optional(),
 })
 
+export const recentlyViewedProductSchema = z.object({
+    id: z.string().optional(),
+    userId: z.string(),
+    productId: z.string(),
+    product: ProductSchema,
+    viewedAt: z.number(),
+})

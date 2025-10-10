@@ -1,5 +1,5 @@
 import z from "zod";
-import { ProductSchema } from "./schema";
+import { ProductSchema, recentlyViewedProductSchema } from "./schema";
 
 export type ProductType = z.infer<typeof ProductSchema>;
 export type CategoryType =
@@ -20,3 +20,4 @@ export type CategoryType =
     userId: string;
     product: ProductType;
 }
+export type recentlyViewedType = z.infer<typeof recentlyViewedProductSchema>

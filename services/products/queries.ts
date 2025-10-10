@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchProductCategoryCount, fetchProductPerUser, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, fetchUserWishlist, isProductInWishlist, searchProductsIndex } from "./api";
+import { fetchProductCategoryCount, fetchProductPerUser, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, fetchUserWishlist, getViewedToday, getViewedYesterday, isProductInWishlist, searchProductsIndex } from "./api";
 import { useSearchParams } from "next/navigation";
 import { ProductType } from "./types";
 
@@ -87,6 +87,20 @@ export const useSearchProductsIndex = (query: string) => {
     return useQuery({
       queryKey: ["wishlists", userId], 
       queryFn: () => fetchUserWishlist(userId),
+      enabled: !!userId,
+    });
+  };
+  export const useGetViewedToday = (userId: string) => {
+    return useQuery({
+      queryKey: ["recentlyViewed", userId], 
+      queryFn: () => getViewedToday(userId),
+      enabled: !!userId,
+    });
+  };
+  export const useGetViewedYesterday= (userId: string) => {
+    return useQuery({
+      queryKey: ["recentlyViewed", userId], 
+      queryFn: () => getViewedYesterday(userId),
       enabled: !!userId,
     });
   };

@@ -1,8 +1,11 @@
 import { db } from '@/lib/firebase';
 import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc, QueryConstraint, limit, orderBy, DocumentData} from 'firebase/firestore';
-import { ProductType } from './types';
+import { ProductType, recentlyViewedType } from './types';
 import { formatFilterURL } from '@/lib/utils/formatFilterURL';
 import { WishlistType } from '../products/types';
+import { getEndOfDay, getStartOfDay } from '@/lib/utils';
+import z from 'zod';
+import { recentlyViewedProductSchema } from './schema';
 export const addProduct = async (data : ProductType) => {
     try {
         const res = await fetch('/api/products/add', {
@@ -204,4 +207,96 @@ export const fetchSingleProduct = async (id: string) : Promise<ProductType | nul
       console.error('Error fetching product:', error);
       throw error;
   }
+};
+
+export const addProductToRecentlyViewed = async (userId: string, product: ProductType) => {
+  if (!product.id) {
+    throw new Error('Product ID is required');
+  }
+  
+  const colRef = collection(db, "recentlyViewed");
+  const recViewed : z.infer<typeof recentlyViewedProductSchema> = {
+    userId: userId,
+    productId: product.id,
+    product: product,
+    viewedAt: Date.now(),
+  }
+
+  const q = query(
+    colRef,
+    where("userId", "==", userId),
+    where("productId", "==", product.id)
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) {
+    await addDoc(colRef, recViewed);
+  } else {
+    const docRef = snap.docs[0].ref;
+    await updateDoc(docRef, { viewedAt: Date.now() });
+  }
+};
+
+export const getViewedToday = async (userId: string) : Promise<recentlyViewedType[]> => {
+  const now = new Date();
+  const start = getStartOfDay(new Date(now));
+  const end = getEndOfDay(new Date(now));
+  try {
+    const q = query(
+      collection(db, "recentlyViewed"),
+      where("userId", "==", userId),
+      where("viewedAt", ">=", start),
+      where("viewedAt", "<=", end)
+    );
+  
+    const snap = await getDocs(q);
+    return snap.docs.map(doc => ({id: doc.id, ...doc.data()})) as recentlyViewedType[];
+  } catch (error) {
+    console.error('erorrrrrr', error);
+    return [];
+  }
+};
+
+export const getViewedYesterday = async (userId: string) : Promise<recentlyViewedType[]> => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const start = getStartOfDay(new Date(yesterday));
+  const end = getEndOfDay(new Date(yesterday));
+
+  try {
+    const q = query(
+      collection(db, "recentlyViewed"),
+      where("userId", "==", userId),
+      where("viewedAt", ">=", start),
+      where("viewedAt", "<=", end)
+    );  
+  const snap = await getDocs(q);
+  return snap.docs.map(doc => doc.data()) as recentlyViewedType[];
+    } catch (error) {
+      console.error('erorrrrrr', error);
+      return [];
+  }
+  
+};
+export const getViewedOnSpecificDate = async (userId: string, selectedDate: Date) : Promise<recentlyViewedType[]> => {
+
+  const start = getStartOfDay(new Date(selectedDate));
+  const end = getEndOfDay(new Date(selectedDate));
+
+  try {
+    const q = query(
+      collection(db, "recentlyViewed"),
+      where("userId", "==", userId),
+      where("viewedAt", ">=", start),
+      where("viewedAt", "<=", end)
+    );  
+  const snap = await getDocs(q);
+  return snap.docs.map(doc => doc.data()) as recentlyViewedType[];
+    } catch (error) {
+      console.error('erorrrrrr', error);
+      return [];
+  }
+  
 };

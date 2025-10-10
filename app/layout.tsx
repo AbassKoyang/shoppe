@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import QueryProvider from "@/lib/tanstackConfig";
 import { Maiden_Orange, Nunito_Sans, Raleway } from "next/font/google";
-import "./globals.css";
 import AuthProvider from "@/lib/contexts/auth-context";
 import {ToastContainer} from 'react-toastify'
 import TransitionProvider from "@/lib/transition-provider";
 import Navbar from "@/components/Navbar";
+import "react-datepicker/dist/react-datepicker.css";
+import "./globals.css";
+
 
 const raleway = Raleway({
   variable: "--font-geist-sans",

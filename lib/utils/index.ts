@@ -438,3 +438,13 @@ export const formatTitle = (title: string) => {
     if (title.length > 18 ) return newTitle + '...'
     return title;
  }
+
+export const getStartOfDay = (date: Date) => {
+  const dateRef = new Date(date.setHours(0, 0, 0, 0));
+  return dateRef.getTime();
+}
+
+export const getEndOfDay = (date: Date) => {
+  const dateRef = new Date(date.setHours(23, 59, 59, 999))
+  return dateRef.getTime();
+}

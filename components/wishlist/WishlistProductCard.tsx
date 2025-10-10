@@ -90,7 +90,7 @@ const WishlistProductCard = ({product}:{product: ProductType}) => {
                     </button>
                 </div>
                 <div className="flex flex-col h-full">
-                    <p className='text-[12px] text-black font-nunito-sans font-normal max-w-[140px]'>{desc}</p>
+                    <p className='text-[12px] text-black font-nunito-sans font-normal max-w-[150px]'>{desc}</p>
                     <div className=" h-full flex flex-col justify-end">
                         <h5 className='font-raleway font-bold text-[18px] tracking-[-0.18px] text-[#202020]'>{formattedPrice}</h5>
                         <div className='flex items-center gap-2'>
