@@ -97,7 +97,7 @@ const page = () => {
                         className="px-2  text-dark-blue border-0 stroke-none outline-0"
                     >{isTextAreaOpen ? '' : 'Type a message...'}</button>
                     <div className="flex items-center">
-                        <button onClick={() => sendMessage()}>
+                        <button onClick={() => sendMessage({})}>
                          <Image className='size-[26px] text-dark-blue' />
                         </button>
                     </div>
