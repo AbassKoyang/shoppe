@@ -10,12 +10,13 @@ import { ProductType, WishlistType } from "@/services/products/types";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { Heart, LoaderCircle, MessageCircle, MessageSquareText } from "lucide-react";
 import { IoHeart } from "react-icons/io5";
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect, use } from "react";
 import { IoIosShareAlt } from "react-icons/io";
 import { toast } from "react-toastify";
 
 const page = () => {
+  const router = useRouter();
   const {user} = useAuth();
   const productId = useParams<{productId: string}>().productId;
   const {isError, isLoading, data: product} = useFetchSingleProduct(productId);
@@ -254,7 +255,7 @@ const page = () => {
               </button>
         )}
 
-        <button className="cursor-pointer bg-black rounded-4xl px-4 py-2 flex items-center gap-2"><MessageCircle  strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Chat Seller</span></button>
+        <button onClick={() => router.push(`/chat/${productId}_${user?.uid}_${product.sellerId}`)} className="cursor-pointer bg-black rounded-4xl px-4 py-2 flex items-center gap-2"><MessageCircle  strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Chat Seller</span></button>
         <button className="cursor-pointer bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
       </div>
         </>

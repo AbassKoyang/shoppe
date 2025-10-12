@@ -17,6 +17,7 @@ import React, { useEffect, useState } from 'react'
 import { BsCheck } from 'react-icons/bs';
 import { Calendar } from '@/components/ui/calendar'
 import EmptyRecentlyViewed from '@/components/recently-viewed/EmptyRecentlyViewed'
+import {motion} from 'framer-motion';
 
 const page = () => {
   const {user} = useAuth();
@@ -83,8 +84,12 @@ const page = () => {
 
   return (
     <section className="w-full mt-2 relative overflow-x-hidden mb-[300px]">
-      <div className={`w-full fixed top-0 left-[50%] translate-x-[-50%] ${isdateOpen ? 'block' : 'hidden'}`}>
-        <div onClick={() => setIsdateOpen(false)} className="w-full h-dvh z-20 absolute top-0 left-0 bg-[#E9E9E9] opacity-75"></div>
+      <motion.div
+      initial={{y: '-150%'}}
+      animate={{y: isdateOpen ? '0%' : '-150%'}}
+      transition={{duration: 0.3, ease: 'easeInOut'}}
+      className={`w-full fixed top-0 left-[50%] translate-x-[-50%] z-30`}>
+        <div onClick={() => setIsdateOpen(false)} className="w-full h-dvh absolute top-0 left-0 bg-transparent"></div>
         <div className={`w-full flex justify-center mt-[60px]`}>
         <Calendar
             mode="single"
@@ -94,13 +99,13 @@ const page = () => {
               setSelectedDate(date)
               setIsdateOpen(false);
             }}
-            className="w-[335px] rounded-[25px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] z-30 bg-white"
+            className="w-[335px] rounded-[25px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] bg-white z-40"
           />
-          <button onClick={() => setIsdateOpen(false)} className='absolute bottom-[-15px] left-[50%] translate-x-[-50%] size-[30px] rounded-full bg-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] flex items-center justify-center z-40'>
+          <button onClick={() => setIsdateOpen(false)} className='absolute bottom-[-15px] left-[50%] translate-x-[-50%] size-[30px] rounded-full bg-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] flex items-center justify-center z-50'>
           <ChevronUp className='text-dark-blue text-[12px]' />
           </button>
         </div>
-      </div>
+      </motion.div>
         <h2 className='fon-raleway font-bold text-[28px] tracking-[-0.28px]'>Recently Viewed</h2>
         <div className="w-full flex items-center justify-between mt-3">
           

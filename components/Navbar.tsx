@@ -27,9 +27,10 @@ if(hideNavbar) return null;
 if(pathname == '/add-product') return null;
 if(pathname.includes('/settings')) return null;
 if(pathname.includes('/auth')) return null;
+if(pathname.includes('/chat')) return null;
 
     return (
-        <nav className="w-[calc(100%-32px)] [@media(min-width:375px)]:w-[calc(100%-48px)] bg-white flex items-center justify-between px-4 py-3 fixed bottom-3 left-[50%] translate-x-[-50%] z-30 rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
+        <nav className="w-[calc(100%-32px)] [@media(min-width:375px)]:w-[calc(100%-48px)] bg-white flex items-center justify-between px-4 py-3 fixed bottom-3 left-[50%] translate-x-[-50%] z-100 rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
             <Link href='/' className={`px-3 py-2 rounded-4xl flex items-center ${isHome ? 'bg-dark-blue' : 'bg-transparent'}`}>
                 <RiHome6Line strokeWidth={1} className={`${isHome ? 'text-white bg-dark-blue size-[20px]' : 'text-black/75 bg-white size-[24px]'} z-20 transition-transform duration-300 ease-in-out`} />
                 <p className={`${isHome ? 'translate-x-0 opacity-100 w-auto ml-1' : '-translate-x-5 opacity-0 w-0 ml-0'} transition-all duration-300 ease-in-out text-[12px] font-nunito-sans text-white font-normal z-10`}>Home</p>
