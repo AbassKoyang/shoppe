@@ -93,11 +93,11 @@ const page = () => {
                 </div>
                 <div className={`mb-3 flex gap-2 w-full py-2 px-4 bg-[#E5EBFC] items-center justify-between ${isTextAreaOpen ? 'rounded-b-4xl' : 'rounded-4xl'}`}>
                     <button
-                    onClick={() => setIsTextAreaOpen(true)}
+                    onClick={() => setIsTextAreaOpen(!isTextAreaOpen)}
                         className="px-2  text-dark-blue border-0 stroke-none outline-0"
                     >{isTextAreaOpen ? '' : 'Type a message...'}</button>
                     <div className="flex items-center">
-                        <button>
+                        <button onClick={() => sendMessage()}>
                          <Image className='size-[26px] text-dark-blue' />
                         </button>
                     </div>
