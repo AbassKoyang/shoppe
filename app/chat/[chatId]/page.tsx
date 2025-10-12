@@ -89,7 +89,7 @@ const page = () => {
              </div>
              <div className="w-full px-2 [@media(min-width:375px)]:px-4 relative mt-3">
                 <div className="w-full px-2 [@media(min-width:375px)]:px-4 absolute top-[-100px] left-0 z-30 m-0">
-                 <textarea className={`w-full bg-[#E5EBFC] p-5 rounded-t-4xl h-[100px] max-h-[400px] overflow-y-auto scrollbar-hide placeholder:text-dark-blue border-0 stroke-none outline-0 ${isTextAreaOpen ? 'block' : 'hidden'} transition-transform duration-200 ease-in-out`} placeholder='Type a message...'></textarea>
+                 <textarea onChange={(e) => setText(e.target.value)} className={`w-full bg-[#E5EBFC] p-5 rounded-t-4xl h-[100px] max-h-[400px] overflow-y-auto scrollbar-hide placeholder:text-dark-blue border-0 stroke-none outline-0 ${isTextAreaOpen ? 'block' : 'hidden'} transition-transform duration-200 ease-in-out`} placeholder='Type a message...'></textarea>
                 </div>
                 <div className={`mb-3 flex gap-2 w-full py-2 px-4 bg-[#E5EBFC] items-center justify-between ${isTextAreaOpen ? 'rounded-b-4xl' : 'rounded-4xl'}`}>
                     <button
