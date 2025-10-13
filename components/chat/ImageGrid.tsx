@@ -13,7 +13,7 @@ const ImageGrid = ({images}: {images: string[]}) => {
             <div className='w-[50%] h-[100%]'>
              <img src={images[0]} className='object-cover object-center size-full' />
             </div>
-            <div className='w-[50%] h-[100%'>
+            <div className='w-[50%] h-[100%]'>
              <img src={images[1]} className='object-cover object-center size-full' />
             </div>
         </div>
