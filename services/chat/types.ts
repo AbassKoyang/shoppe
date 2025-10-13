@@ -8,6 +8,7 @@ export type messageType = {
     sellerId: string;
     senderId: string;
     text: string;
+    images?: string[];
 }
 export type ChatDataType = {
     userInfo: AppUserType,
