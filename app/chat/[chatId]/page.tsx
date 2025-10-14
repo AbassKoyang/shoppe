@@ -2,6 +2,7 @@
 import ChatHeader from '@/components/chat/ChatHeader';
 import ChatSkeleton from '@/components/chat/ChatSkeleton';
 import ImageGrid from '@/components/chat/ImageGrid';
+import JustForYouProductCard from '@/components/JustForYouProductCard';
 import { useAuth } from '@/lib/contexts/auth-context';
 import socket from '@/lib/socket';
 import { useGetChatData } from '@/services/chat/queries';
@@ -22,6 +23,8 @@ const page = () => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [previewUrls, setPreviewUrls] = useState<string[]>([]);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [userTyping, setUserTyping] = useState(false);
+    const [userOnline, setUserOnline] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const handleInput = () => {
@@ -33,16 +36,71 @@ const page = () => {
 
     useEffect(() => {
       setMessages(data?.chatMessages || []);
-    }, [data?.chatMessages])
+    }, [data?.chatMessages]);
+
+
     
     useEffect(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages])
+    }, [messages]);
+
+
+
+    useEffect(() => {
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault(); 
+        e.returnValue = '';
+        socket.emit('userOffline', {productId, buyerId, sellerId})
+      };
+  
+      window.addEventListener('beforeunload', handleBeforeUnload);
+  
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+        // also emit offline when this page unmounts (route change)
+        socket.emit('userOffline', { productId, buyerId, sellerId });
+      };
+    }, [productId, buyerId, sellerId]);
+
+
+
+    useEffect(() => {
+      const handleUserOnline = () => {
+        setUserOnline(true);
+        console.log('user is online');
+      };
+      const handleUseroffline = () => {
+        setUserOnline(false);
+        console.log('user is offline');
+      };
+  
+      socket.on('user-online', handleUserOnline);
+      socket.on('user-offline', handleUseroffline);
+  
+      return () => {
+        socket.off('user-online', handleUserOnline);
+        socket.off('user-offline', handleUseroffline);
+      };
+    }, [user, chatId]);
+
+
     
-  useEffect(() => {
-    socket.emit("joinChat", { productId, buyerId, sellerId });
+    useEffect(() => {
+      socket.emit("joinChat", { productId, buyerId, sellerId });
+      socket.emit('userOnline', { productId, buyerId, sellerId });
     
-  }, [productId, buyerId, sellerId, ]);
+      const handleConnect = () => {
+        socket.emit("joinChat", { productId, buyerId, sellerId });
+        socket.emit('userOnline', { productId, buyerId, sellerId });
+      };
+    
+      socket.on('connect', handleConnect);
+      return () => {
+        socket.off('connect', handleConnect);
+      };
+    }, [productId, buyerId, sellerId]);
+
+
 
   useEffect(() => {
     const handleNewMessage = (msg: messageType) => {
@@ -55,8 +113,9 @@ const page = () => {
     return () => {
       socket.off("newMessage", handleNewMessage);
     };
-  }, [])
+  }, []);
   
+
 
   useEffect(() => {
     if(user?.uid === buyerId){
@@ -64,7 +123,29 @@ const page = () => {
     } else {
         setIdentity('buyer')
     }
-  }, [chatId, user])
+  }, [chatId, user]);
+
+
+
+  useEffect(() => {
+    const handleUserTyping = () => {
+      setUserTyping(true);
+      console.log('user is typing');
+    };
+    const handleUserStopTyping = () => {
+      setUserTyping(false);
+      console.log('user stopped typing');
+    };
+
+    socket.on('user-typing', handleUserTyping);
+    socket.on('user-stop-typing', handleUserStopTyping);
+
+    return () => {
+      socket.off('user-typing', handleUserTyping);
+      socket.off('user-stop-typing', handleUserStopTyping);
+    };
+  }, [user, chatId]);
+  
   
 
   const sendMessage = async ({}) => {
@@ -104,11 +185,11 @@ const page = () => {
       text,
       createdAt: new Date(),
     };
-    // Optimistic update so sender sees message immediately
-    setMessages((prev) => [...prev, { ...newMessage, images: uploadedUrls } as unknown as messageType]);
+
     setText("");
     setPreviewUrls([]);
     setSelectedFiles([]);
+    setMessages((prev) => [...prev, { ...newMessage, images: uploadedUrls } as unknown as messageType]);
     
     socket.emit("sendMessage", {
         productId,
@@ -135,15 +216,21 @@ const page = () => {
     <section className='w-full h-dvh flex flex-col justify-between bg-[#F9F9F9] scrollbar-hide'>
         {data && (
             <>
-             <ChatHeader user={data.userInfo} productDetails={data?.productDetails} />
-             <div className="px-2 [@media(min-width:375px)]:px-4 flex flex-col h-full pt-[80px] p-4 pb-[80px] bg-[#F9F9F9]">
+             <ChatHeader user={data.userInfo} productDetails={data?.productDetails} userTyping={userTyping} userOnline={userOnline} />
+             <div className="px-2 [@media(min-width:375px)]:px-4 flex flex-col h-full pt-[68px] p-4 pb-[68px] bg-[#F9F9F9]">
                  <div className="h-full flex-1 overflow-y-auto scrollbar-hide">
-                 {messages.map((m, i) => (
+                  <JustForYouProductCard product={data.productDetails} />
+                {messages.map((m, i) => {
+                 const rawTs = (m as any).timestamp ?? (m as any).createdAt;
+                 const resolvedDate = rawTs?.toDate ? rawTs.toDate() : (rawTs instanceof Date ? rawTs : new Date(rawTs));
+                 const messageDate = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toLocaleString();
+                  return (
                      <div key={i} className={`w-fit flex flex-col mt-2 py-2 px-2 ${m.senderId === user?.uid ? "ml-auto items-end" : "mr-auto items-start"}`}>
-                      <ImageGrid images={m.images || []} />
-                     <p className={`w-fit max-w-[300px] break-words py-2 px-4 mt-2 rounded-4xl ${m.senderId === user?.uid ? "bg-dark-blue text-white" : "bg-[#ebeffaed] text-black"}`}>{m.text}</p>
+                      <ImageGrid images={m.images || []} senderId={m.senderId} />
+                     <p className={`w-fit max-w-[300px] break-words py-2 px-4 mt-2 rounded-4xl ${m.senderId === user?.uid ? "bg-dark-blue text-white" : "bg-[#ebeffaed] text-black font-nunito-sans"}`}>{m.text}</p>
+                    <span className='mt-0.5 text-[8px] font-nunito-sans text-gray-500'>{messageDate}</span>
                      </div>
-                 ))}
+                 )})}
                  <div ref={messagesEndRef} />
                  </div>
              </div>
@@ -175,7 +262,16 @@ const page = () => {
               sendMessage({});
              }} className="w-full px-2 [@media(min-width:375px)]:px-4 relative mt-3">
                 <div className={`flex gap-2 w-full py-3 px-5 bg-[#E5EBFC] ${text.length > 0 ? 'items-end' : 'items-center'} justify-between rounded-4xl overflow-hidden transition-all duration-200 ease-in-out`}>
-                    <textarea ref={textareaRef} onInput={handleInput} value={text} onChange={(e) => setText(e.target.value)} className={`w-[90%] h-[35px] max-h-[250px] overflow-y-auto scrollbar-hide placeholder:text-dark-blue border-0 stroke-none outline-0 transition-all duration-200 ease-in-out`} placeholder='Type a message...'></textarea>
+                    <textarea 
+                    onFocus={() => {
+                      socket.emit('userTyping', { productId, buyerId, sellerId });
+                    }} 
+                    onBlur={() => {
+                      socket.emit('userStopTyping', { productId, buyerId, sellerId });
+                    }} 
+                    ref={textareaRef} onInput={handleInput} 
+                    value={text} onChange={(e) => setText(e.target.value)} 
+                    className={`w-[90%] h-[35px] max-h-[250px] overflow-y-auto scrollbar-hide placeholder:text-dark-blue border-0 stroke-none outline-0 transition-all duration-200 ease-in-out`} placeholder='Type a message...'></textarea>
                     <div className="flex items-center">
                       {text === '' ? (
                         <button type='button' className='size-[28px] relative'>

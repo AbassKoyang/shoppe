@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 
-const ChatHeader = ({user, productDetails} : {user: AppUserType; productDetails: ProductType}) => {
+const ChatHeader = ({user, productDetails, userTyping, userOnline} : {user: AppUserType; productDetails: ProductType; userTyping: boolean; userOnline: boolean;}) => {
     const router = useRouter()
     console.log(user?.profile.imageUrl)
   return (
@@ -24,7 +24,16 @@ const ChatHeader = ({user, productDetails} : {user: AppUserType; productDetails:
                 <h5 className='text-[20px] text-dark-blue font-bold font-raleway tracking-[-0.2px]'>{user.profile.name}</h5>
             </div>
             </div>
-            <div className="">
+            <div className="flex gap-3 items-center">
+                {userTyping && userOnline && (
+                    <p className='text-dark-blue text-[12px] italic'>Typing...</p>
+                )}
+                {userOnline && !userTyping && (
+                    <p className='text-dark-blue text-[12px] italic'>Online</p>
+                )}
+                {userTyping && (
+                    <p className='text-dark-blue text-[12px] italic'>Typing.. 2</p>
+                )}
                 <button>
                     <EllipsisVertical className='size-[20px]' />
                 </button>

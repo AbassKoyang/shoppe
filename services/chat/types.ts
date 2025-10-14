@@ -9,6 +9,7 @@ export type messageType = {
     senderId: string;
     text: string;
     images?: string[];
+    timestamp?: any;
 }
 export type ChatDataType = {
     userInfo: AppUserType,
