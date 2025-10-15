@@ -1,3 +1,4 @@
+'use client';
 import { useAuth } from '@/lib/contexts/auth-context'
 import { useGetAllChats } from '@/services/chat/queries'
 import React from 'react'
