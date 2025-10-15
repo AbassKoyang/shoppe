@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase';
-import { collection, query, orderBy, getDocs, getDoc, doc, where, deleteDoc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, getDoc, doc, where, deleteDoc, updateDoc } from 'firebase/firestore';
 import { ChatDataType, chatType, messageType } from './types';
 import { AppUserType, User } from '../users/types';
 import { ProductType } from '../products/types';
@@ -86,6 +86,20 @@ export const deleteMessage = async (chatId: string, messageId: string) => {
         return true;
     } catch (error) {
         console.error('Error deleting message', error);
+        throw error;
+    }
+};
+export const editMessage = async (chatId: string, messageId: string, text: string) => {
+  const docRef = doc(db, 'chats', chatId, 'messages', messageId);
+    try {
+        await updateDoc(docRef, {
+          text: text,
+          edited: true,
+        });
+        console.log("✅ Message updated successfully");
+        return true;
+    } catch (error) {
+        console.error('Error updating message', error);
         throw error;
     }
 };

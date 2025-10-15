@@ -190,6 +190,7 @@ const page = () => {
       senderId: user?.uid || '',
       text,
       createdAt: new Date(),
+      edited: false,
     };
 
     setText("");
@@ -218,6 +219,18 @@ const page = () => {
     setSelectedFiles(files);
 };
 
+const removeDeletedMessage = (messageId: string) => {
+  const newMessages = messages.filter((message) => message.id !== messageId);
+  setMessages(newMessages);
+}
+const updateEditedMessage = (messageId: string, text: string) => {
+  setMessages(messages.map((message) => 
+    message.id === messageId 
+      ? {...message, text: text, edited: true}
+      : message
+  ));
+}
+
   return (
     <section className='w-full h-dvh flex flex-col justify-between bg-[#F9F9F9] scrollbar-hide'>
         {data && (
@@ -231,7 +244,7 @@ const page = () => {
                     <span className='mt-[150px] text-[10px] font-nunito-sans bg-gray-200 text-black p-2 rounded-lg items-center'>{chatDate}</span>
                   </div>
                     {messages.map((m, i) =>(
-                    <Message key={`{m}${i}`} m={m}  chatId={chatId} />))}
+                    <Message key={`{m}${i}`} m={m}  chatId={chatId} removeDeletedMessage={removeDeletedMessage} updateEditedMessage={updateEditedMessage} />))}
                     
                     <div ref={messagesEndRef} />
                     </div>

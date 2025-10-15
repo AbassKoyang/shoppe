@@ -10,6 +10,7 @@ export type messageType = {
     text: string;
     images?: string[];
     timestamp?: any;
+    edited?: boolean;
 }
 export type chatType = {
     id?: string;

@@ -52,6 +52,7 @@ export function handleSocketEvents(io) {
         senderId,
         createdAt: new Date(),
         images: uploadedUrls,
+        edited: false,
       };
 
       const docRef = db.collection('chats').doc(roomId);
@@ -59,10 +60,10 @@ export function handleSocketEvents(io) {
       if(docSnapshot.exists){
       await db.collection("chats").doc(roomId).collection("messages").add(messageData);
       } else {
-        
       await db.collection("chats").doc(roomId).set(
         { productId, buyerId, sellerId, createdAt: new Date() }
       );
+      await db.collection("chats").doc(roomId).collection("messages").add(messageData);
     }
 
 
