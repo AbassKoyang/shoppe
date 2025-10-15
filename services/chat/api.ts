@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase';
-import { collection, query, orderBy, getDocs, getDoc, doc, where, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, getDoc, doc, where, deleteDoc, updateDoc, or } from 'firebase/firestore';
 import { ChatDataType, chatType, messageType } from './types';
 import { AppUserType, User } from '../users/types';
 import { ProductType } from '../products/types';
@@ -102,4 +102,23 @@ export const editMessage = async (chatId: string, messageId: string, text: strin
         console.error('Error updating message', error);
         throw error;
     }
+};
+export const getAllChats = async (userId: string) => {
+  try {
+    const chatRef = collection(db, 'chats');
+    const q = query(chatRef,  or(
+      where("sellerId", "==", userId),
+      where("buyerId", "==", userId)
+    ), orderBy('createdAt', 'asc'));
+    const querySnapshot = await getDocs(q);
+    
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    })) as chatType[];
+
+  } catch (error) {
+    console.error('Error fetching chats:', error);
+    throw error;
+  }
 };

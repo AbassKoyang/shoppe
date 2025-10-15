@@ -65,12 +65,14 @@ const ImageCarousel = ({images, isOpen, closeImageCarousel}: {images: string[], 
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className={`w-[100vw] h-[100vh] fixed top-0 left-0 rounded-b-2xl overflow-hidden z-1000 bg-white/35 backdrop-blur-sm`}>
         <Carousel setApi={setApi} className={`w-full h-full`}> 
-            <CarouselContent className={`w-full h-full p-4`}>
+            <CarouselContent className={`w-full h-full`}>
                 {images.map((image) => (
                     <CarouselItem key={image} className='w-full h-[100vh] flex items-center justify-center'>
-                    <img
-                      src={image}
-                     alt="Product image" className="rounded-[5px] object-cover"/>
+                        <div className="w-full h-[90%] flex items-center justify-center rounded-[5px] overflow-hidden">
+                        <img
+                        src={image}
+                        alt="Product image" className="rounded-[5px] object-cover"/>
+                        </div>
                     </CarouselItem>
                 ))}
             </CarouselContent>

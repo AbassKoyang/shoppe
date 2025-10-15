@@ -4,7 +4,7 @@ import { CATEGORIES } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { RiHome6Line, RiSearch2Line, RiShoppingBag4Line, RiUserLine } from "react-icons/ri";
+import { RiChat3Line, RiHome6Line, RiSearch2Line, RiShoppingBag4Line, RiUserLine } from "react-icons/ri";
 
 const Navbar = () => {
     const pathname = usePathname();
@@ -35,13 +35,13 @@ if(pathname.includes('/chat')) return null;
                 <RiHome6Line strokeWidth={1} className={`${isHome ? 'text-white bg-dark-blue size-[20px]' : 'text-black/75 bg-white size-[24px]'} z-20 transition-transform duration-300 ease-in-out`} />
                 <p className={`${isHome ? 'translate-x-0 opacity-100 w-auto ml-1' : '-translate-x-5 opacity-0 w-0 ml-0'} transition-all duration-300 ease-in-out text-[12px] font-nunito-sans text-white font-normal z-10`}>Home</p>
             </Link>
-            <Link href='/orders' className={`px-3 py-2 rounded-4xl flex items-center ${pathname.includes('orders') ? 'bg-dark-blue' : 'bg-transparent'}`}>
-                <RiShoppingBag4Line strokeWidth={1} className={`${pathname.includes('orders') ? 'text-white bg-dark-blue size-[20px]' : 'text-black/75 bg-white size-[24px]'} z-20 transition-transform duration-300 ease-in-out`} />
-                <p className={`${pathname.includes('orders') ? 'translate-x-0 opacity-100 w-auto ml-1' : '-translate-x-5 opacity-0 w-0 ml-0'} transition-all duration-300 ease-in-out text-[12px] font-nunito-sans text-white font-normal z-10`}>Orders</p>
-            </Link>
             <Link href='/search' className={`px-3 py-2 rounded-4xl flex items-center ${pathname.includes('search') ? 'bg-dark-blue' : 'bg-transparent'}`}>
                 <RiSearch2Line strokeWidth={1} className={`${pathname.includes('search') ? 'text-white bg-dark-blue size-[20px]' : 'text-black/75 bg-white size-[24px]'} z-20 transition-transform duration-300 ease-in-out`} />
                 <p className={`${pathname.includes('search') ? 'translate-x-0 opacity-100 w-auto ml-1' : '-translate-x-5 opacity-0 w-0 ml-0'} transition-all duration-300 ease-in-out text-[12px] font-nunito-sans text-white font-normal z-10`}>Search</p>
+            </Link>
+            <Link href='/inbox' className={`px-3 py-2 rounded-4xl flex items-center ${pathname.includes('inbox') ? 'bg-dark-blue' : 'bg-transparent'}`}>
+                <RiChat3Line strokeWidth={1} className={`${pathname.includes('inbox') ? 'text-white bg-dark-blue size-[20px]' : 'text-black/75 bg-white size-[24px]'} z-20 transition-transform duration-300 ease-in-out`} />
+                <p className={`${pathname.includes('inbox') ? 'translate-x-0 opacity-100 w-auto ml-1' : '-translate-x-5 opacity-0 w-0 ml-0'} transition-all duration-300 ease-in-out text-[12px] font-nunito-sans text-white font-normal z-10`}>Inbox</p>
             </Link>
             <Link href={`/profile/${user?.uid}`} className={`px-3 py-2 rounded-4xl flex items-center ${pathname.includes('profile') || pathname.startsWith('/wishlist') || pathname.startsWith('/settings') || pathname.includes('/recently-viewed') ? 'bg-dark-blue' : 'bg-transparent'}`}>
                 <RiUserLine strokeWidth={1} className={`${pathname.includes('profile') || pathname.startsWith('/wishlist') || pathname.startsWith('/settings') || pathname.includes('/recently-viewed')  ? 'text-white bg-dark-blue size-[20px]' : 'text-black/75 bg-white size-[24px]'} z-20 transition-transform duration-300 ease-in-out`} />

@@ -18,7 +18,7 @@ const page = () => {
 
   return (
     <section className="w-full mt-4 relative overflow-x-hidden mb-[300px]">
-        <h2 className='fon-raleway font-bold text-[28px] tracking-[-0.28px]'>Wishlist</h2>
+        <h2 className='font-raleway font-bold text-[28px] tracking-[-0.28px]'>Wishlist</h2>
         <div className="w-full mt-6">
             <div className="w-full flex items-center justify-between">
                 <h3 className="text-[21px] font-raleway font-bold text-[#202020]">Recently viewed</h3>

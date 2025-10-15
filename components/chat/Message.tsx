@@ -144,11 +144,11 @@ const Message = ({m, chatId, removeDeletedMessage, updateEditedMessage} : {m: me
   <form onSubmit={(e) => {
       e.preventDefault();
       handleEditMessage(text);
-    }} className={`w-[100vw] h-[100vh] px-2 [@media(min-width:375px)]:px-4 fixed top-0 left-0 z-[2000] justify-end flex-col items-center ${isEditModalOpen ? 'flex' : 'hidden'}`}>
+    }} className={`w-[100vw] h-dvh px-2 [@media(min-width:375px)]:px-4 fixed top-0 left-0 z-[2000] justify-end flex-col items-center ${isEditModalOpen ? 'flex' : 'hidden'}`}>
       <div onClick={() => setIsEditModalOpen(false)} className="size-full absolute z-[1] bg-white/30 backdrop-blur-sm"></div>
        <p className={`w-fit max-w-[300px] break-words py-2 px-4 mb-2 rounded-4xl bg-dark-blue text-white z-10 ml-auto`}>{m.text}</p>
 
-        <div className={`w-full py-3 px-5 bg-[#E5EBFC] rounded-4xl z-10 `}>
+        <div className={`w-full py-3 px-5 bg-[#E5EBFC] rounded-4xl z-10 mb-2`}>
           <div className="w-full flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
              <PencilLine className='text-gray-500 size-[18px]' />
