@@ -14,7 +14,6 @@ const Message = ({m, chatId, removeDeletedMessage, updateEditedMessage} : {m: me
     const [isPopUpOpen, setIsPopUpOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isEditLoading, setIsEditLoading] = useState(false);
-    const [isCopying, setIsCopying] = useState(false);
     const [text, setText] = useState(m.text);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const popUpRef = useRef<HTMLDivElement>(null);
@@ -117,13 +116,13 @@ const Message = ({m, chatId, removeDeletedMessage, updateEditedMessage} : {m: me
 
     return (
     <>
-    <div {...handleMessagePress} className={`w-fit flex flex-col mt-2 py-2 px-2 ${m.senderId === user?.uid ? "ml-auto items-end" : "mr-auto items-start"}  ${loading ? 'opacity-60' : 'opacity-100'} relative z-10`}>
+    <div {...handleMessagePress} className={`w-fit flex flex-col mt-2 py-2 px-2 ${m.senderId === user?.uid ? "ml-auto items-end" : "mr-auto items-start"}  ${loading ? 'opacity-60' : 'opacity-100'} relative select-none`}>
         <ImageGrid images={m.images || []} senderId={m.senderId} />
     <p className={`w-fit max-w-[300px] break-words py-2 px-4 mt-2 rounded-4xl ${m.senderId === user?.uid ? "bg-dark-blue text-white" : "bg-[#ebeffaed] text-black"} font-nunito-sans z-10`}>{m.text}</p>
     <span className='mt-0.5 text-[8px] font-nunito-sans text-gray-500 z-10'>{messageDate}</span>
     {m.edited && (<span className='mt-0.5 text-[7px] font-nunito-sans text-gray-500 z-10'>Edited</span>)}
 
-    <div ref={popUpRef} className={`absolute top-[50%] translate-y-[-50%] ${m.senderId === user?.uid ? "left-[-80px]" : "right-[-80px]"} left-0 ${isPopUpOpen ? 'block' : 'hidden'} p-1.5 rounded-[6px] bg-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] overflow-hidden transition-all duration-300 ease-in-out z-20 flex items-center gap-5 w-fit`}>
+    <div ref={popUpRef} className={`absolute top-[50%] translate-y-[-50%] ${m.senderId === user?.uid ? "left-[-40px]" : "right-[-40px]"} ${isPopUpOpen ? 'block' : 'hidden'} p-1.5 rounded-[6px] bg-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] overflow-hidden transition-all duration-300 ease-in-out z-20 flex items-center gap-5 w-fit`}>
       {m.senderId === user?.uid && (
         <button onClick={() => {
           setIsEditModalOpen(true);
@@ -134,13 +133,10 @@ const Message = ({m, chatId, removeDeletedMessage, updateEditedMessage} : {m: me
           handleDeleteMessage();
         }}><Trash2 className='size-[20px] text-[#202020]' /></button>
       )}
-      <button onClick={ async () => {
-        setIsCopying(true)
-        await navigator.clipboard.writeText(m.text);
-        setIsCopying(false);
+      <button onClick={ () => {
+        navigator.clipboard.writeText(m.text);
         toast.success('Message copied to clipboard')
-      }}> {isCopying ? <LoaderCircle className="animate-spin size-[20px] text-[#202020]" />
-        : <Copy className='size-[20px] text-[#202020]' />}</button>
+      }}> <Copy className='size-[20px] text-[#202020]' /></button>
     </div>
     </div>
 

@@ -9,7 +9,7 @@ import { useLongPress } from '@/lib/hooks/useLongPress';
 import socket from '@/lib/socket';
 import { useGetChatData } from '@/services/chat/queries';
 import { messageType } from '@/services/chat/types';
-import { Image, ImagePlus, SendHorizontal, X } from 'lucide-react';
+import { Image, ImagePlus, LoaderCircle, SendHorizontal, X } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -27,6 +27,7 @@ const page = () => {
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [userTyping, setUserTyping] = useState(false);
     const [userOnline, setUserOnline] = useState(false);
+    const [isMessageSending, setIsMessageSending] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const rawTs = data?.chatDetails.createdAt ?? new Date();
@@ -158,6 +159,7 @@ const page = () => {
     if (!text.trim()) return;
     let uploadedUrls : string[]  = [];
     try {
+      setIsMessageSending(true);
       if(selectedFiles && selectedFiles.length > 0){
         uploadedUrls = await Promise.all(
          selectedFiles.map(async (file) => {
@@ -197,6 +199,7 @@ const page = () => {
     setPreviewUrls([]);
     setSelectedFiles([]);
     setMessages((prev) => [...prev, { ...newMessage, images: uploadedUrls } as unknown as messageType]);
+    setIsMessageSending(false);
     
     socket.emit("sendMessage", {
         productId,
@@ -287,7 +290,7 @@ const updateEditedMessage = (messageId: string, text: string) => {
                         }} 
                         ref={textareaRef} onInput={handleInput} 
                         value={text} onChange={(e) => setText(e.target.value)} 
-                        className={`w-[90%] ${text.length == 0 ? 'h-[30px]' : ''} h-[30px] max-h-[250px] overflow-y-auto scrollbar-hide placeholder:text-dark-blue border-0 stroke-none outline-0 transition-all duration-200 ease-in-out resize-none`} placeholder='Type a message...'></textarea>
+                        className={`w-[90%] ${text === '' ? 'h-[30px]' : ''} h-[30px] max-h-[250px] overflow-y-auto scrollbar-hide placeholder:text-dark-blue border-0 stroke-none outline-0 transition-all duration-200 ease-in-out resize-none`} placeholder='Type a message...'></textarea>
                         <div className="flex items-center">
                           {text === '' ? (
                             <button type='button' className='size-[28px] relative'>
@@ -300,6 +303,8 @@ const updateEditedMessage = (messageId: string, text: string) => {
                             />
                             <Image className='size-[26px] text-dark-blue z-20' />
                             </button>
+                          ) : isMessageSending ? (
+                              <button><LoaderCircle className="animate-spin size-[26px] text-dark-blue" /></button>
                           ) : (
                             <button type='submit'>
                             <SendHorizontal  className='size-[26px] text-dark-blue' />

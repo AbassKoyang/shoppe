@@ -13,7 +13,7 @@ const ChatHeader = ({user, productDetails, userTyping, userOnline} : {user: AppU
     const router = useRouter()
     console.log(user?.profile.imageUrl)
   return (
-    <header className='w-full fixed top-0 left-0 z-1000'>
+    <header className='w-full fixed top-0 left-0 z-100'>
         <div className="w-full px-2 [@media(min-width:375px)]:px-4 py-3 bg-white flex items-center justify-between relative">
             <div className="flex gap-4"> 
                 <button onClick={() => router.back()}>

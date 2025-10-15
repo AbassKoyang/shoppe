@@ -1,0 +1,99 @@
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import {
+    Carousel,
+    CarouselApi,
+    CarouselContent,
+    CarouselItem,
+  } from "@/components/ui/carousel";
+import Autoplay from 'embla-carousel-autoplay';
+import { formatProductCardImageUrl } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { Button } from '../ui/button';
+import { X } from 'lucide-react';
+import {motion} from 'framer-motion'
+
+const ImageCarousel = ({images, isOpen, closeImageCarousel}: {images: string[], isOpen: boolean; closeImageCarousel: () => void}) => {
+    const [api, setApi] = useState<CarouselApi>();
+    const [current, setCurrent] = useState(0);
+    const [count, setCount] = useState(0);
+    const router = useRouter();
+
+    const plugin = useRef(
+        Autoplay({ delay: 5000, stopOnInteraction: true })
+    );
+    
+  
+    useEffect(() => {
+      if (!api) return;
+      const snaps = api.scrollSnapList().length;
+      setCount(snaps);
+      setCurrent(api.selectedScrollSnap());
+  
+      api.on("select", () => {
+        setCurrent(api.selectedScrollSnap());
+      });
+    }, [api]);
+  
+    const scrollTo = (index: number) => {
+      api?.scrollTo(index);
+    };
+
+
+    // const getImages = (images: string[]) : string[] => {
+    //     const newImages: string[] = []
+    //     images.map((image) => {
+    //         newImages.push(formatProductCardImageUrl(image, {
+    //             width: `${viewportWidth}`,
+    //             ar_: '3:4',
+    //             c_fill: true,
+    //             g_auto: true,
+    //             q_auto: true,
+    //             f_auto: true,
+    //             e_sharpen: true,
+    //             dpr_auto: true,
+    //           }))
+    //     })
+    //     console.log(newImages);
+    //     return newImages;
+    // }
+    // const newImages: string[] = getImages(images);
+  return (
+        <motion.div
+        initial={{x: '100%'}}
+        animate={{x:isOpen ? '0%' : '100%'}}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className={`w-[100vw] h-[100vh] fixed top-0 left-0 rounded-b-2xl overflow-hidden z-1000 bg-white/35 backdrop-blur-sm`}>
+        <Carousel setApi={setApi} className={`w-full h-full`}> 
+            <CarouselContent className={`w-full h-full p-4`}>
+                {images.map((image) => (
+                    <CarouselItem key={image} className='w-full h-[100vh] flex items-center justify-center'>
+                    <img
+                      src={image}
+                     alt="Product image" className="rounded-[5px] object-cover"/>
+                    </CarouselItem>
+                ))}
+            </CarouselContent>
+           {images.length > 1  && (
+             <div className="absolute bottom-5 left-[50%] translate-x-[-50%] w-full flex items-center justify-center gap-2 mt-3 z-50">
+             {images.map((_, idx) => (
+                 <Button
+                     key={idx}
+                     size="icon"
+                     className={`transition-all duration-100 ease-in-out hover:bg-dark-blue ${
+                     current === idx ? "bg-dark-blue h-2.5 w-10 rounded-xl" : "bg-dark-blue opacity-20 size-2.5 rounded-full"
+                     }`}
+                     onClick={() => scrollTo(idx)}
+                 />
+              ))}
+        </div>
+           )}
+           <button onClick={() => {closeImageCarousel(); console.log('Clciked')}} className="cursor-pointer absolute top-3 left-3 flex items-center justify-center bg-[#FFEBEB] rounded-full size-[43px]">
+                        <X className="size-[22px] text-[#202020]" />
+            </button>
+        </Carousel>
+        </motion.div>
+  )
+}
+
+export default ImageCarousel
