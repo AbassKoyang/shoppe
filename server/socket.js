@@ -54,14 +54,17 @@ export function handleSocketEvents(io) {
         images: uploadedUrls,
       };
 
-      // Create chat doc if it doesn't exist (only when first message is sent)
-      await db.collection("chats").doc(roomId).set(
-        { productId, buyerId, sellerId, createdAt: new Date() },
-        { merge: true }
-      );
-
-      // Add message to the chat
+      const docRef = db.collection('chats').doc(roomId);
+      const docSnapshot = await docRef.get();
+      if(docSnapshot.exists){
       await db.collection("chats").doc(roomId).collection("messages").add(messageData);
+      } else {
+        
+      await db.collection("chats").doc(roomId).set(
+        { productId, buyerId, sellerId, createdAt: new Date() }
+      );
+    }
+
 
       socket.to(roomId).emit("newMessage", { ...messageData, roomId });
       } catch (error) {

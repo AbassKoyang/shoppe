@@ -11,8 +11,17 @@ export type messageType = {
     images?: string[];
     timestamp?: any;
 }
+export type chatType = {
+    id?: string;
+    createdAt: any;
+    productId: string;
+    buyerId: string;
+    sellerId: string;
+    messages: messageType[]
+}
 export type ChatDataType = {
-    userInfo: AppUserType,
-    chatMessages: messageType[],
-    productDetails: ProductType,
+    userInfo: AppUserType;
+    chatMessages: messageType[];
+    productDetails: ProductType;
+    chatDetails: chatType;
 }

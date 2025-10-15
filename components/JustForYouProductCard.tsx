@@ -26,7 +26,7 @@ const JustForYouProductCard = ({product}:{product: any }) => {
   
   const desc = formatDescription(product.description);
 
-  const productLink = formatProductLink(product.category, product.subCategory, product.objectID || product.id)
+  const productLink = formatProductLink(product.category, product.subCategory, product.objectID || product.id);
 
   return (
         <Link href={productLink} className='w-[160px] mt-3'>
@@ -42,7 +42,7 @@ const JustForYouProductCard = ({product}:{product: any }) => {
                  sizes="(max-width: 768px) 100px, 150px"
                   className="rounded-[5px] object-cover"/>
             </div>
-            <h5 className="text-black text-[17px] font-raleway font-bold mt-1.5 text-left">${formattedPrice}</h5>
+            <h5 className="text-black text-[17px] font-raleway font-bold mt-1.5 text-left">{formattedPrice}</h5>
             <h6 className="text-black text-[14px] font-raleway font-bold mt text-left">{title}</h6>
             <p className="text-black text-[12px] font-nunito-sans font-normal max-w-full text-left mt">{desc}</p>
             <div className="w-full max-w-full flex items-center justify-between mt-1">

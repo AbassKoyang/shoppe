@@ -6,13 +6,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import ChatProductCard from './ChatProductCard';
 
 
 const ChatHeader = ({user, productDetails, userTyping, userOnline} : {user: AppUserType; productDetails: ProductType; userTyping: boolean; userOnline: boolean;}) => {
     const router = useRouter()
     console.log(user?.profile.imageUrl)
   return (
-    <header className='fixed top-0 left-0 w-full px-2 [@media(min-width:375px)]:px-4 py-3 bg-white flex items-center justify-between'>
+    <header className='w-full fixed top-0 left-0 z-1000'>
+        <div className="w-full px-2 [@media(min-width:375px)]:px-4 py-3 bg-white flex items-center justify-between relative">
             <div className="flex gap-4"> 
                 <button onClick={() => router.back()}>
                     <ArrowLeft className='size-[25px]' />
@@ -31,13 +33,12 @@ const ChatHeader = ({user, productDetails, userTyping, userOnline} : {user: AppU
                 {userOnline && !userTyping && (
                     <p className='text-dark-blue text-[12px] italic'>Online</p>
                 )}
-                {userTyping && (
-                    <p className='text-dark-blue text-[12px] italic'>Typing.. 2</p>
-                )}
                 <button>
                     <EllipsisVertical className='size-[20px]' />
                 </button>
             </div>
+            <ChatProductCard product={productDetails} />
+        </div>
     </header>
 )
 }

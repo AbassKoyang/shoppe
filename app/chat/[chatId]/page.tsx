@@ -2,8 +2,10 @@
 import ChatHeader from '@/components/chat/ChatHeader';
 import ChatSkeleton from '@/components/chat/ChatSkeleton';
 import ImageGrid from '@/components/chat/ImageGrid';
+import Message from '@/components/chat/Message';
 import JustForYouProductCard from '@/components/JustForYouProductCard';
 import { useAuth } from '@/lib/contexts/auth-context';
+import { useLongPress } from '@/lib/hooks/useLongPress';
 import socket from '@/lib/socket';
 import { useGetChatData } from '@/services/chat/queries';
 import { messageType } from '@/services/chat/types';
@@ -27,11 +29,15 @@ const page = () => {
     const [userOnline, setUserOnline] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
+    const rawTs = data?.chatDetails.createdAt ?? new Date();
+    const resolvedDate = rawTs?.toDate ? rawTs.toDate() : (rawTs instanceof Date ? rawTs : new Date(rawTs));
+    const chatDate = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toLocaleString();
+
     const handleInput = () => {
       const el = textareaRef.current;
       if (!el) return;
-      el.style.height = "auto";
       el.style.height = `${Math.min(el.scrollHeight, 250)}px`;
+      if(el.value == '') el.style.height = '30px';
     };
 
     useEffect(() => {
@@ -217,81 +223,78 @@ const page = () => {
         {data && (
             <>
              <ChatHeader user={data.userInfo} productDetails={data?.productDetails} userTyping={userTyping} userOnline={userOnline} />
+
+
              <div className="px-2 [@media(min-width:375px)]:px-4 flex flex-col h-full pt-[68px] p-4 pb-[68px] bg-[#F9F9F9]">
                  <div className="h-full flex-1 overflow-y-auto scrollbar-hide">
-                  <JustForYouProductCard product={data.productDetails} />
-                {messages.map((m, i) => {
-                 const rawTs = (m as any).timestamp ?? (m as any).createdAt;
-                 const resolvedDate = rawTs?.toDate ? rawTs.toDate() : (rawTs instanceof Date ? rawTs : new Date(rawTs));
-                 const messageDate = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toLocaleString();
-                  return (
-                     <div key={i} className={`w-fit flex flex-col mt-2 py-2 px-2 ${m.senderId === user?.uid ? "ml-auto items-end" : "mr-auto items-start"}`}>
-                      <ImageGrid images={m.images || []} senderId={m.senderId} />
-                     <p className={`w-fit max-w-[300px] break-words py-2 px-4 mt-2 rounded-4xl ${m.senderId === user?.uid ? "bg-dark-blue text-white" : "bg-[#ebeffaed] text-black font-nunito-sans"}`}>{m.text}</p>
-                    <span className='mt-0.5 text-[8px] font-nunito-sans text-gray-500'>{messageDate}</span>
-                     </div>
-                 )})}
-                 <div ref={messagesEndRef} />
-                 </div>
-             </div>
+                  <div className="w-full flex items-center justify-center">
+                    <span className='mt-[150px] text-[10px] font-nunito-sans bg-gray-200 text-black p-2 rounded-lg items-center'>{chatDate}</span>
+                  </div>
+                    {messages.map((m, i) =>(
+                    <Message key={`{m}${i}`} m={m}  chatId={chatId} />))}
+                    
+                    <div ref={messagesEndRef} />
+                    </div>
+                  </div>
 
 
               <div className="w-full fixed bottom-0 py-2 left-0 bg-transparent">
-              <div className="px-2 [@media(min-width:375px)]:px-4 flex gap-2 flex-wrap">
-                {previewUrls.map((url, i) => (
-                  <div key={url} className='h-20 w-20 relative'>
-                    <img
-                    key={i}
-                    src={url}
-                    alt={`Image ${i}`}
-                    className="size-full object-cover rounded-md border border-[#9297e7]"
-                      />
-                      <span onClick={() => {
-                        const updatedUrls = previewUrls.filter((_, index) => index !== i);
-                        setPreviewUrls(updatedUrls);
-                        const updatedFiles = selectedFiles.filter((_, index) => index !== i);
-                        setSelectedFiles(updatedFiles);
-                      }} className='absolute top-[-5%] right-[-5%] rounded-full bg-red-600 flex items-center justify-center p-0.5'>
-                      <X className='size-[14px] text-white' />
-                      </span>
-                  </div>
-                ))}
-              </div>
-             <form onSubmit={(e) => {
-              e.preventDefault();
-              sendMessage({});
-             }} className="w-full px-2 [@media(min-width:375px)]:px-4 relative mt-3">
-                <div className={`flex gap-2 w-full py-3 px-5 bg-[#E5EBFC] ${text.length > 0 ? 'items-end' : 'items-center'} justify-between rounded-4xl overflow-hidden transition-all duration-200 ease-in-out`}>
-                    <textarea 
-                    onFocus={() => {
-                      socket.emit('userTyping', { productId, buyerId, sellerId });
-                    }} 
-                    onBlur={() => {
-                      socket.emit('userStopTyping', { productId, buyerId, sellerId });
-                    }} 
-                    ref={textareaRef} onInput={handleInput} 
-                    value={text} onChange={(e) => setText(e.target.value)} 
-                    className={`w-[90%] h-[35px] max-h-[250px] overflow-y-auto scrollbar-hide placeholder:text-dark-blue border-0 stroke-none outline-0 transition-all duration-200 ease-in-out`} placeholder='Type a message...'></textarea>
-                    <div className="flex items-center">
-                      {text === '' ? (
-                        <button type='button' className='size-[28px] relative'>
-                          <input
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className='w-full h-full opacity-0 z-30 absolute left-0 top-0'
+                <div className="px-2 [@media(min-width:375px)]:px-4 flex gap-2 flex-wrap">
+                  {previewUrls.map((url, i) => (
+                    <div key={url} className='h-20 w-20 relative'>
+                      <img
+                      key={i}
+                      src={url}
+                      alt={`Image ${i}`}
+                      className="size-full object-cover rounded-md border border-[#9297e7]"
                         />
-                         <Image className='size-[26px] text-dark-blue z-20' />
-                        </button>
-                      ) : (
-                        <button type='submit'>
-                         <SendHorizontal  className='size-[26px] text-dark-blue' />
-                        </button>
-                      )}
+                        <span onClick={() => {
+                          const updatedUrls = previewUrls.filter((_, index) => index !== i);
+                          setPreviewUrls(updatedUrls);
+                          const updatedFiles = selectedFiles.filter((_, index) => index !== i);
+                          setSelectedFiles(updatedFiles);
+                        }} className='absolute top-[-5%] right-[-5%] rounded-full bg-red-600 flex items-center justify-center p-0.5'>
+                        <X className='size-[14px] text-white' />
+                        </span>
                     </div>
+                  ))}
                 </div>
-             </form>
+                  
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  sendMessage({});
+                }} className="w-full px-2 [@media(min-width:375px)]:px-4 relative mt-3">
+                    <div className={`flex gap-2 w-full py-3 px-5 bg-[#E5EBFC] ${text.length > 0 ? 'items-end' : 'items-center'} justify-between rounded-4xl overflow-hidden transition-all duration-200 ease-in-out`}>
+                        <textarea 
+                        onFocus={() => {
+                          socket.emit('userTyping', { productId, buyerId, sellerId });
+                        }} 
+                        onBlur={() => {
+                          socket.emit('userStopTyping', { productId, buyerId, sellerId });
+                        }} 
+                        ref={textareaRef} onInput={handleInput} 
+                        value={text} onChange={(e) => setText(e.target.value)} 
+                        className={`w-[90%] ${text.length == 0 ? 'h-[30px]' : ''} h-[30px] max-h-[250px] overflow-y-auto scrollbar-hide placeholder:text-dark-blue border-0 stroke-none outline-0 transition-all duration-200 ease-in-out resize-none`} placeholder='Type a message...'></textarea>
+                        <div className="flex items-center">
+                          {text === '' ? (
+                            <button type='button' className='size-[28px] relative'>
+                              <input
+                              type="file"
+                              multiple
+                              accept="image/*"
+                              onChange={handleImageUpload}
+                              className='w-full h-full opacity-0 z-30 absolute left-0 top-0'
+                            />
+                            <Image className='size-[26px] text-dark-blue z-20' />
+                            </button>
+                          ) : (
+                            <button type='submit'>
+                            <SendHorizontal  className='size-[26px] text-dark-blue' />
+                            </button>
+                          )}
+                        </div>
+                    </div>
+                </form>
               </div>
              </>
         )}
