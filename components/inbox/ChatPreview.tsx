@@ -31,7 +31,7 @@ const ChatPreview = ({chat}: {chat: chatType}) => {
     <Link href={`/chat/${chat.id}`} className='w-full'>
        <div className="w-full border-b border-gray-200 py-3">
         <div className="w-full flex items-center justify-between">
-                <div className="size-[60px] rounded-full overflow-hidden border-[3px] border-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
+                <div className="size-[60px] rounded-full overflow-hidden border-[3px] border-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] mr-3">
                     <Image width={57} height={57} blurDataURL='/assets/images/default-profile-avatar.webp' src={receiver.profile.imageUrl || defaultProfileAvatar} alt="Profile Avatar" className='object-contain object-center' />
                 </div>
                 <div className="w-[80%]">
@@ -39,7 +39,7 @@ const ChatPreview = ({chat}: {chat: chatType}) => {
                     <h6 className='font-raleway font-semibold text-[18px] text-[#202020]'>{formattedName}</h6>
                     <span className='font-nunito-sans font-light text-[10px] text-gray-500'>{messageDate}</span>
                     </div>
-                    <p className="font-nunito-sans font-normal text-[14px] text-gray-600 mt-0.5">{formattedPreviewMessage}</p>
+                    <p className="font-nunito-sans font-normal text-[14px] text-gray-600">{formattedPreviewMessage}</p>
                 </div>
             </div>
        </div>

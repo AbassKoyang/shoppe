@@ -1,5 +1,6 @@
 'use client';
 import ChatPreview from '@/components/inbox/ChatPreview';
+import EmptyInbox from '@/components/inbox/EmptyInbox';
 import InboxSkeleton from '@/components/inbox/InboxSkeleton';
 import { useAuth } from '@/lib/contexts/auth-context'
 import { useGetAllChats } from '@/services/chat/queries'
@@ -11,10 +12,13 @@ const page = () => {
   return (
     <section className='w-full overflow-y-auto scrollbar-hide'>
     {chats && chats.map((chat) => (
-        <ChatPreview chat={chat} />
+        <ChatPreview key={chat.id} chat={chat} />
     ))}
-    {isLoading && Array.from({length: 10}).map(() => (
-        <InboxSkeleton />
+    {chats && chats.length == 0 && (
+        <EmptyInbox />
+    )}
+    {isLoading && Array.from({length: 10}).map((_,  i) => (
+        <InboxSkeleton key={i} />
     ))}
     {isError && (
         <div className='w-full h-[60vh] flex items-center justify-center'>

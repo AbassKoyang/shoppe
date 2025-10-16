@@ -134,3 +134,59 @@ export const getAllChats = async (userId: string) : Promise<chatType[]> => {
     throw error;
   }
 };
+
+export const getSellingChats = async (userId: string) : Promise<chatType[]> => {
+  try {
+    const chatRef = collection(db, 'chats');
+    const q = query(chatRef, where("sellerId", "==", userId), orderBy('createdAt', 'asc'));
+    const chatsSnapshot = await getDocs(q);
+    
+    const promises = chatsSnapshot.docs.map(async (chatDoc) => {
+      const chatData = { id: chatDoc.id, ...chatDoc.data(), messages: [] as any[]};
+      const messagesRef = collection(db, "chats", chatDoc.id, "messages");
+      const messagesQuery = query(messagesRef);
+      const messagesSnapshot = await getDocs(messagesQuery);
+
+      messagesSnapshot.docs.forEach((messageDoc) => {
+        chatData.messages.push({ id: messageDoc.id, ...messageDoc.data() });
+      });
+
+      return chatData;
+    });
+
+    const chatsWithMessages = await Promise.all(promises);
+    console.log(chatsWithMessages);
+    return chatsWithMessages as chatType[];
+  } catch (error) {
+    console.error('Error fetching chats:', error);
+    throw error;
+  }
+};
+
+export const getBuyingChats = async (userId: string) : Promise<chatType[]> => {
+  try {
+    const chatRef = collection(db, 'chats');
+    const q = query(chatRef, where("buyerId", "==", userId), orderBy('createdAt', 'asc'));
+    const chatsSnapshot = await getDocs(q);
+    
+    const promises = chatsSnapshot.docs.map(async (chatDoc) => {
+      const chatData = { id: chatDoc.id, ...chatDoc.data(), messages: [] as any[]};
+      const messagesRef = collection(db, "chats", chatDoc.id, "messages");
+      const messagesQuery = query(messagesRef);
+      const messagesSnapshot = await getDocs(messagesQuery);
+
+      messagesSnapshot.docs.forEach((messageDoc) => {
+        chatData.messages.push({ id: messageDoc.id, ...messageDoc.data() });
+      });
+
+      return chatData;
+    });
+
+    const chatsWithMessages = await Promise.all(promises);
+    console.log(chatsWithMessages);
+    return chatsWithMessages as chatType[];
+  } catch (error) {
+    console.error('Error fetching chats:', error);
+    throw error;
+  }
+};
