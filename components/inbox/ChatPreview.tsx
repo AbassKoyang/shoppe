@@ -28,7 +28,7 @@ const ChatPreview = ({chat}: {chat: chatType}) => {
     const messageDate = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toLocaleString().substring(11);
 
   return (
-    <Link href={`/chats/${chat.id}`} className='w-full'>
+    <Link href={`/chat/${chat.id}`} className='w-full'>
        <div className="w-full border-b border-gray-200 py-3">
         <div className="w-full flex items-center justify-between">
                 <div className="size-[60px] rounded-full overflow-hidden border-[3px] border-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
