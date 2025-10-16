@@ -19,7 +19,7 @@ const page = () => {
     const chatId : string = param.chatId;
     const [productId, buyerId, sellerId] = chatId.split('_');
     const [identity, setIdentity] = useState<'buyer' | 'seller'>();
-    const {isLoading, isError, data} = useGetChatData(productId, identity === 'seller' ? sellerId : buyerId, chatId);
+    const {isLoading, isError, data} = useGetChatData(productId, user?.uid === sellerId ? buyerId : sellerId, chatId);
     const [messages, setMessages] = useState<messageType[] | []>(data?.chatMessages || []);
     const [text, setText] = useState('');    
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -124,13 +124,13 @@ const page = () => {
   
 
 
-  useEffect(() => {
-    if(user?.uid === buyerId){
-        setIdentity('seller')
-    } else {
-        setIdentity('buyer')
-    }
-  }, [chatId, user]);
+  // useEffect(() => {
+  //   if(user?.uid === buyerId){
+  //       setIdentity('seller')
+  //   } else {
+  //       setIdentity('buyer')
+  //   }
+  // }, [chatId, user]);
 
 
 
@@ -205,6 +205,7 @@ const page = () => {
         productId,
         buyerId,
         sellerId,
+        participants: [user, data?.userInfo],
         senderId: user?.uid || '',
         text,
         images: uploadedUrls,

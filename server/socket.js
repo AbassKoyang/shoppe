@@ -41,7 +41,7 @@ export function handleSocketEvents(io) {
       if (roomId) socket.to(roomId).emit('user-stop-typing');
     })
 
-    socket.on("sendMessage", async ({ productId, buyerId, sellerId, senderId, text, images }) => {
+    socket.on("sendMessage", async ({ productId, buyerId, sellerId, participants, senderId, text, images }) => {
       const roomId = `${productId}_${buyerId}_${sellerId}`;
       try {
         let uploadedUrls = [];
@@ -50,7 +50,7 @@ export function handleSocketEvents(io) {
       const messageData = {
         text,
         senderId,
-        createdAt: new Date(),
+        timestamp: new Date(),
         images: uploadedUrls,
         edited: false,
       };
@@ -61,7 +61,7 @@ export function handleSocketEvents(io) {
       await db.collection("chats").doc(roomId).collection("messages").add(messageData);
       } else {
       await db.collection("chats").doc(roomId).set(
-        { productId, buyerId, sellerId, createdAt: new Date() }
+        { productId, buyerId, sellerId, participants, createdAt: new Date() }
       );
       await db.collection("chats").doc(roomId).collection("messages").add(messageData);
     }

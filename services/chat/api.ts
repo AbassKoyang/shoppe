@@ -103,20 +103,32 @@ export const editMessage = async (chatId: string, messageId: string, text: strin
         throw error;
     }
 };
-export const getAllChats = async (userId: string) => {
+
+export const getAllChats = async (userId: string) : Promise<chatType[]> => {
   try {
     const chatRef = collection(db, 'chats');
     const q = query(chatRef,  or(
       where("sellerId", "==", userId),
       where("buyerId", "==", userId)
     ), orderBy('createdAt', 'asc'));
-    const querySnapshot = await getDocs(q);
+    const chatsSnapshot = await getDocs(q);
     
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as chatType[];
+    const promises = chatsSnapshot.docs.map(async (chatDoc) => {
+      const chatData = { id: chatDoc.id, ...chatDoc.data(), messages: [] as any[]};
+      const messagesRef = collection(db, "chats", chatDoc.id, "messages");
+      const messagesQuery = query(messagesRef);
+      const messagesSnapshot = await getDocs(messagesQuery);
 
+      messagesSnapshot.docs.forEach((messageDoc) => {
+        chatData.messages.push({ id: messageDoc.id, ...messageDoc.data() });
+      });
+
+      return chatData;
+    });
+
+    const chatsWithMessages = await Promise.all(promises);
+    console.log(chatsWithMessages);
+    return chatsWithMessages as chatType[];
   } catch (error) {
     console.error('Error fetching chats:', error);
     throw error;
