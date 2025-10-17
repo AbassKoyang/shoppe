@@ -1,4 +1,3 @@
-import { DocumentSnapshot } from "@google-cloud/firestore";
 import { ProductType } from "../products/types";
 import { AppUserType } from "../users/types";
 
