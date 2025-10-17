@@ -1,13 +1,13 @@
 import { db } from '@/lib/firebase';
-import { collection, query, orderBy, getDocs, getDoc, doc, where, deleteDoc, updateDoc, or } from 'firebase/firestore';
-import { ChatDataType, chatType, messageType } from './types';
+import { collection, query, orderBy, getDocs, getDoc, doc, where, deleteDoc, updateDoc, or, DocumentSnapshot, limit, startAfter, and } from 'firebase/firestore';
+import { ChatDataType, chatType, GetAllChatsParamsType, GetAllChatsReturnType, messageType } from './types';
 import { AppUserType, User } from '../users/types';
 import { ProductType } from '../products/types';
 
 export const getChatMessages = async (chatId: string) : Promise<messageType[]> => {
   try {
     const messagesRef = collection(db, 'chats', chatId, 'messages');
-    const q = query(messagesRef, orderBy('createdAt', 'asc'));
+    const q = query(messagesRef, orderBy('timestamp', 'asc'));
     const querySnapshot = await getDocs(q);
     
     return querySnapshot.docs.map(doc => ({
@@ -104,17 +104,33 @@ export const editMessage = async (chatId: string, messageId: string, text: strin
     }
 };
 
-export const getAllChats = async (userId: string) : Promise<chatType[]> => {
+const PAGE_SIZE = 10;
+export const getAllChats = async ({pageParam, userId}: GetAllChatsParamsType) : Promise<GetAllChatsReturnType> => {
   try {
     const chatRef = collection(db, 'chats');
-    const q = query(chatRef,  or(
-      where("sellerId", "==", userId),
-      where("buyerId", "==", userId)
-    ), orderBy('createdAt', 'asc'));
+    let q;
+    if(!pageParam) {
+      q = query(chatRef, and(
+        where("archived", "==", false),
+        or(
+          where("sellerId", "==", userId),
+          where("buyerId", "==", userId)
+        )
+      ), orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
+    } else {
+      q = query(chatRef, and(
+        where("archived", "==", false),
+        or(
+          where("sellerId", "==", userId),
+          where("buyerId", "==", userId)
+        )
+      ),  orderBy('createdAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
+    }
+    
     const chatsSnapshot = await getDocs(q);
     
     const promises = chatsSnapshot.docs.map(async (chatDoc) => {
-      const chatData = { id: chatDoc.id, ...chatDoc.data(), messages: [] as any[]};
+      const chatData = { id: chatDoc.id, ...chatDoc.data() as Omit<chatType, 'id' | 'messages'>, messages: [] as any[]};
       const messagesRef = collection(db, "chats", chatDoc.id, "messages");
       const messagesQuery = query(messagesRef);
       const messagesSnapshot = await getDocs(messagesQuery);
@@ -127,22 +143,29 @@ export const getAllChats = async (userId: string) : Promise<chatType[]> => {
     });
 
     const chatsWithMessages = await Promise.all(promises);
+    const lastDoc : DocumentSnapshot = chatsSnapshot.docs[chatsSnapshot.docs.length - 1];
     console.log(chatsWithMessages);
-    return chatsWithMessages as chatType[];
+    return {documents: chatsWithMessages, lastVisible: lastDoc};
   } catch (error) {
     console.error('Error fetching chats:', error);
     throw error;
   }
 };
 
-export const getSellingChats = async (userId: string) : Promise<chatType[]> => {
+export const getSellingChats = async ({pageParam, userId}: GetAllChatsParamsType) : Promise<GetAllChatsReturnType> => {
   try {
     const chatRef = collection(db, 'chats');
-    const q = query(chatRef, where("sellerId", "==", userId), orderBy('createdAt', 'asc'));
+    let q;
+    if(!pageParam) {
+      q = query(chatRef, where("sellerId", "==", userId), where("archived", "==", false), orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
+    } else {
+      q = query(chatRef, where("sellerId", "==", userId), where("archived", "==", false), orderBy('createdAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
+    }
+    
     const chatsSnapshot = await getDocs(q);
     
     const promises = chatsSnapshot.docs.map(async (chatDoc) => {
-      const chatData = { id: chatDoc.id, ...chatDoc.data(), messages: [] as any[]};
+      const chatData = { id: chatDoc.id, ...chatDoc.data() as Omit<chatType, 'id' | 'messages'>, messages: [] as any[]};
       const messagesRef = collection(db, "chats", chatDoc.id, "messages");
       const messagesQuery = query(messagesRef);
       const messagesSnapshot = await getDocs(messagesQuery);
@@ -155,22 +178,102 @@ export const getSellingChats = async (userId: string) : Promise<chatType[]> => {
     });
 
     const chatsWithMessages = await Promise.all(promises);
+    const lastDoc : DocumentSnapshot = chatsSnapshot.docs[chatsSnapshot.docs.length - 1];
     console.log(chatsWithMessages);
-    return chatsWithMessages as chatType[];
+    return {documents: chatsWithMessages, lastVisible: lastDoc};
+  } catch (error) {
+    console.error('Error fetching chats:', error);
+    throw error;
+  }
+};
+export const getBuyingChats = async ({pageParam, userId}: GetAllChatsParamsType) : Promise<GetAllChatsReturnType> => {
+  try {
+    const chatRef = collection(db, 'chats');
+    let q;
+    if(!pageParam) {
+      q = query(chatRef, where("buyerId", "==", userId), where("archived", "==", false), orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
+    } else {
+      q = query(chatRef, where("buyerId", "==", userId), where("archived", "==",false), orderBy('createdAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
+    }
+    
+    const chatsSnapshot = await getDocs(q);
+    
+    const promises = chatsSnapshot.docs.map(async (chatDoc) => {
+      const chatData = { id: chatDoc.id, ...chatDoc.data() as Omit<chatType, 'id' | 'messages'>, messages: [] as any[]};
+      const messagesRef = collection(db, "chats", chatDoc.id, "messages");
+      const messagesQuery = query(messagesRef);
+      const messagesSnapshot = await getDocs(messagesQuery);
+
+      messagesSnapshot.docs.forEach((messageDoc) => {
+        chatData.messages.push({ id: messageDoc.id, ...messageDoc.data() });
+      });
+
+      return chatData;
+    });
+
+    const chatsWithMessages = await Promise.all(promises);
+    const lastDoc : DocumentSnapshot = chatsSnapshot.docs[chatsSnapshot.docs.length - 1];
+    console.log(chatsWithMessages);
+    return {documents: chatsWithMessages, lastVisible: lastDoc};
   } catch (error) {
     console.error('Error fetching chats:', error);
     throw error;
   }
 };
 
-export const getBuyingChats = async (userId: string) : Promise<chatType[]> => {
+export const addChatToArchives = async (chatId: string) => {
+  const docRef = doc(db, 'chats', chatId);
+    try {
+        await updateDoc(docRef, {
+          archived: true,
+        });
+        console.log("✅ Chat archived successfully");
+        return true;
+    } catch (error) {
+        console.error('Error archiving chat', error);
+        throw error;
+  }
+}
+export const removeChatFromArchives = async (chatId: string) => {
+  const docRef = doc(db, 'chats', chatId);
+    try {
+        await updateDoc(docRef, {
+          archived: false,
+        });
+        console.log("✅ Chat removed from archive successfully");
+        return true;
+    } catch (error) {
+        console.error('Error removing chat from archive', error);
+        throw error;
+  }
+}
+
+export const getArchivedChats = async ({pageParam, userId}: GetAllChatsParamsType) : Promise<GetAllChatsReturnType> => {
   try {
     const chatRef = collection(db, 'chats');
-    const q = query(chatRef, where("buyerId", "==", userId), orderBy('createdAt', 'asc'));
+    let q;
+    if(!pageParam) {
+      q = query(chatRef, and(
+        where("archived", "==", true),
+        or(
+          where("sellerId", "==", userId),
+          where("buyerId", "==", userId)
+        )
+      ), orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
+    } else {
+      q = query(chatRef, and(
+        where("archived", "==", true),
+        or(
+          where("sellerId", "==", userId),
+          where("buyerId", "==", userId)
+        )
+      ), orderBy('createdAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
+    }
+    
     const chatsSnapshot = await getDocs(q);
     
     const promises = chatsSnapshot.docs.map(async (chatDoc) => {
-      const chatData = { id: chatDoc.id, ...chatDoc.data(), messages: [] as any[]};
+      const chatData = { id: chatDoc.id, ...chatDoc.data() as Omit<chatType, 'id' | 'messages'>, messages: [] as any[]};
       const messagesRef = collection(db, "chats", chatDoc.id, "messages");
       const messagesQuery = query(messagesRef);
       const messagesSnapshot = await getDocs(messagesQuery);
@@ -183,8 +286,9 @@ export const getBuyingChats = async (userId: string) : Promise<chatType[]> => {
     });
 
     const chatsWithMessages = await Promise.all(promises);
+    const lastDoc : DocumentSnapshot = chatsSnapshot.docs[chatsSnapshot.docs.length - 1];
     console.log(chatsWithMessages);
-    return chatsWithMessages as chatType[];
+    return {documents: chatsWithMessages, lastVisible: lastDoc};
   } catch (error) {
     console.error('Error fetching chats:', error);
     throw error;

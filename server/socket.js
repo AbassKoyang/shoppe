@@ -61,7 +61,7 @@ export function handleSocketEvents(io) {
       await db.collection("chats").doc(roomId).collection("messages").add(messageData);
       } else {
       await db.collection("chats").doc(roomId).set(
-        { productId, buyerId, sellerId, participants, createdAt: new Date() }
+        { productId, buyerId, sellerId, participants, createdAt: new Date(), archived: false }
       );
       await db.collection("chats").doc(roomId).collection("messages").add(messageData);
     }

@@ -1,3 +1,4 @@
+import { DocumentSnapshot } from "@google-cloud/firestore";
 import { ProductType } from "../products/types";
 import { AppUserType } from "../users/types";
 
@@ -17,10 +18,21 @@ export type chatType = {
     sellerId: string;
     messages: messageType[];
     participants: AppUserType[];
+    archived?: boolean;
 }
 export type ChatDataType = {
     userInfo: AppUserType;
     chatMessages: messageType[];
     productDetails: ProductType;
     chatDetails: chatType;
+}
+export type PageParam = unknown;
+
+export interface GetAllChatsParamsType {
+  pageParam: PageParam;
+  userId: string;
+}
+export interface GetAllChatsReturnType {
+  documents: chatType[],
+  lastVisible: any,
 }

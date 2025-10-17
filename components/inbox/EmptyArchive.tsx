@@ -3,7 +3,7 @@ import { useInboxContext } from '@/lib/contexts/inbox-context'
 import Link from 'next/link'
 import React from 'react'
 
-const EmptyInbox = () => {
+const EmptyArchive = () => {
     const {searchQuery} = useInboxContext();
   return (
     <div className="w-full mt-6 flex flex-col items-center justify-center h-[60vh]">
@@ -46,11 +46,11 @@ const EmptyInbox = () => {
     </clipPath>
     </defs>
     </svg>
-      <h5 className='max-w-[320px] text-center text-[17px] font-semibold font-raleway mt-4'>You've not started any conversation yet</h5>
-    <p className='max-w-[280px] text-center text-[12px] font-normal font-nunito-sans text-black/80 mt-2'>Conversations will appear here</p>
-    <Link href='/' className='bg-dark-blue rounded-4xl px-4 py-2 text-white mt-4 cursor-pointer font-raleway'>Explore</Link>
+     <h5 className='max-w-[320px] text-center text-[17px] font-semibold font-raleway mt-4'>You've not added any conversation to archive yet</h5>
+    <p className='max-w-[280px] text-center text-[12px] font-normal font-nunito-sans text-black/80 mt-2'>Conversations you add to archive will appear here</p>
+    <Link href='/inbox' className='bg-dark-blue rounded-4xl px-4 py-2 text-white mt-4 cursor-pointer font-raleway'>Go back</Link>
   </div>
   )
 }
 
-export default EmptyInbox
+export default EmptyArchive

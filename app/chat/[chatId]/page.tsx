@@ -29,6 +29,7 @@ const page = () => {
     const [userOnline, setUserOnline] = useState(false);
     const [isMessageSending, setIsMessageSending] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    console.log(messages);
 
     const rawTs = data?.chatDetails.createdAt ?? new Date();
     const resolvedDate = rawTs?.toDate ? rawTs.toDate() : (rawTs instanceof Date ? rawTs : new Date(rawTs));
@@ -239,7 +240,7 @@ const updateEditedMessage = (messageId: string, text: string) => {
     <section className='w-full h-dvh flex flex-col justify-between bg-[#F9F9F9] scrollbar-hide'>
         {data && (
             <>
-             <ChatHeader user={data.userInfo} productDetails={data?.productDetails} userTyping={userTyping} userOnline={userOnline} />
+             <ChatHeader chatDetails={data.chatDetails} user={data.userInfo} productDetails={data?.productDetails} userTyping={userTyping} userOnline={userOnline} />
 
 
              <div className="px-2 [@media(min-width:375px)]:px-4 flex flex-col h-full pt-[68px] p-4 pb-[68px] bg-[#F9F9F9]">
@@ -321,6 +322,12 @@ const updateEditedMessage = (messageId: string, text: string) => {
         {isLoading && (
            <ChatSkeleton />
         )}
+
+      {isError && (
+         <div className='w-full h-[60vh] flex items-center justify-center'>
+         <p>Oops, Failed to load messages from this Chat.</p>
+         </div>
+       )}
 
     </section>
   )

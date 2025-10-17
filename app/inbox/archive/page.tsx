@@ -1,19 +1,21 @@
 'use client';
 import ChatPreview from '@/components/inbox/ChatPreview';
+import EmptyArchive from '@/components/inbox/EmptyArchive';
 import EmptyInbox from '@/components/inbox/EmptyInbox';
 import EmptySearchResult from '@/components/inbox/EmptySearchResult';
 import InboxSkeleton from '@/components/inbox/InboxSkeleton';
 import { useAuth } from '@/lib/contexts/auth-context'
 import { useInboxContext } from '@/lib/contexts/inbox-context';
-import { useGetBuyingChats } from '@/services/chat/queries'
-import { LoaderCircle } from 'lucide-react';
+import { useGetArchivedChats, useGetBuyingChats } from '@/services/chat/queries'
+import { ArrowLeft, LoaderCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 const page = () => {
     const {user} = useAuth();
     const { ref, inView } = useInView();
-    const {searchQuery} = useInboxContext();
+    const router = useRouter();
 
     const {
     data,
@@ -22,7 +24,7 @@ const page = () => {
     isFetchingNextPage,
     isLoading,
     isError,
-    } = useGetBuyingChats(user?.uid || '');
+    } = useGetArchivedChats(user?.uid || '');
 
     useEffect(() => {
         if (inView && hasNextPage) {
@@ -35,28 +37,24 @@ const page = () => {
         return data?.pages.flatMap(page => page.documents) ;
       }, [data]);
     
-      const filteredChats = useMemo(() => {
-             if (!searchQuery.trim()) return allChats;
-            return allChats?.filter(chat => {
-            const [partcipant1, partcipant2] = chat.participants;
-            const index = partcipant1.uid == user?.uid ? 1 : 0;          
-            const hasMatchingMessage = chat.participants[index].profile.name.toLowerCase().includes(searchQuery.toLowerCase());
-             return hasMatchingMessage;
-        });
-      }, [allChats, searchQuery]);
-    
 
 
     return (
-    <section className='w-full overflow-y-auto scrollbar-hide'>
-    { filteredChats && filteredChats.map((chat) => (
+    <section className='w-full overflow-y-auto scrollbar-hide py-4'>
+        <div className="w-full bg-white flex items-center justify-between relative">
+            <div className="flex gap-4"> 
+                <button onClick={() => router.back()}>
+                    <ArrowLeft className='size-[25px]' />
+                </button>
+            <h2 className='font-raleway font-bold text-[28px] tracking-[-0.28px]'>Archived</h2>
+            </div>
+        </div>
+    { allChats && allChats.map((chat) => (
             <ChatPreview key={chat.id} chat={chat} />
     ))}
 
-    {filteredChats && filteredChats.length == 0 && isLoading == false && (
-        <>
-       {searchQuery !== '' ? (<EmptySearchResult />) : (<EmptyInbox />)}
-       </>
+    {allChats && allChats.length == 0 && isLoading == false && (
+       <EmptyArchive />
     )}
     {isLoading && Array.from({length: 10}).map((_,  i) => (
         <InboxSkeleton key={i} />
