@@ -16,7 +16,6 @@ import Image from 'next/image';
 import { visaLogo } from '@/public/assets/images/exports';
 import AddPaymentMethodForm from '../components/AddPaymentMethodForm';
 import { useAuth } from '@/lib/contexts/auth-context';
-import EditPaymentMethodForm from '../components/EditPaymentMethod';
 import { paymentMethodType } from '@/services/payment/types';
 import { usePaymentMethods } from '@/services/payment/queries';
 
@@ -102,7 +101,7 @@ const PaymentMethodsPage = () => {
                 <AddPaymentMethodButton openModal={() => setIsAddModalOpen(true)} />
             </div>
             <AddPaymentMethodForm  open = {isAddModalOpen} closeModal={() => setIsAddModalOpen(false)} />
-            <EditPaymentMethodForm paymentMethod={selectedPaymentMethod || { id: '', userId: '', cardHolder: '', brand: '', last4: '', expiryDate: '', cvv: '', token: '', createdAt: ''}} open = {isEditModalOpen} closeModal={() => setIsEditModalOpen(false)} />
+            {/* <EditPaymentMethodForm paymentMethod={selectedPaymentMethod || { id: '', userId: '', cardHolder: '', brand: '', last4: '', expiryDate: '', cvv: '', token: '', createdAt: ''}} open = {isEditModalOpen} closeModal={() => setIsEditModalOpen(false)} /> */}
         </section>
     </ProtectedRoute>
   )
