@@ -73,6 +73,7 @@ const page = () => {
         <SettingsLink href='/settings/profile' text='Profile' />
         <SettingsLink href='/settings/shipping-address' text='Shipping Address' />
         <SettingsLink href='/settings/payment-methods' text='Payment Methods' />
+        <SettingsLink href='/settings/bank-details' text='Bank Details' />
 
         <h3 className='text-[20px] font-family-raleway font-extrabold mb-1 mt-7 text-[#202020]'>Shop</h3>
         <SettingsLink href='/settings/country' text='Country' extraText={user?.shopPrefrences.country} />

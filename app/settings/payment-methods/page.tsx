@@ -24,8 +24,10 @@ import CardCarouselItem from '../components/CardCarouselItem';
 
 const PaymentMethodsPage = () => {
     const {user} = useAuth();
-    const { data: paymentMethods = [], isLoading, error } = usePaymentMethods(user?.uid || '');
+    const { data: paymentMethods, isLoading, error } = usePaymentMethods(user?.uid || '');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<paymentMethodType>();
 
     const plugin = React.useRef(
         Autoplay({ delay: 2000, stopOnInteraction: true })
@@ -38,11 +40,16 @@ const PaymentMethodsPage = () => {
         <h4 className='text-[16px] font-medium font-raleway'>Payment Methods</h4>
             <div className='w-full flex items-center mt-4'>
                 {error && (
-                    <p>Failed to load cards</p>
+                    <p className='font-nunito-sans'>Failed to load cards</p>
                 )}
 
                 {isLoading && (
-                    <div className='w-[88%] h-[155px] rounded-xl animate-pulse'></div>
+                    <div className='w-[88%] h-[155px] rounded-xl skeleton'></div>
+                )}
+                {paymentMethods && paymentMethods.length == 0 && (
+                    <div className='w-[88%] h-[155px] flex items-center justify-center'>
+                        <p className='font-nunito-sans'>No card added yet.</p>
+                    </div>
                 )}
                 {paymentMethods && (
                     <Carousel
@@ -53,7 +60,7 @@ const PaymentMethodsPage = () => {
                     >
                         <CarouselContent className='w-full h-[155px]'>
                             {paymentMethods.map((paymentMethod) => (
-                            <CardCarouselItem paymentMethod={paymentMethod} key={paymentMethod.id} />
+                            <CardCarouselItem openModal={() => {setSelectedPaymentMethod(paymentMethod); setIsEditModalOpen(true); }} paymentMethod={paymentMethod} key={paymentMethod.id} />
                             ))}
                         </CarouselContent>
                     </Carousel>
@@ -61,6 +68,7 @@ const PaymentMethodsPage = () => {
                 <AddPaymentMethodButton openModal={() => setIsAddModalOpen(true)} />
             </div>
             <AddPaymentMethodForm  open = {isAddModalOpen} closeModal={() => setIsAddModalOpen(false)} />
+            <EditPaymentMethodForm paymentMethod={selectedPaymentMethod || {id: '', userId: '', cardHolder: '', brand: '', last4: '', expiryMonth: '', expiryYear: '', email: '', authorisationCode: '', createdAt: '',}} open = {isEditModalOpen} closeModal={() => setIsEditModalOpen(false)} />
         </section>
     </ProtectedRoute>
   )

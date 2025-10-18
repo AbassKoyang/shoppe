@@ -18,6 +18,13 @@ export const UserSchema = z.object({
       postalCode: z.string(),
       phoneNumber: z.string(),
     }),
+    bankDetails: z.object({
+      recipientCode: z.string(),
+      bankCode: z.string(),
+      accountNumber: z.string(),
+      accountName: z.string(),
+      currency: z.string(),
+    }).optional(),
     createdAt: z.iso.datetime(), // Firestore Timestamp
     updatedAt: z.iso.datetime(),
   });
@@ -43,6 +50,13 @@ export const AppUserSchema = z.object({
       postalCode: z.string(),
       phoneNumber: z.string(),
     }),
+    bankDetails: z.object({
+      recipientCode: z.string(),
+      bankCode: z.string(),
+      accountNumber: z.string(),
+      accountName: z.string(),
+      currency: z.string(),
+    }).optional(),
     createdAt: z.iso.datetime(), // Firestore Timestamp
     updatedAt: z.iso.datetime(),
   });

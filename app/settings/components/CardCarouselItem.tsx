@@ -5,17 +5,15 @@ import { Settings } from 'lucide-react'
 import React, { useState } from 'react'
 import EditPaymentMethodForm from './EditPaymentMethod'
 
-const CardCarouselItem = ({paymentMethod}: {paymentMethod: paymentMethodType}) => {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+const CardCarouselItem = ({paymentMethod, openModal}: {paymentMethod: paymentMethodType; openModal: () => void}) => {
   
   return (
-    <CarouselItem className='w-full h-full rounded-xl'>
+    <CarouselItem className='w-full h-full rounded-xl overflow-hidden'>
         <Card className='bg-[#F1F4FE] h-full p-0'>
             <CardContent className="size-full flex flex-col justify-between p-4 pb-6">
                 <div className='w-full flex items-center justify-between'>
                     <img src='/assets/images/visa-logo.png' alt="Visa Logo" />
-                    <button onClick={() =>{
-                        setIsEditModalOpen(true)}} className='cursor-pointer size-[35px] flex items-center justify-center bg-[#E5EBFC] rounded-full'>
+                    <button onClick={openModal} className='cursor-pointer size-[35px] flex items-center justify-center bg-[#E5EBFC] rounded-full'>
                         <Settings className='text-dark-blue size-[14px]' />
                     </button>
                 </div>
@@ -48,7 +46,6 @@ const CardCarouselItem = ({paymentMethod}: {paymentMethod: paymentMethodType}) =
                 </div>
             </CardContent>
         </Card>
-      <EditPaymentMethodForm paymentMethod={paymentMethod} open = {isEditModalOpen} closeModal={() => setIsEditModalOpen(false)} />
     </CarouselItem>
   )
 }
