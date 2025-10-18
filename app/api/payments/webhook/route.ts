@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { headers } from 'next/headers';
 import { db } from '@/lib/firebase'; // Import your Firebase config
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 import { paymentMethodType } from '@/services/payment/types';
 
 export async function POST(req: NextRequest) {
@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
 
     const signature = (await headers()).get('x-paystack-signature');
 
-    // Verify signature
     if (hash !== signature) {
       return NextResponse.json(
         { error: 'Invalid signature' },
@@ -27,16 +26,13 @@ export async function POST(req: NextRequest) {
 
     const event = JSON.parse(body);
 
-    // Only process successful charge events
     if (event.event === 'charge.success') {
       const { data } = event;
 
-      // Check if this is a card verification transaction
       if (data.metadata?.purpose === 'card_verification') {
         const { userId, name } = data.metadata;
         const { authorization, customer } = data;
 
-        // Extract card details
         const cardData: paymentMethodType = {
           userId,
           cardHolder: name,
@@ -49,7 +45,6 @@ export async function POST(req: NextRequest) {
           createdAt: new Date().toISOString(),
         };
 
-        // Save to Firestore
         const cardsRef = collection(db, 'payment-methods');
         const docRef = await addDoc(cardsRef, {
           ...cardData,
@@ -57,6 +52,35 @@ export async function POST(req: NextRequest) {
         });
 
         console.log('Card saved successfully:', docRef.id);
+      }
+    }
+
+
+    if (event.event === 'charge.success') {
+      const { data } = event;
+
+      if (data.metadata?.purpose === 'edit_card_verification') {
+        const { id, name } = data.metadata;
+        const { authorization, customer } = data;
+
+        const cardData:  Omit<paymentMethodType, 'userId'> = {
+          cardHolder: name,
+          brand: authorization.brand,
+          last4: authorization.last4,
+          expiryMonth: authorization.exp_month,
+          expiryYear: authorization.exp_year,
+          email: customer.email,
+          authorisationCode: authorization.authorization_code,
+          createdAt: new Date().toISOString(),
+        };
+
+        const cardsRef = doc(db, 'payment-methods', id);
+        await updateDoc(cardsRef, {
+          ...cardData,
+          createdAt: serverTimestamp(),
+        });
+
+        console.log('Card saved successfully');
       }
     }
 

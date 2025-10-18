@@ -28,14 +28,27 @@ export const addPaymentMethod = async ({userId, cardHolder, email } :  {cardHold
     }
 };
 
-export const updatePaymentMethod = async ({id, userId, cardHolder, brand, last4, expiryMonth, expiryYear} : paymentMethodType) => {
+export const updatePaymentMethod = async ({id, email, cardHolder} :{cardHolder: string; email: string; id: string;}) => {
     try {
-        const docRef = doc(db, "payment-methods", (id || ''));
-        await updateDoc(docRef, {
-            userId, cardHolder, brand, last4, expiryMonth, expiryYear, createdAt: new Date(),
-        });
-        console.log('Updated card succesfully.');
-        return true;
+        const response = await fetch('/api/payments/edit-card', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: email,
+              name: cardHolder,
+              id: id,
+            }),
+          });
+    
+          const data = await response.json();
+    
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to initialize payment');
+          }
+          console.log('card edited sucessfuly');
+          return data;
     } catch (error) {
         console.error(error);
     }

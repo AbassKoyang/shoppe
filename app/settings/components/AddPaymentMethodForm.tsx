@@ -146,6 +146,7 @@ const AddPaymentMethodForm = ({open, closeModal} : AddPaymentMethodFormType) => 
                             </FormItem>
                         )}
                         />
+                        <span className='mt-2 font-nunito-sans text-gray-500 text-[14px]'>You will be redirected to a Paystack checkout page to fill in your card details. An activation fee of N50 will be deducted (and later refunded).</span>
 
                             <PrimaryButton disabled={loading || !isDirty} text={loading ? <LoaderCircle className='animate-spin' /> : 'Save Changes'} type="submit" additionalStyles="w-full mt-6" />
                         </form>
