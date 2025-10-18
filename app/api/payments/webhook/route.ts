@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.text();
     const hash = crypto
-      .createHmac('sha512', process.env.PAYSTACK_SECRET_KEY!)
+      .createHmac('sha512', process.env.NEXT_PAYSTACK_SECRET_KEY!)
       .update(body)
       .digest('hex');
 
