@@ -22,6 +22,7 @@
     "@uppy/dashboard": "^5.0.1",
     "@uppy/react": "^5.0.2",
     "algoliasearch": "^5.39.0",
+    "axios": "^1.12.2",
     "card-validator": "^10.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

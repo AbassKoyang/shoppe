@@ -1,0 +1,1 @@
+export type paymentMethodType =  {id?: string; userId: string; cardHolder: string; brand: string; last4: string; expiryMonth: string; expiryYear: string, email: string; authorisationCode: string; createdAt?: string;}

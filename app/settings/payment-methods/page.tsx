@@ -15,10 +15,10 @@ import { Settings } from 'lucide-react';
 import Image from 'next/image';
 import { visaLogo } from '@/public/assets/images/exports';
 import AddPaymentMethodForm from '../components/AddPaymentMethodForm';
-import { usePaymentMethods } from '@/services/users/queries';
 import { useAuth } from '@/lib/contexts/auth-context';
 import EditPaymentMethodForm from '../components/EditPaymentMethod';
-import { paymentMethodType } from '@/services/users/types';
+import { paymentMethodType } from '@/services/payment/types';
+import { usePaymentMethods } from '@/services/payment/queries';
 
 
 const PaymentMethodsPage = () => {
@@ -89,7 +89,7 @@ const PaymentMethodsPage = () => {
                                             </div>
                                             <div className='w-full flex items-center justify-between mt-2'>
                                                 <p className='text-[#202020] font-nunito-sans font-semibold text-[12px]'>{paymentMethod.cardHolder}</p>
-                                            <p className='text-[#202020] font-nunito-sans font-semibold text-[12px]'>{`${paymentMethod.expiryDate.substring(0,2)}/${paymentMethod.expiryDate.substring(2)}`}</p>
+                                            <p className='text-[#202020] font-nunito-sans font-semibold text-[12px]'>{`${paymentMethod.expiryMonth}/${paymentMethod.expiryYear}`}</p>
                                             </div>
                                         </div>
                                     </CardContent>

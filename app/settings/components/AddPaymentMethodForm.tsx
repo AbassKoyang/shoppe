@@ -17,30 +17,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import PrimaryButton from '@/components/PrimaryButton';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addPaymentMethod } from '@/services/users/api';
-import { paymentMethodType } from '@/services/users/types';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { LoaderCircle } from 'lucide-react';
 import {motion} from 'framer-motion';
+import { paymentMethodType } from '@/services/payment/types';
+import { addPaymentMethod } from '@/services/payment/api';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
-    cardNumber: z
-      .string()
-      .min(12, "Card number too short")
-      .refine((val) => valid.number(val).isValid, {
-        message: "Invalid card number.",
-      }),
-    expiry: z
-      .string()
-      .refine((val) => valid.expirationDate(val).isValid, {
-        message: "Invalid expiry date (MM/YY).",
-      }),
-    cvv: z
-      .string()
-      .refine((val) => valid.cvv(val).isValid, {
-        message: "Invalid CVV.",
-      }),
+    email: z.email().min(0, "Email address is required"),
     cardHolder: z.string().min(0, "Card holder name is required").min(2, "Card holder name is  too short."),
   });
 
@@ -53,13 +39,12 @@ const AddPaymentMethodForm = ({open, closeModal} : AddPaymentMethodFormType) => 
     const {user} = useAuth();
     const [loading, setloading] = useState(false);
     const queryClient = useQueryClient();
+    const router = useRouter();
 
         const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          cardNumber: "",
-          expiry: "",
-          cvv: "",
+          email: '',
           cardHolder: "",
         },
         });
@@ -68,7 +53,7 @@ const AddPaymentMethodForm = ({open, closeModal} : AddPaymentMethodFormType) => 
 
         const AddPaymentMethodMutation = useMutation({
             mutationKey: ['addPaymentMethod'],
-            mutationFn: (data : paymentMethodType) => addPaymentMethod(data),
+            mutationFn: ({cardHolder, email, userId} : {cardHolder: string; email: string; userId: string;}) => addPaymentMethod({userId, cardHolder, email}),
             onSuccess: (data) => {
                 toast.success(`Card saved succesfully.`);
                 queryClient.invalidateQueries({ queryKey: ['paymentMethods']});
@@ -80,9 +65,7 @@ const AddPaymentMethodForm = ({open, closeModal} : AddPaymentMethodFormType) => 
       };
 
       const handleAddPaymentMethod = async (data: z.infer<typeof formSchema>) => {
-        const numberValidation = valid.number(data.cardNumber);
-        const brand = numberValidation.card?.niceType || "Unknown";
-        const { cardHolder, cardNumber, expiry, cvv } = data;
+        const { cardHolder, email} = data;
       
         try {
             setloading(true);
@@ -91,21 +74,21 @@ const AddPaymentMethodForm = ({open, closeModal} : AddPaymentMethodFormType) => 
             return;
           }
       
-          const cardDetails: paymentMethodType = {
+          const cardDetails:  {cardHolder: string; email: string; userId: string;} = {
             userId: user.uid,
             cardHolder,
-            brand,
-            last4: cardNumber.slice(-4),
-            expiryDate: expiry,
-            cvv,
-            token: "",
+            email
           };
       
-          const success = await AddPaymentMethodMutation.mutateAsync(cardDetails);
-          if(success){
+          const data = await AddPaymentMethodMutation.mutateAsync(cardDetails);
+          if(data){
             closeModal();
             form.reset();
-          }
+            if (data.authorization_url) {
+              window.location.href = data.authorization_url;
+            } else {
+              console.log('No url, couldnt route')
+            }          }
         } catch (error: any) {
           console.error("❌ Error adding payment method:", error);
       
@@ -152,47 +135,17 @@ const AddPaymentMethodForm = ({open, closeModal} : AddPaymentMethodFormType) => 
 
                         <FormField
                         control={form.control}
-                        name="cardNumber"
+                        name="email"
                         render={({ field }) => (
                             <FormItem className='mt-6'>
-                            <FormLabel className='text-[14px] font-nunito-sans font-semibold leading-0'>Card Number</FormLabel>
+                            <FormLabel className='text-[14px] font-nunito-sans font-semibold leading-0'>Email</FormLabel>
                             <FormControl>
-                                <Input className='bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] focus:border-dark-blue transition-all duration-300 ease-in-out m-0' placeholder="4111 1111 1111 1111" {...field} />
+                                <Input className='bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] focus:border-dark-blue transition-all duration-300 ease-in-out m-0' placeholder="amandamorgan@gmail.com" {...field} />
                             </FormControl>
                             <FormMessage />
                             </FormItem>
                         )}
                         />
-
-                        <div className="flex justify-between gap-4 mt-6">
-                            <FormField
-                                control={form.control}
-                                name="expiry"
-                                render={({ field }) => (
-                                <FormItem className="flex-1">
-                                    <FormLabel className='text-[14px] font-nunito-sans font-semibold leading-0'>Expiry (MM/YY)</FormLabel>
-                                    <FormControl>
-                                    <Input className='bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] focus:border-dark-blue transition-all duration-300 ease-in-out'  placeholder="12/25" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="cvv"
-                                render={({ field }) => (
-                                <FormItem className="flex-1">
-                                    <FormLabel className='text-[14px] font-nunito-sans font-semibold leading-0'>CVV</FormLabel>
-                                    <FormControl>
-                                    <Input className='bg-[#F1F4FE] rounded-md placeholder:text-[#9EB4E8] focus:border-dark-blue transition-all duration-300 ease-in-out'  placeholder="123" type="password" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            </div>
 
                             <PrimaryButton disabled={loading || !isDirty} text={loading ? <LoaderCircle className='animate-spin' /> : 'Save Changes'} type="submit" additionalStyles="w-full mt-6" />
                         </form>
