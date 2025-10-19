@@ -41,7 +41,7 @@ export const POST = async (req: Request) => {
           views:  body.views,
           createdAt: Date.now(),
         }});
-        console.log("✅ Product added to Algolia succesfully");
+        console.log("Product added to Algolia succesfully");
         return NextResponse.json({ success: true, product: body });
       } catch (err) {
         console.error("❌ Error adding to Algolia:", err);

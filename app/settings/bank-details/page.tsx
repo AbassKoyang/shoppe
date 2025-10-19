@@ -1,152 +1,89 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'
-
-type BankType = {
-    name: string;
-    slug: string;
-    code: string;
-    longcode: string;
-    gateway: string | null;
-    pay_with_bank: boolean;
-    active: boolean;
-    is_deleted: boolean;
-    country: string;
-    currency: string;
-    type: string;
-    id: number;
-    createdAt: string;
-    updatedAt: string;
-};
-
-type AccountInfoType = {
-    "account_number": string;
-    "account_name": string;
-}
+import AddBankForm from '../components/AddBankForm';
+import { useAuth } from '@/lib/contexts/auth-context';
+import { Clipboard, Copy, PencilLine } from 'lucide-react';
+import EmptyBankDetails from '../components/EmptyBankDetails';
+import EditBankForm from '../components/EditBankForm';
 
 const Page = () => {
-    const [accountNumber, setAccountNumber] = useState('');
-    const [bankCode, setBankCode] = useState('');
-    const [banks, setBanks] = useState<BankType[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [accountInfo, setAccountInfo] = useState<AccountInfoType | null>(null);
-    const [verifying, setVerifying] = useState(false);
-
-    // Fetch banks on mount
-    useEffect(() => {
-        const fetchBanks = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(`https://api.paystack.co/bank`);
-                setBanks(response.data.data as BankType[]);
-                setError(null);
-            } catch (error) {
-                console.error('Error while fetching banks:', error);
-                setError('Failed to fetch banks');
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        fetchBanks();
-    }, []); // Only run once on mount
-
-    // Verify account when both accountNumber and bankCode are available
-    useEffect(() => {
-        const getAccountInfo = async () => {
-            // Only proceed if both values are set and account number is 10 digits
-            if (!accountNumber || !bankCode || accountNumber.length !== 10) {
-                setAccountInfo(null);
-                return;
-            }
-
-            try {
-                setVerifying(true);
-                console.log('Verifying:', accountNumber, bankCode);
-
-                // Call your API route instead of Paystack directly
-                const response = await axios.get(
-                    `/api/payments/verify-account?account_number=${accountNumber}&bank_code=${bankCode}`
-                );
-
-                const data = response.data;
-                console.log('Account info:', data);
-                setAccountInfo(data.data);
-            } catch (error) {
-                console.error('Error verifying account:', error);
-                setAccountInfo(null);
-            } finally {
-                setVerifying(false);
-            }
-        };
-
-        // Debounce the API call
-        const timeoutId = setTimeout(() => {
-            getAccountInfo();
-        }, 500); // Wait 500ms after user stops typing
-
-        return () => clearTimeout(timeoutId);
-    }, [accountNumber, bankCode]); // Run when either changes
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('Submitting:', { accountNumber, bankCode, accountInfo });
-        // Your submit logic here
-    };
-
+    const [isModalOpen, setisModalOpen] = useState(false);
+    const [isEditModalOpen, setisEditModalOpen] = useState(false);
+    const {user, loading} = useAuth();
     return (
-        <div className="p-4">
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <input 
-                        onChange={(e) => setAccountNumber(e.target.value)} 
-                        placeholder='Account Number' 
-                        value={accountNumber} 
-                        type="text" 
-                        maxLength={10}
-                        className="border p-2 rounded w-full"
-                    />
+        <div className="w-full">
+        <h4 className='text-[16px] font-medium font-raleway'>Bank Details</h4>
+        {loading && (
+            <div className='w-full p-4 rounded-xl bg-gray-200 mt-4'>
+                <div className="w-full flex justify-between">
+                    <div className="flex flex-col">
+                        <div className='skeleton w-[120px] h-3 rounded-[6px]'></div>
+                        <div className='skeleton w-[200px] h-8 rounded-[6px] mt-1'></div>
+                    </div>
+                    <div className='size-[16px] rounded-[6px] skeleton'></div>
                 </div>
-
-                <div>
-                    {loading ? (
-                        <p>Loading banks...</p>
-                    ) : banks.length > 0 ? (
-                        <select 
-                            onChange={(e) => setBankCode(e.target.value)} // ✅ Use onChange, not onSelect
-                            value={bankCode}
-                            className="border p-2 rounded w-full"
-                        >
-                            <option value="">Select bank</option>
-                            {banks.map((bank) => (
-                                <option key={bank.id} value={bank.code}>
-                                    {bank.name}
-                                </option>
-                            ))}
-                        </select>
-                    ) : null}
+                <div className="w-full flex justify-between mt-3">
+                    <div className="flex flex-col">
+                        <div className='skeleton w-[120px] h-3 rounded-[6px]'></div>
+                        <div className='skeleton w-[200px] h-8 rounded-[6px] mt-1'></div>
+                    </div>
+                    <div className='size-[16px] rounded-[6px] skeleton'></div>
                 </div>
-
-                <div>
-                    <input 
-                        placeholder={verifying ? 'Verifying...' : 'Account Name'} 
-                        disabled 
-                        value={accountInfo?.account_name || ''} 
-                        className="border p-2 rounded w-full bg-gray-100"
-                    />
+                <div className="w-full flex justify-between mt-3">
+                    <div className="flex flex-col">
+                        <div className='skeleton w-[120px] h-3 rounded-[6px]'></div>
+                        <div className='skeleton w-[200px] h-8 rounded-[6px] mt-1'></div>
+                    </div>
+                    <div className='size-[16px] rounded-[6px] skeleton'></div>
                 </div>
-
-                {error && <p className="text-red-600">{error}</p>}
-
-                <button 
-                    type="submit" 
-                    disabled={!accountInfo || verifying}
-                    className="bg-blue-600 text-white px-4 py-2 rounded disabled:bg-gray-400"
-                >
-                    Submit
+            </div>
+        )}
+        {user?.bankDetails ? (
+            <div className='w-full p-4 rounded-xl bg-white mt-4 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] relative'>
+                <button onClick={() => setisEditModalOpen(true)} className="absolute top-3 right-3">
+                <PencilLine className='size-[18px] text-dark-blue' />
                 </button>
-            </form>
+                <div className="w-full flex justify-between mt-3">
+                    <div className="">
+                        <span className='font-nunito-sans text-gray-500 text-[10px] font-light'>Account Holder</span>
+                        <p className='font-raleway text-[#202020] text-[14px] font-medium'>{user.bankDetails.accountName}</p>
+                    </div>
+                    <button onClick={() => {
+                        navigator.clipboard.writeText(user?.bankDetails?.accountName || '')
+                    }}>
+                     <Copy className='size-[16px] text-[#202020]' />
+                    </button>
+                </div>
+                <div className="w-full flex justify-between">
+                    <div className="">
+                        <span className='font-nunito-sans text-gray-500 text-[10px] font-light'>Account Number</span>
+                        <p className='font-raleway text-[#202020] text-[14px] font-medium'>{user.bankDetails.accountNumber}</p>
+                    </div>
+                    <button onClick={() => {
+                        navigator.clipboard.writeText(user?.bankDetails?.accountNumber || '')
+                    }}>
+                     <Copy className='size-[16px] text-[#202020]' />
+                    </button>
+                </div>
+                <div className="w-full flex justify-between">
+                    <div className="">
+                        <span className='font-nunito-sans text-gray-500 text-[10px] font-light'>Bank Name</span>
+                        <p className='font-raleway text-[#202020] text-[14px] font-medium'>{user.bankDetails.bankName}</p>
+                    </div>
+                    <button onClick={() => {
+                        navigator.clipboard.writeText(user?.bankDetails?.bankName || '')
+                    }}>
+                     <Copy className='size-[16px] text-[#202020]' />
+                    </button>
+                </div>
+            </div>
+        ) : loading === false ?  (
+            <EmptyBankDetails openModal={() => setisModalOpen(true)}/>
+        ) : null}
+
+           <AddBankForm open={isModalOpen} closeModal={() => setisModalOpen(false)} />
+           <EditBankForm open={isEditModalOpen} closeModal={() => setisEditModalOpen(false)} />
         </div>
     );
 }

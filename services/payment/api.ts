@@ -80,3 +80,31 @@ export const deletePaymentMethodById = async (paymentMethodId: string) => {
         throw error;
     }
 }
+
+export const addBank = async ({name, bankCode, accountNumber, userId, bankName } :  {name: string; bankCode: string; accountNumber: string; userId: string, bankName: string;}) => {
+    try {
+        const response = await fetch('/api/payments/add-bank', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name, 
+                account_number : accountNumber, 
+                bank_code: bankCode,
+                bankName,
+                userId,
+            }),
+          });
+    
+          const data = await response.json();
+    
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to add bank');
+          }
+          console.log('Bank added sucessfuly');
+          return data;
+    } catch (error) {
+        console.error(error);
+    }
+};

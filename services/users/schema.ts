@@ -21,6 +21,7 @@ export const UserSchema = z.object({
     bankDetails: z.object({
       recipientCode: z.string(),
       bankCode: z.string(),
+      bankName: z.string(),
       accountNumber: z.string(),
       accountName: z.string(),
       currency: z.string(),
@@ -53,6 +54,7 @@ export const AppUserSchema = z.object({
     bankDetails: z.object({
       recipientCode: z.string(),
       bankCode: z.string(),
+      bankName: z.string(),
       accountNumber: z.string(),
       accountName: z.string(),
       currency: z.string(),

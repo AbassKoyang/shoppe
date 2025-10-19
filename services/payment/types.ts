@@ -2,6 +2,7 @@ export type paymentMethodType =  {id?: string; userId: string; cardHolder: strin
 export type bankDetailsType = {
     recipientCode: string;
     bankCode: string;
+    bankName: string;
     accountNumber: string;
     accountName: string;
     currency: string;

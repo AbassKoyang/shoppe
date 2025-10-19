@@ -72,7 +72,6 @@ const EditPaymentMethodForm = ({paymentMethod, open, closeModal} : EditPaymentMe
             mutationKey: ['updatePaymentMethod'],
             mutationFn: ({id, email, cardHolder} : {cardHolder: string; email: string; id: string;}) => updatePaymentMethod({id, email, cardHolder}),
             onSuccess: (data) => {
-                toast.success(`Card updated succesfully.`);
                 queryClient.invalidateQueries({ queryKey: ['paymentMethods']});
             }
         });

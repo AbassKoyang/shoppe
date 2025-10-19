@@ -40,7 +40,7 @@ const PaymentMethodsPage = () => {
         <h4 className='text-[16px] font-medium font-raleway'>Payment Methods</h4>
             <div className='w-full flex items-center mt-4'>
                 {error && (
-                    <p className='font-nunito-sans'>Failed to load cards</p>
+                    <p>Failed to load cards</p>
                 )}
 
                 {isLoading && (
