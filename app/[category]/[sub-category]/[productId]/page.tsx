@@ -151,6 +151,7 @@ const page = () => {
   useEffect(() => {
     setViewportWidth(window.innerWidth);
   }, []);
+  
   const price = formatPrice(product?.price.toString() || '', product?.currency || '');
 
   useEffect(() => {

@@ -401,6 +401,9 @@ export const NUMERIC_SIZES = Array.from({ length: 50 }, (_, i) => `${i + 1}`);
 
 export const formatPrice = (price: string, currency: string) => {
   let newPrice = ''
+  if (price.length < 3){
+    newPrice = price
+  }
   if (price.length > 3 && price.length < 5){
     newPrice = price.substring(0, 1) + ',' + price.substring(1)
   }
