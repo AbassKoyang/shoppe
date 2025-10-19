@@ -1,6 +1,37 @@
-import { z } from "zod";
+import z from "zod";
 
-export const ProductSchema = z
+export const UserSchema = z.object({
+    id: z.string().optional(),
+    profile: z.object({
+      name: z.string().min(1, "Name is required"),
+      email: z.string().email("Invalid email format"),
+      imageUrl: z.string().url().optional(),
+      language: z.literal(['English', 'Français'])
+    }),
+    shopPrefrences: z.object({
+        country: z.literal(['Nigeria', 'USA', 'Spain']),
+        currency: z.literal(['$ USD', '€ EURO', '₦ NGN']),
+        size: z.literal(['US', 'UK', 'EU']),
+    }),
+    shippingAddress: z.object({
+      country: z.string(),
+      city: z.string(),
+      address: z.string(),
+      postalCode: z.string(),
+      phoneNumber: z.string(),
+    }),
+    bankDetails: z.object({
+      recipientCode: z.string(),
+      bankCode: z.string(),
+      bankName: z.string(),
+      accountNumber: z.string(),
+      accountName: z.string(),
+      currency: z.string(),
+    }).optional(),
+    createdAt: z.iso.datetime(), // Firestore Timestamp
+    updatedAt: z.iso.datetime(),
+  });
+  export const ProductSchema = z
   .object({
     id: z.string().min(1, "Product ID is required").optional(),
     sellerId: z.string().min(1, "Seller ID is required").optional(),
@@ -147,41 +178,3 @@ export const ProductSchema = z
     views: z.number().optional(),
   status: z.literal(['available', 'pending', 'sold']).optional(),
   });
-
- export  const filterSChema = z.object({
-    location: z.string().optional(),
-    currency: z.union([z.literal("$ USD"), z.literal("€ EURO"), z.literal("₦ NGN")]).optional(),
-    minPrice: z.string().optional(),
-    maxPrice: z.string().optional(),
-    discountPercentage: z.string().optional(),
-    size: z.union([
-        z.literal(["One Size", "XS", "S", "M", "L", "XL", "XXL"]), // alpha + one size
-        z.string().regex(/^\d+$/, "Numeric size must be digits only"), // numeric like 28, 30, 42...
-      ]).array().optional(),
-    gender: z.literal(["Men", "Women", "Unisex"]).optional(),
-    condition: z.literal(["new", "used"]).optional(),
-    order: z.string().optional(),
-})
- export  const searchFilterSChema = z.object({
-  category: z.literal(["Tops","Bottoms","Dresses","Outerwear","Shoes","Accessories","Bags","Underwear","Swimwear","Activewear","Other"]).array().optional(),
-  location: z.string().optional(),
-  currency: z.union([z.literal("$ USD"), z.literal("€ EURO"), z.literal("₦ NGN")]).optional(),
-  minPrice: z.string().optional(),
-  maxPrice: z.string().optional(),
-  discountPercentage: z.string().optional(),
-  size: z.union([
-      z.literal(["One Size", "XS", "S", "M", "L", "XL", "XXL"]), // alpha + one size
-      z.string().regex(/^\d+$/, "Numeric size must be digits only"), // numeric like 28, 30, 42...
-    ]).array().optional(),
-  gender: z.literal(["Men", "Women", "Unisex"]).optional(),
-  condition: z.literal(["new", "used"]).optional(),
-  order: z.string().optional(),
-})
-
-export const recentlyViewedProductSchema = z.object({
-    id: z.string().optional(),
-    userId: z.string(),
-    productId: z.string(),
-    product: ProductSchema,
-    viewedAt: z.number(),
-})

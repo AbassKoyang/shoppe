@@ -8,21 +8,26 @@ import { addProductToRecentlyViewed, addProductToWishlist, isProductInWishlist, 
 import { useFetchSingleProduct } from "@/services/products/queries";
 import { ProductType, WishlistType } from "@/services/products/types";
 import { QueryClient, useMutation } from "@tanstack/react-query";
-import { Heart, LoaderCircle, MessageCircle, MessageSquareText } from "lucide-react";
+import { Heart, LoaderCircle, MessageCircle, MessageSquareText, Settings } from "lucide-react";
 import { IoHeart } from "react-icons/io5";
 import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect, use } from "react";
 import { IoIosShareAlt } from "react-icons/io";
 import { toast } from "react-toastify";
+import { usePaymentMethods } from "@/services/payment/queries";
+import { Card, CardContent } from "@/components/ui/card";
+import { paymentMethodType } from "@/services/payment/types";
 
 const page = () => {
   const router = useRouter();
   const {user} = useAuth();
   const productId = useParams<{productId: string}>().productId;
   const {isError, isLoading, data: product} = useFetchSingleProduct(productId);
+  const {data: cards} = usePaymentMethods(user?.uid || '');
   const [viewportWidth, setViewportWidth] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isInWishList, setIsInWishlist] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<paymentMethodType>();
   const queryClient = new QueryClient();
 
   const addProductToRecentlyViewedMutation = useMutation({
@@ -130,7 +135,6 @@ const page = () => {
         return;
       }  
       await addProductToRecentlyViewedMutation.mutateAsync({userId: user?.uid, product: product});
-      toast.success(`Item added to recently viewed.`);
     } catch (error: any) {
       console.error("❌ Error adding product to recently viewed:", error);
   
@@ -152,6 +156,41 @@ const page = () => {
   useEffect(() => {
     handleAddProductToRecentlyViewed()
   }, [product])
+
+
+  const handleBuyProduct = async () => {
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SOCKET_URL}/api/products/${productId}/buy`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            buyerId: user?.uid,
+            cardId: selectedCard,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Purchase successful!');
+        // Redirect to transaction page
+        window.location.href = `/transactions/${data.transaction.id}`;
+      } else {
+        alert(data.error || 'Purchase failed');
+      }
+    } catch (error) {
+      console.error('Purchase error:', error);
+      alert('An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
   
 
 
@@ -256,10 +295,51 @@ const page = () => {
         )}
 
         <button onClick={() => router.push(`/chat/${productId}_${user?.uid}_${product.sellerId}`)} className="cursor-pointer bg-black rounded-4xl px-4 py-2 flex items-center gap-2"><MessageCircle  strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Chat Seller</span></button>
-        <button className="cursor-pointer bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
+        <button onClick={() => handleBuyProduct()} className="cursor-pointer bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
       </div>
         </>
       )}
+      {cards && cards.map((card) => (
+      <div className="w-full">
+         <Card onClick={() => setSelectedCard(card)} className='bg-[#F1F4FE] h-full p-0'>
+            <CardContent className="size-full flex flex-col justify-between p-4 pb-6">
+                <div className='w-full flex items-center justify-between'>
+                    <img src='/assets/images/visa-logo.png' alt="Visa Logo" />
+                    <button className='cursor-pointer size-[35px] flex items-center justify-center bg-[#E5EBFC] rounded-full'>
+                        <Settings className='text-dark-blue size-[14px]' />
+                    </button>
+                </div>
+                <div className='w-full flex flex-col items-center'>
+                    <div className='w-full flex items-center justify-between text-[#202020]'>
+                        <div className='flex items-center gap-1.5'>
+                            <span>*</span>
+                            <span>*</span>
+                            <span>*</span>
+                            <span>*</span>
+                        </div>
+                        <div className='flex items-center gap-1.5'>
+                            <span>*</span>
+                            <span>*</span>
+                            <span>*</span>
+                            <span>*</span>
+                        </div>
+                        <div className='flex items-center gap-1.5'>
+                            <span>*</span>
+                            <span>*</span>
+                            <span>*</span>
+                            <span>*</span>
+                        </div>
+                        <p>{card.last4}</p>
+                    </div>
+                    <div className='w-full flex items-center justify-between mt-2'>
+                        <p className='text-[#202020] font-nunito-sans font-semibold text-[12px]'>{card.cardHolder}</p>
+                    <p className='text-[#202020] font-nunito-sans font-semibold text-[12px]'>{`${card.expiryMonth}/${card.expiryYear}`}</p>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+      </div>))}
+
       {isError && (
         <div className='w-full h-dvh flex items-center justify-center'>
         <p>Oops, failed to load product.</p>
