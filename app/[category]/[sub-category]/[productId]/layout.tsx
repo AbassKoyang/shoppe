@@ -3,11 +3,11 @@ import React from 'react'
 
 const layout = ({children} :{children: React.ReactNode}) => {
   return (
-    // <ProtectedRoute>
+    <ProtectedRoute>
     <section className="w-full min-h-full overflow-x-hidden">
         {children}
     </section>
-    // </ProtectedRoute>
+    </ProtectedRoute>
   )
 }
 

@@ -3,12 +3,12 @@ import React from 'react'
 
 const layout = ({children} :{children: React.ReactNode}) => {
   return (
-    // <ProtectedRoute>
+    <ProtectedRoute>
     <section className="w-full min-h-full overflow-x-hidden bg-[#F9F9F9]">
         {children}
         {/* <Navbar /> */}
     </section>
-    // </ProtectedRoute>
+    </ProtectedRoute>
   )
 }
 
