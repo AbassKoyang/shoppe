@@ -7,10 +7,12 @@
   "type": "module",
   "main": "index.ts",
   "scripts": {
-  "dev": "tsx watch index.ts",
-  "start": "tsx index.ts",
-  "build": "echo 'No build step required'"},
+    "dev": "tsx watch index.ts",
+    "start": "tsx index.ts",
+    "build": "echo 'No build step required'"
+  },
   "dependencies": {
+    "axios": "^1.12.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "firebase-admin": "^13.5.0",
