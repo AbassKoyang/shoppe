@@ -16,6 +16,7 @@ export const POST = async (req: Request) => {
         const colRef = collection(db, "products");
         const docRef = await addDoc(colRef, {
             ...body,
+            status: 'available',
             price: Number(body.price) || 0,
             discount: Number(body.discount) || 0,
         })
@@ -39,6 +40,7 @@ export const POST = async (req: Request) => {
           material: body?.material || null,
           location:  body.location,
           views:  body.views,
+          status: 'available',
           createdAt: Date.now(),
         }});
         console.log("Product added to Algolia succesfully");

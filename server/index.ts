@@ -36,7 +36,8 @@ handleSocketEvents(io);
 app.post('/api/products/:productId/buy', async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
-    const { buyerId, cardId } = req.body;
+    const { buyerId, card } = req.body;
+    console.log(productId, buyerId, card)
 
     // Get buyer details
     const buyerDoc = await db.collection('users').doc(buyerId).get();
@@ -45,12 +46,6 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
     }
     const buyer = { id: buyerDoc.id, ...buyerDoc.data() } as User;
 
-    // Get saved card details
-    const cardDoc = await db.collection('payment-methods').doc(cardId).get();
-    if (!cardDoc.exists) {
-      return res.status(404).json({ error: 'Card not found' });
-    }
-    const card = { id: cardDoc.id, ...cardDoc.data() } as PaymentMethodType;
 
     // Verify card belongs to buyer
     if (card.userId !== buyerId) {

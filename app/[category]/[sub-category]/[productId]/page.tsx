@@ -151,7 +151,7 @@ const page = () => {
   useEffect(() => {
     setViewportWidth(window.innerWidth);
   }, []);
-  
+
   const price = formatPrice(product?.price.toString() || '', product?.currency || '');
 
   useEffect(() => {
@@ -159,19 +159,29 @@ const page = () => {
   }, [product])
 
 
-  const handleBuyProduct = async () => {
-
+  const handleBuyProduct = async (userId: string) => {
+    if (!userId || !selectedCard || !productId) {
+      console.error('Missing required data:', { userId, selectedCard, productId });
+      alert('Missing required information');
+      return;
+    }
+  
+    console.log('Sending buy request:', {
+      productId,
+      buyerId: userId,
+      cardId: selectedCard,
+    });
     setLoading(true);
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SOCKET_URL}/api/products/${productId}/buy`,
+        `${'http://localhost:4000'}/api/products/${productId}/buy`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            buyerId: user?.uid,
-            cardId: selectedCard,
+            buyerId: userId,
+            card: selectedCard,
           }),
         }
       );
@@ -296,7 +306,7 @@ const page = () => {
         )}
 
         <button onClick={() => router.push(`/chat/${productId}_${user?.uid}_${product.sellerId}`)} className="cursor-pointer bg-black rounded-4xl px-4 py-2 flex items-center gap-2"><MessageCircle  strokeWidth={1} className="text-white h-lh" /><span className="text-[16px] font-normal font-nunito-sans text-[#F3F3F3]">Chat Seller</span></button>
-        <button onClick={() => handleBuyProduct()} className="cursor-pointer bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
+        <button onClick={() => handleBuyProduct(user?.uid || '')} className="cursor-pointer bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
       </div>
         </>
       )}
