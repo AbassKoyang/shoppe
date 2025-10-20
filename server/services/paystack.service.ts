@@ -2,15 +2,17 @@ import axios from 'axios';
 import { db } from '../firebase-admin';
 import { User } from '../types';
 
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY!;
+process.env.PAYSTACK_SECRET_KEY;
 const PLATFORM_FEE_PERCENTAGE = 15; // 15% platform fee
 
 class PaystackService {
   private baseURL = 'https://api.paystack.co';
-  private headers = {
-    Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-    'Content-Type': 'application/json',
-  };
+  private getHeaders() {
+    return {
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+      'Content-Type': 'application/json',
+    };
+  }
   private productsCollection = db.collection('users');
 
   // Charge authorization (direct charge using saved card)
@@ -20,11 +22,12 @@ class PaystackService {
     authorization_code: string;
     metadata: any;
   }) {
+    console.log(process.env.PAYSTACK_SECRET_KEY)
     try {
       const response = await axios.post(
         `${this.baseURL}/transaction/charge_authorization`,
         data,
-        { headers: this.headers }
+        { headers: this.getHeaders() }
       );
 
       return response.data;
@@ -39,7 +42,7 @@ class PaystackService {
     try {
       const response = await axios.get(
         `${this.baseURL}/transaction/verify/${reference}`,
-        { headers: this.headers }
+        { headers: this.getHeaders() }
       );
 
       return response.data;
@@ -72,7 +75,7 @@ class PaystackService {
       const response = await axios.post(
         `${this.baseURL}/transfer`,
         data,
-        { headers: this.headers }
+        { headers: this.getHeaders() }
       );
 
       return response.data;

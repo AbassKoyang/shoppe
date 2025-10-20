@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express, { Request, Response } from "express";
 import http from "http";
 import { Server } from "socket.io";
@@ -74,7 +76,7 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
 
     // Charge the card directly
     const paymentResponse = await paystackService.chargeAuthorization({
-      email: buyer.profile.email,
+      email: card.email,
       amount: amountInKobo,
       authorization_code: card.authorisationCode,
       metadata: {
@@ -86,6 +88,7 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
         cardLast4: card.last4,
       },
     });
+    console.log(paymentResponse);
 
     // Check if charge was successful
     if (paymentResponse.status && paymentResponse.data.status === 'success') {
@@ -102,6 +105,7 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
         status: 'pending',
         paystackReference: reference,
       });
+      console.log(transaction);
 
       // Update product status to pending
       await transactionService.updateProductStatus(productId, 'pending');
@@ -179,9 +183,9 @@ app.post('/api/transactions/:transactionId/confirm-receipt', async (req: Request
 
     // Get seller details
     const sellerDoc = await db.collection('users').doc(transaction.sellerId).get();
-    const seller = { id: sellerDoc.id, ...sellerDoc.data() } as any;
+    const seller = { id: sellerDoc.id, ...sellerDoc.data() } as User;
 
-    if (!seller.paystackRecipientCode) {
+    if (!seller.bankDetails?.recipientCode) {
       return res.status(400).json({ error: 'Seller payment details not configured' });
     }
 
@@ -189,7 +193,7 @@ app.post('/api/transactions/:transactionId/confirm-receipt', async (req: Request
     const transferReference = `TRANSFER_${transactionId}_${Date.now()}`;
     const transfer = await paystackService.transferFunds({
       amount: transaction.sellerAmount,
-      recipient: seller.paystackRecipientCode,
+      recipient: seller.bankDetails.recipientCode,
       reason: `Payment for product ${transaction.productId}`,
       reference: transferReference,
     });

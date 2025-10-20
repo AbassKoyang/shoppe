@@ -9,7 +9,7 @@ class TransactionService {
   async createTransaction(data: Omit<Transaction, 'id' | 'createdAt'>) {
     const transaction = {
       ...data,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
     };
 
     const docRef = await this.collection.add(transaction);
@@ -39,12 +39,12 @@ class TransactionService {
   async updateTransactionStatus(id: string, status: TransactionStatus, additionalData?: any) {
     const updateData: any = {
       status,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
       ...additionalData,
     };
 
     if (status === 'released') {
-      updateData.releasedAt = new Date().toISOString();
+      updateData.releasedAt = new Date();
     }
 
     await this.collection.doc(id).update(updateData);
@@ -54,7 +54,7 @@ class TransactionService {
   async updateProductStatus(productId: string, status: string) {
     await this.productsCollection.doc(productId).update({
       status,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date()
     });
   }
 }
