@@ -10,7 +10,7 @@ import { ProductType, WishlistType } from "@/services/products/types";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { Heart, LoaderCircle, MessageCircle, MessageSquareText, Settings } from "lucide-react";
 import { IoHeart } from "react-icons/io5";
-import { useParams, useRouter } from "next/navigation"
+import { redirect, useParams, useRouter } from "next/navigation"
 import { useState, useEffect, use } from "react";
 import { IoIosShareAlt } from "react-icons/io";
 import { toast } from "react-toastify";
@@ -18,6 +18,21 @@ import { usePaymentMethods } from "@/services/payment/queries";
 import { Card, CardContent } from "@/components/ui/card";
 import { paymentMethodType } from "@/services/payment/types";
 import BuyProductModal from "@/components/product-page/BuyProductModal";
+import PaymentInProgressModal from "@/components/product-page/PaymentInProgressModal";
+import PaymentFailedModal from "@/components/product-page/PaymentFailedModal";
+import { string } from "zod";
+import PaymentSuccesfulModal from "@/components/product-page/PaymentSuccessfulModal";
+
+type transactionDetailsType = {
+  success: boolean;
+  message: 'Payment successful';
+  transaction: {
+    id: string;
+    amount:  number;
+    reference: string;
+    status: string;
+  }
+}
 
 const page = () => {
   const router = useRouter();
@@ -29,7 +44,11 @@ const page = () => {
   const [loading, setLoading] = useState(false);
   const [isInWishList, setIsInWishlist] = useState(false);
   const [isBuyProductModalOpen, setIsBuyProductModalOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState<paymentMethodType>();
+  const [selectedCard, setSelectedCard] = useState<paymentMethodType>(cards? cards[0] : {id: '', userId: '', cardHolder: '', brand: '', last4: '', expiryMonth: '', expiryYear: '', email: '', authorisationCode: '', createdAt: ''});
+  const [isPaymentInProgress, setIsPaymentInProgress] = useState(false);
+  const [error, setError] = useState<{message: string; error: string} | null>(null);
+  const [isPaymentSuccessful, setisPaymentSuccessful] = useState(false);
+  const [transactionDetails, setTransactionDetails] = useState<transactionDetailsType>();
   const queryClient = new QueryClient();
 
   const addProductToRecentlyViewedMutation = useMutation({
@@ -173,7 +192,8 @@ const page = () => {
       buyerId: userId,
       cardId: selectedCard,
     });
-    setLoading(true);
+    setIsBuyProductModalOpen(false)
+    setIsPaymentInProgress(true);
 
     try {
       const response = await fetch(
@@ -191,17 +211,16 @@ const page = () => {
       const data = await response.json();
 
       if (data.success) {
-        alert('Purchase successful!');
-        // Redirect to transaction page
+        setisPaymentSuccessful(true)
+        setTransactionDetails(data);
         console.log(data);
       } else {
-        alert(data.error || 'Purchase failed');
+        setError(data.error);
       }
     } catch (error) {
       console.error('Purchase error:', error);
-      alert('An error occurred');
     } finally {
-      setLoading(false);
+      setIsPaymentInProgress(false);
     }
   };
   
@@ -311,7 +330,12 @@ const page = () => {
         <button onClick={() => setIsBuyProductModalOpen(true)} className="cursor-pointer bg-dark-blue text-white rounded-4xl px-4 py-2 font-normal font-nunito-sans text-[16px]">Buy</button>
       </div>
 
-      <BuyProductModal open={isBuyProductModalOpen} closeModal={() => setIsBuyProductModalOpen(false)} />
+      <BuyProductModal buyProduct={() => handleBuyProduct(user?.uid || '')} selectedCard={selectedCard} setSelectedCard={(card: paymentMethodType) => setSelectedCard(card)} open={isBuyProductModalOpen} closeModal={() => setIsBuyProductModalOpen(false)} />
+      <PaymentInProgressModal open={isPaymentInProgress} />
+      <PaymentFailedModal closeModal={() => setError(null)} open={error ? true : false} error={error} tryAgain={() => { setError(null); handleBuyProduct(user?.uid || '')}} />
+      <PaymentSuccesfulModal open={isPaymentSuccessful} closeModal={() => setisPaymentSuccessful(false)} redirect={() => {
+        router.replace(`/transactions/${transactionDetails?.transaction.id}`)
+      }} />
       </>
       )}
 

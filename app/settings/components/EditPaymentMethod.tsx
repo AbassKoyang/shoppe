@@ -147,11 +147,11 @@ const EditPaymentMethodForm = ({paymentMethod, open, closeModal} : EditPaymentMe
       
   return (
     <motion.div 
-    initial={{ y: '0%' }}
+    initial={{ y: '100%' }}
     animate={{ y: open ? '0%' : '100%' }}
     transition={{ duration: 0.3, ease: 'easeInOut' }}
     className={`h-dvh w-[100vw] fixed top-0 left-0 bg-transparent flex flex-col justify-end z-200`}>
-        <div onClick={() => closeModal()} className='z-10 absolute top-0 left-0 w-full h-full bg-[#E9E9E9] opacity-75'></div>
+        <div onClick={() => closeModal()} className='z-10 absolute top-0 left-0 w-full h-full bg-white/35 backdrop-blur-sm'></div>
 
         <div className='z-20 w-full bg-[#F8FAFF] rounded-t-2xl py-6'>
             <div className='mb-6 px-6 flex items-center justify-between'>

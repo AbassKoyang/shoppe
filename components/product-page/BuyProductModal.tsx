@@ -8,8 +8,9 @@ import CardCon from './Card';
 import { Plus } from 'lucide-react';
 import AddPaymentMethodForm from '@/app/settings/components/AddPaymentMethodForm';
 import UpdateShippingAddressModal from './UpdateShippingAddressModal';
+import { paymentMethodType } from '@/services/payment/types';
 
-const BuyProductModal = ({open, closeModal}: {open: boolean; closeModal: () => void}) => {
+const BuyProductModal = ({open, closeModal, setSelectedCard, selectedCard, buyProduct}: {open: boolean; selectedCard: paymentMethodType; closeModal: () => void; setSelectedCard: (card: paymentMethodType) => void; buyProduct: () => void}) => {
     const {user} = useAuth();
     const { data: paymentMethods, isLoading, error } = usePaymentMethods(user?.uid || '');
     const [isAddModalOpen, setisAddModalOpen] = useState(false);
@@ -17,7 +18,7 @@ const BuyProductModal = ({open, closeModal}: {open: boolean; closeModal: () => v
 
   return (
     <motion.div 
-    initial={{ y: '0%' }}
+    initial={{ y: '100%' }}
     animate={{ y: open ? '0%' : '100%' }}
     transition={{ duration: 0.3, ease: 'easeInOut' }}
     className={`h-dvh w-[100vw] fixed top-0 left-0 bg-transparent flex flex-col justify-between z-100`}>
@@ -41,7 +42,7 @@ const BuyProductModal = ({open, closeModal}: {open: boolean; closeModal: () => v
             <div className="bg-white w-full oveflow-x-hidden">
                 <div className="w-full flex items-center gap-5 p-6 overflow-x-auto carousel-container scrollbar-hide">
                     {paymentMethods && paymentMethods.map((paymentMethod) => (
-                        <CardCon paymentMethod={paymentMethod} />
+                        <CardCon paymentMethod={paymentMethod} selectedCard={selectedCard} setSelectedCard={setSelectedCard}/>
                     ))}
                     <button onClick={() => setisAddModalOpen(true)} className='cursor-pointer min-w-[45px] h-[155px] bg-dark-blue rounded-xl flex justify-center items-center'>
                         <Plus fill='white' className='text-white' />
@@ -49,13 +50,13 @@ const BuyProductModal = ({open, closeModal}: {open: boolean; closeModal: () => v
                 </div>
 
                 <div className="w-full px-6">
-                 <button className='w-full cursor-pointer bg-dark-blue hover:opacity-90 transition-all duration-200 ease-in-out text-[#F3F3F3] text-[22px] font-extralight flex items-center justify-center rounded-xl py-3 disabled:opacity-70 disabled:cursor-not-allowed'>Proceed</button>
+                 <button onClick={buyProduct} disabled={selectedCard.id === ''} className='w-full cursor-pointer bg-dark-blue hover:opacity-90 transition-all duration-200 ease-in-out text-[#F3F3F3] text-[22px] font-extralight flex items-center justify-center rounded-xl py-3 disabled:opacity-70 disabled:cursor-not-allowed'>Proceed</button>
                 </div>
             </div>
         </div>
         <AddPaymentMethodForm open={isAddModalOpen} closeModal={() => setisAddModalOpen(false)} />
         <UpdateShippingAddressModal open={isShippingAddressModalOpen} closeModal={() => setIsShippingAddressModalOpen(false)} />
-    </motion.div>
+    </motion.div> 
 )
 }
 

@@ -5,12 +5,16 @@ import { Settings } from 'lucide-react'
 import { useAuth } from '@/lib/contexts/auth-context'
 import { paymentMethodType } from '@/services/payment/types'
 import EditPaymentMethodForm from '@/app/settings/components/EditPaymentMethod'
+import { BsCheck } from 'react-icons/bs'
 
-const CardCon = ({paymentMethod}:{paymentMethod: paymentMethodType}) => {
+const CardCon = ({paymentMethod, selectedCard, setSelectedCard}:{paymentMethod: paymentMethodType; selectedCard: paymentMethodType; setSelectedCard: (card: paymentMethodType) => void}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const isSelectedCard = selectedCard.id === paymentMethod.id;
   return (
-    <div className="min-w-[280px] h-[155px]">
+    <div onClick={() => setSelectedCard(paymentMethod)} className="min-w-[280px] h-[155px] relative">
+        <span className={`${isSelectedCard ? 'size-[22px] border-2' : 'size-0 border-0'} bg-dark-blue rounded-full flex items-center justify-between absolute -top-1 -right-1 z-20 transition-all duration-300 ease-in-out origin-center`}>
+            <BsCheck className="text-white" />
+        </span>
          <Card className='w-full bg-[#F1F4FE] h-full p-0'>
             <CardContent className="size-full flex flex-col justify-between p-4 pb-6">
                 <div className='w-full flex items-center justify-between'>

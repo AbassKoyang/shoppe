@@ -4,7 +4,7 @@ import { FaExclamation } from "react-icons/fa6";
 const ConfirmDeleteAccount = ({open, deleteAccount, closeModal, isDeleting} : {open: boolean; deleteAccount: () => void; closeModal: () => void; isDeleting: boolean;}) => {
   return (
     <motion.div className={`${open ? 'flex' : 'hidden'} w-[100vw] h-dvh fixed top-0 left-0 items-center justify-center bg-transparent z-30`}>
-        <div onClick={() => closeModal()} className='z-10 absolute top-0 left-0 w-full h-full bg-[#E9E9E9] opacity-75'></div>
+        <div onClick={() => closeModal()} className='z-10 absolute top-0 left-0 w-full h-full bg-white/35 backdrop-blur-sm'></div>
         <motion.div 
         initial={{scale: 0}}
         animate={{scale: open? 1 : 0}}
