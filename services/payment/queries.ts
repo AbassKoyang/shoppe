@@ -1,10 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchPaymentMethods } from "./api";
+import { fetchPaymentMethods, getDeliveredOrders, getPendingOrders } from "./api";
 
 export const usePaymentMethods = (userId: string) => {
     return useQuery({
-      queryKey: ["paymentMethods", userId], // ✅ cache per user
+      queryKey: ["paymentMethods", userId], 
       queryFn: () => fetchPaymentMethods(userId),
-      enabled: !!userId, // ✅ only fetch if userId exists
+      enabled: !!userId, 
     });
-  };
+};
+export const useGetPendingOrders = (userId: string) => {
+    return useQuery({
+      queryKey: ["orders", userId], 
+      queryFn: () => getPendingOrders(userId),
+      enabled: !!userId, 
+    });
+};
+export const useGetDeliveredOrders = (userId: string) => {
+    return useQuery({
+      queryKey: ["orders", userId], 
+      queryFn: () => getDeliveredOrders(userId),
+      enabled: !!userId, 
+    });
+};

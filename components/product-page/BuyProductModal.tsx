@@ -23,7 +23,7 @@ const BuyProductModal = ({open, closeModal, setSelectedCard, selectedCard, buyPr
     transition={{ duration: 0.3, ease: 'easeInOut' }}
     className={`h-dvh w-[100vw] fixed top-0 left-0 bg-transparent flex flex-col justify-between z-100`}>
 
-        <div onClick={() => closeModal()} className='z-10 absolute top-0 left-0 w-full h-full bg-[#E9E9E9] opacity-75'></div>
+        <div onClick={() => closeModal()} className='z-10 absolute top-0 left-0 w-full h-full bg-white/35 backdrop-blur-sm'></div>
 
 
         <div className="w-full p-6 z-20">
@@ -40,7 +40,7 @@ const BuyProductModal = ({open, closeModal, setSelectedCard, selectedCard, buyPr
         <div className='z-20 w-full bg-[#F8FAFF] rounded-t-2xl py-6 oveflow-x-hidden'>
             <h3 className='text-[22px] font-raleway font-bold mb-6 ml-6'>Payment Methods</h3>
             <div className="bg-white w-full oveflow-x-hidden">
-                <div className="w-full flex items-center gap-5 p-6 overflow-x-auto carousel-container scrollbar-hide">
+                <div className="w-full flex items-center gap-5 p-6 overflow-x-auto card-carousel-container scrollbar-hide">
                     {paymentMethods && paymentMethods.map((paymentMethod) => (
                         <CardCon paymentMethod={paymentMethod} selectedCard={selectedCard} setSelectedCard={setSelectedCard}/>
                     ))}

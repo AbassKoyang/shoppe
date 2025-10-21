@@ -1,6 +1,8 @@
 import { db } from "@/lib/firebase";
-import { paymentMethodType } from "../payment/types";
-import { addDoc, collection, deleteDoc, doc, getDocs, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { OrderDataType, paymentMethodType, TransactionType } from "../payment/types";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { AppUserType } from "../users/types";
+import { ProductType } from "../products/types";
 
 export const addPaymentMethod = async ({userId, cardHolder, email } :  {cardHolder: string; email: string; userId: string;}) => {
     try {
@@ -107,4 +109,35 @@ export const addBank = async ({name, bankCode, accountNumber, userId, bankName }
     } catch (error) {
         console.error(error);
     }
+};
+
+export const getPendingOrders = async (userId: string) : Promise<OrderDataType[]> => {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const q = query(ordersRef, where("buyerInfo.id", "==", userId), where("productDetails.status", "==", 'pending'), orderBy('createdAt', 'desc'));
+    
+    const ordersSnapshot = await getDocs(q);
+    return ordersSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    })) as OrderDataType[];
+  } catch (error) {
+    console.error('Error fetching pending orders:', error);
+    throw error;
+  }
+};
+export const getDeliveredOrders = async (userId: string) : Promise<OrderDataType[]> => {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const q = query(ordersRef, where("buyerInfo.id", "==", userId), where("productDetails.status", "==", 'sold'), orderBy('createdAt', 'desc'));
+    
+    const ordersSnapshot = await getDocs(q);
+    return ordersSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    })) as OrderDataType[];
+  } catch (error) {
+    console.error('Error fetching delivered orders:', error);
+    throw error;
+  }
 };

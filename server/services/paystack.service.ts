@@ -22,7 +22,6 @@ class PaystackService {
     authorization_code: string;
     metadata: any;
   }) {
-    console.log(process.env.PAYSTACK_SECRET_KEY)
     try {
       const response = await axios.post(
         `${this.baseURL}/transaction/charge_authorization`,

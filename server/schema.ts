@@ -178,3 +178,4 @@ export const UserSchema = z.object({
     views: z.number().optional(),
   status: z.literal(['available', 'pending', 'sold']).optional(),
   });
+

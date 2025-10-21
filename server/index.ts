@@ -93,7 +93,7 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
     // Check if charge was successful
     if (paymentResponse.status && paymentResponse.data.status === 'success') {
       const reference = paymentResponse.data.reference;
-
+      
       // Create transaction record
       const transaction = await transactionService.createTransaction({
         productId,
@@ -107,8 +107,25 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
       });
       console.log(transaction);
 
-      // Update product status to pending
-      await transactionService.updateProductStatus(productId, 'pending');
+
+      const sellerDoc = await db.collection('users').doc(product?.sellerId || '').get();
+      if (!sellerDoc.exists) {
+        return res.status(404).json({ error: 'Seller not found' });
+      }
+      const seller = { id: sellerDoc.id, ...sellerDoc.data() } as User;
+       // Update product status to pending
+       await transactionService.updateProductStatus(productId, 'pending');
+
+      const order = await transactionService.createOrder({
+        buyerInfo: buyer,
+        sellerInfo: seller,
+        productDetails: product,
+        transactionDetails: transaction,
+        createdAt: new Date()
+      })
+
+      console.log(order);
+
 
       res.json({
         success: true,

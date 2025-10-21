@@ -95,7 +95,7 @@ const WishlistProductCard = ({product}:{product: ProductType}) => {
                         <h5 className='font-raleway font-bold text-[18px] tracking-[-0.18px] text-[#202020]'>{formattedPrice}</h5>
                         <div className='flex items-center gap-2'>
                         {product.color && (
-                            <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product.color}</span>
+                            <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product.color.length > 6 ? product.color.substring(0,6) : product.color}</span>
                         )}
                         {product.category && (
                             <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product.category}</span>

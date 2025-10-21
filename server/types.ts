@@ -17,8 +17,8 @@ export interface Transaction {
   status: TransactionStatus;
   paystackReference: string;
   paystackTransferId?: string;
-  createdAt: string;
-  releasedAt?: string;
+  createdAt: Date;
+  releasedAt?: Date;
 }
 
 export interface PaymentCard {
@@ -32,6 +32,14 @@ export interface PaymentCard {
   email: string;
   authorisationCode: string;
   createdAt: string;
+}
+export type OrderDataType = {
+  id?: string;
+  buyerInfo: User;
+  sellerInfo: User;
+  productDetails: ProductType;
+  transactionDetails: Transaction;
+  createdAt: Date;
 }
 
 export type User = z.infer<typeof UserSchema>;

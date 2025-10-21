@@ -14,7 +14,7 @@ const PaymentSuccesfulModal = ({open, redirect, closeModal} : {open: boolean; re
             <div className='bg-white size-[80px] rounded-full absolute top-0 translate-y-[-40px] left-[50%] translate-x-[-50%] flex items-center justify-center'>
                 <div className="bg-dark-blue size-[60px] rounded-full flex items-center justify-center">
                     <div className="bg-dark-blue rounded-full flex items-center justify-center p-1.5 shadow-md">
-                    <BsCheck className='text-white size-[18px]' />
+                    <BsCheck size={18} className='text-white size-[18px]' />
                     </div>
                 </div>
             </div>

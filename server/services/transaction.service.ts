@@ -1,9 +1,10 @@
 import { db, FieldValue } from '../firebase-admin';
-import { Transaction, TransactionStatus } from '../types';
+import { OrderDataType, Transaction, TransactionStatus } from '../types';
 
 class TransactionService {
   private collection = db.collection('transactions');
   private productsCollection = db.collection('products');
+  private ordersCollection = db.collection('orders');
 
   // Create transaction
   async createTransaction(data: Omit<Transaction, 'id' | 'createdAt'>) {
@@ -13,7 +14,16 @@ class TransactionService {
     };
 
     const docRef = await this.collection.add(transaction);
-    return { id: docRef.id, ...transaction };
+    return { id: docRef.id, ...transaction } as  Transaction;
+  }
+  async createOrder(data: OrderDataType) {
+    const order = {
+      ...data,
+      createdAt: new Date(),
+    };
+
+    const docRef = await this.ordersCollection.add(order);
+    return { id: docRef.id, ...order };
   }
 
   // Get transaction by ID
