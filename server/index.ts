@@ -115,14 +115,15 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
       const seller = { id: sellerDoc.id, ...sellerDoc.data() } as User;
        // Update product status to pending
        await transactionService.updateProductStatus(productId, 'pending');
-
-      const order = await transactionService.createOrder({
-        buyerInfo: buyer,
-        sellerInfo: seller,
-        productDetails: product,
-        transactionDetails: transaction,
-        createdAt: new Date()
-      })
+       const updatedProductDoc = await db.collection('products').doc(productId).get();
+       const updatedProduct  = {id: updatedProductDoc.id, ...updatedProductDoc.data()} as ProductType;
+        const order = await transactionService.createOrder({
+          buyerInfo: buyer,
+          sellerInfo: seller,
+          productDetails: updatedProduct,
+          transactionDetails: transaction,
+          createdAt: new Date()
+        })
 
       console.log(order);
 
