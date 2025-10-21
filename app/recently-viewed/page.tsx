@@ -106,7 +106,7 @@ const page = () => {
           </button>
         </div>
       </motion.div>
-        <h2 className='fon-raleway font-bold text-[28px] tracking-[-0.28px]'>Recently Viewed</h2>
+        <h2 className='font-raleway font-bold text-[28px] tracking-[-0.28px]'>Recently Viewed</h2>
         <div className="w-full flex items-center justify-between mt-3">
           
           <button type='button' onClick={() => {setDay('today'); setSelectedDate(null)}} className={`${day === 'today' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[122px] w-[45%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>

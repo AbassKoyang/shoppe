@@ -1,7 +1,7 @@
 import z from "zod";
 import { ProductSchema, UserSchema } from "./schema";
 
-export type ProductStatus = 'available' | 'pending' | 'sold';
+export type ProductStatus = 'available' | 'pending' | 'sold' | 'delivered';
 export type TransactionStatus = 'pending' | 'released' | 'cancelled';
 
 export type ProductType = z.infer<typeof ProductSchema>;

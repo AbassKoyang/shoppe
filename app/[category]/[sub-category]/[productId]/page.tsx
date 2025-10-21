@@ -197,7 +197,7 @@ const page = () => {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SOCKET_URL}/api/products/${productId}/buy`,
+        `${'http://localhost:4000'}/api/products/${productId}/buy`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
