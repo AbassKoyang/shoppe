@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchPaymentMethods, getDeliveredOrders, getPendingOrders } from "./api";
+import { fetchPaymentMethods, getDeliveredOrders, getOrderById, getPendingOrders } from "./api";
 
 export const usePaymentMethods = (userId: string) => {
     return useQuery({
@@ -20,5 +20,12 @@ export const useGetDeliveredOrders = (userId: string) => {
       queryKey: ["orders", userId], 
       queryFn: () => getDeliveredOrders(userId),
       enabled: !!userId, 
+    });
+};
+export const useGetOrderById = (orderId: string) => {
+    return useQuery({
+      queryKey: ["orders", orderId], 
+      queryFn: () => getOrderById(orderId),
+      enabled: !!orderId, 
     });
 };

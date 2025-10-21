@@ -73,12 +73,12 @@ const OrderCard = ({order}:{order: OrderDataType}) => {
                         </div>
                         <div className='flex items-center gap-5 mb-0.5'>
                             <span className={`text-[10px] font-raleway font-normal ${order.productDetails.status == 'sold' ? 'bg-green-400 text-white' : 'bg-amber-400 text-white'} py-0 px-3 rounded-2xl`}>{order.productDetails.status?.toUpperCase()}</span>
-                            <p className='text-[10px] font-nunito-sans font-normal'>{orderDate}</p>
+                            <p className='text-[10px] font-nunito-sans font-normal'>{orderDate.substring(0,10)}</p>
                         </div>
                     </div>
                 </div>
            </div>
-           <ArrowRightButton />
+           <ArrowRightButton url={`/orders/${order.id}`} />
         </div>
     </div>
 )

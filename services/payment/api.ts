@@ -141,3 +141,18 @@ export const getDeliveredOrders = async (userId: string) : Promise<OrderDataType
     throw error;
   }
 };
+
+export const getOrderById = async (orderId: string) : Promise<OrderDataType> => {
+  try {
+    const orderRef = doc(db, 'orders', orderId);
+    
+    const orderDoc = await getDoc(orderRef);
+    return {
+      id: orderDoc.id,
+      ...orderDoc.data()
+    } as OrderDataType;
+  } catch (error) {
+    console.error('Error fetching order:', error);
+    throw error;
+  }
+};

@@ -155,10 +155,10 @@ const page = () => {
         <div className="w-full mt-8">
             <div className="w-full flex items-center justify-between">
                 <h3 className="text-[22px] font-raleway font-bold text-[#202020]">Most today</h3>
-                <Link className="flex items-center gap-3" href='/'>
+                <div className="flex items-center gap-3">
                     <p className="text-[15px] font-raleway font-bold text-[#202020">See All</p>
-                    <ArrowRightButton />
-                </Link>
+                    <ArrowRightButton url={``} />
+                </div>
             </div>
 
             <div className="min-w-full mt-2">
