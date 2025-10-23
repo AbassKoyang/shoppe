@@ -2,7 +2,7 @@ import {motion} from 'framer-motion';
 import { BsCheck } from 'react-icons/bs';
 import { FaExclamation } from "react-icons/fa6";
 
-const PaymentSuccesfulModal = ({open, redirect, closeModal} : {open: boolean; redirect: () => void; closeModal: () => void;}) => {
+const ConfirmationSuccesfulModal = ({open, redirect, closeModal} : {open: boolean; redirect: () => void; closeModal: () => void;}) => {
   return (
     <motion.div className={`${open ? 'flex' : 'hidden'} w-[100vw] h-dvh fixed top-0 left-0 items-center justify-center bg-transparent z-200`}>
         <div onClick={closeModal} className='z-10 absolute top-0 left-0 w-full h-full bg-white/35 backdrop-blur-sm'></div>
@@ -19,16 +19,15 @@ const PaymentSuccesfulModal = ({open, redirect, closeModal} : {open: boolean; re
                 </div>
             </div>
             <div className="w-full flex flex-col items-center">
-                <h3 className='text-black font-raleway font-semibold text-xl mt-5 text-center max-w-[250px]'>Order Placed!</h3>
-                <p className='text-black font-nunito-sans font-semibold text-[10px] mt-2 text-center max-w-[200px]'>You card has been successfully charged. The seller will be notified about your order.</p>
-                <p className='text-black font-nunito-sans font-semibold text-[10px] mt-0.5 text-center max-w-[200px]'>Note: The payment is held securely in escrow until you confirm that you've received the product in good condition.</p>
+                <h3 className='text-black font-raleway font-semibold text-xl mt-5 text-center max-w-[250px]'>Purchase Completed!</h3>
+                <p className='text-black font-nunito-sans font-semibold text-[10px] mt-2 text-center max-w-[200px]'>The seller will be notified and payment will be released to the seller.</p>
             </div>
             <div className="w-full flex items-center justify-center mt-5">
-                <button className='cursor-pointer px-12 py-3 rounded-lg bg-[#202020] disabled:opacity-70 text-white font-nunito-sans' onClick={() => redirect()}>View Order</button>
+                <button className='cursor-pointer px-12 py-3 rounded-lg bg-[#202020] disabled:opacity-70 text-white font-nunito-sans' onClick={() => redirect()}>Go back</button>
             </div>
         </motion.div>
     </motion.div>
   )
 }
 
-export default PaymentSuccesfulModal;
+export default ConfirmationSuccesfulModal;

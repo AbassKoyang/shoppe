@@ -1,5 +1,5 @@
 import { db, FieldValue } from '../firebase-admin';
-import { OrderDataType, Transaction, TransactionStatus } from '../types';
+import { OrderDataType, OrderStatus, ProductStatus, Transaction, TransactionStatus } from '../types';
 
 class TransactionService {
   private collection = db.collection('transactions');
@@ -33,6 +33,12 @@ class TransactionService {
     return { id: doc.id, ...doc.data() } as Transaction;
   }
 
+  async getOrder(id: string): Promise<OrderDataType | null> {
+    const doc = await this.ordersCollection.doc(id).get();
+    if (!doc.exists) return null;
+    return { id: doc.id, ...doc.data() } as OrderDataType;
+  }
+
   // Get transaction by Paystack reference
   async getTransactionByReference(reference: string): Promise<Transaction | null> {
     const snapshot = await this.collection
@@ -54,6 +60,22 @@ class TransactionService {
     };
 
     if (status === 'released') {
+      updateData.releasedAt = new Date();
+    }
+
+    await this.collection.doc(id).update(updateData);
+  }
+
+  async updateOrderStatus(id: string, orderStatus: OrderStatus, productStatus : ProductStatus, transactionStatus: TransactionStatus,  additionalData?: any) {
+    const updateData: any = {
+      status: orderStatus,
+      'productDetails.status': productStatus,
+      'transactionDetails.status': transactionStatus,
+      updatedAt: new Date(),
+      ...additionalData,
+    };
+
+    if (transactionStatus === 'released') {
       updateData.releasedAt = new Date();
     }
 

@@ -1,5 +1,6 @@
 'use client'
 import ArrowRightButton from '@/components/ArrowRightButton'
+import { EnableNotificationsButton } from '@/components/EnableNotificationsButton'
 import JustForYouProductCard from '@/components/JustForYouProductCard'
 import ProfileNav from '@/components/profile/ProfileNav'
 import ProfileProductCardSkeleton from '@/components/profile/ProfileProductCardSkeleton'
@@ -21,6 +22,7 @@ const layout = ({children} :{children: React.ReactNode}) => {
             <div className="">
               <h6 className='font-raleway font-bold text-[#202020] text-[14px]'>Announcement</h6>
               <p className='font-nunito-sans text-[10px] font-normal text-black max-w-[250px]'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas hendrerit luctus libero ac vulputate.</p>
+              <EnableNotificationsButton userId={user?.uid || ''} />
             </div>
             <ArrowRightButton/>
           </div>

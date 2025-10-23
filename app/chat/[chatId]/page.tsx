@@ -6,12 +6,16 @@ import Message from '@/components/chat/Message';
 import JustForYouProductCard from '@/components/JustForYouProductCard';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useLongPress } from '@/lib/hooks/useLongPress';
+import { registerServiceWorker } from '@/lib/registerServiceWorker';
 import socket from '@/lib/socket';
 import { useGetChatData } from '@/services/chat/queries';
 import { messageType } from '@/services/chat/types';
+import { AppUserType, User } from '@/services/users/types';
+import axios from 'axios';
 import { Image, ImagePlus, LoaderCircle, SendHorizontal, X } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify';
 
 const page = () => {
     const {user} = useAuth()
@@ -52,7 +56,9 @@ const page = () => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-
+    useEffect(() => {
+      registerServiceWorker();
+    }, [user]);
 
     useEffect(() => {
       const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -122,6 +128,8 @@ const page = () => {
       socket.off("newMessage", handleNewMessage);
     };
   }, []);
+
+ 
   
 
 
@@ -211,6 +219,12 @@ const page = () => {
         text,
         images: uploadedUrls,
       });
+    socket.emit("sendNewMessageNotification", {
+      receiverId: user?.uid === sellerId ? buyerId : sellerId, 
+      message : text, 
+      type: 'new-message',
+      chatId
+      });
       console.log(newMessage);
   };
 
@@ -253,6 +267,7 @@ const updateEditedMessage = (messageId: string, text: string) => {
                     
                     <div ref={messagesEndRef} />
                     </div>
+                    <TestNotificationButton chatId={chatId} userId={user?.uid || ''}/>
                   </div>
 
 
@@ -332,5 +347,42 @@ const updateEditedMessage = (messageId: string, text: string) => {
     </section>
   )
 }
+
+export function TestNotificationButton({userId, chatId}: {chatId: string; userId: string; }) {
+  const testNotification = async () => {
+    const permission = await Notification.requestPermission();
+
+    if (permission !== 'granted') {
+      alert('Please allow notifications first');
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+
+    console.log('Service worker ready:', registration);
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_SOCKET_URL}/api/notification`, {
+        receiverId: userId,
+        chatId,
+        type: 'new-message',
+        message: "Helooooooooooooooo test notification"
+      })
+    } catch (error) {
+      console.error("failed to send notification client", error)
+    }
+  };
+
+
+
+  return (
+    <button
+      onClick={testNotification}
+      className="px-4 py-2 bg-blue-600 text-white rounded"
+    >
+      Test Notification
+    </button>
+  );
+}
+
 
 export default page

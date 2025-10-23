@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { db } from "./firebase-admin";
+import { db, messaging } from "./firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
 
 // Define types for socket events
@@ -61,11 +61,9 @@ export function handleSocketEvents(io: Server): void {
       const roomId = `${productId}_${buyerId}_${sellerId}`;
       socket.join(roomId);
       
-      // Remember the last joined room for disconnect handling
       socket.data.roomId = roomId;
       console.log(`✅ ${socket.id} joined chat room: ${roomId}`);
       
-      // Broadcast presence on join to ensure peers see online without a separate emit
       socket.to(roomId).emit('user-online');
     });
 
@@ -141,11 +139,47 @@ export function handleSocketEvents(io: Server): void {
         socket.to(roomId).emit("newMessage", { 
           ...messageData, 
           roomId,
-          timestamp: messageData.timestamp.toDate() // Convert to Date for client
+          timestamp: messageData.timestamp.toDate()
         });
       } catch (error) {
         console.error("Error sending message:", error);
       }
+    });
+
+
+    //Notification events
+
+    socket.on("sendNewMessageNotification", async ({receiverId, message, type, chatId}:{receiverId: string; message: string; type: string; chatId: string}) => {
+      const receiverDoc = await db.collection('users').doc(receiverId).get();
+      const token = receiverDoc.data()?.token;
+      if(token){
+  
+      await messaging.send({
+        notification: {
+          title: "New Message ✉️",
+          body: message.length > 50 ? message.slice(0,50) + "..." : message,
+        },
+        data: {
+          chatId,
+          type: type,
+        },
+        webpush: {
+          fcmOptions: { link: `http://localhost:3000/chat/${chatId}` },
+         },
+        token: token,
+      })
+    console.log("notification sent to:", receiverId)
+    } else {
+      console.log("notification not sent. No fcm token for user:", receiverId)
+    }
+
+    io.to(receiverId).emit("newMessageNotification", {receiverId, message, type, chatId})
+    console.log('Message sent to:', receiverId);
+    })
+
+    socket.on("join", (userId: string) => {
+      socket.join(userId);
+      console.log("User joined:", userId)
     });
 
     socket.on("disconnect", () => {
@@ -153,7 +187,6 @@ export function handleSocketEvents(io: Server): void {
       const roomId = socket.data?.roomId;
       
       if (roomId) {
-        // Notify peers that this user went offline
         socket.to(roomId).emit('user-offline');
       }
     });

@@ -7,4 +7,5 @@ admin.initializeApp({
 });
 
 export const db = admin.firestore();
+export const messaging = admin.messaging();
 export const FieldValue = admin.firestore.FieldValue;

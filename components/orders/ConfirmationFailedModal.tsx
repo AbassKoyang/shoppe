@@ -1,7 +1,7 @@
 import {motion} from 'framer-motion';
 import { FaExclamation } from "react-icons/fa6";
 
-const PaymentFailedModal = ({open, error, tryAgain, closeModal} : {open: boolean; tryAgain: () => void; closeModal: () => void; error: {message: string; error: string}| null}) => {
+const ConfirmationFailedModal = ({open, error, tryAgain, closeModal} : {open: boolean; tryAgain: () => void; closeModal: () => void; error: {message: string; error: string}| null}) => {
   return (
     <motion.div className={`${open ? 'flex' : 'hidden'} w-[100vw] h-dvh fixed top-0 left-0 items-center justify-center bg-transparent z-200`}>
         <div onClick={() => closeModal()} className='z-10 absolute top-0 left-0 w-full h-full bg-white/35 backdrop-blur-sm'></div>
@@ -17,15 +17,15 @@ const PaymentFailedModal = ({open, error, tryAgain, closeModal} : {open: boolean
                     </div>
                 </div>
             </div>
-            <h3 className='text-black font-raleway font-semibold text-xl mt-5 text-center max-w-[250px]'>We couldn't proceed your payment</h3>
+            <h3 className='text-black font-raleway font-semibold text-xl mt-5 text-center max-w-[250px]'>Confirmation failed</h3>
             <p className='text-black font-nunitosans font-semibold text-xs mt-1 text-center'>{error?.message || error?.error}</p>
             <div className="w-full flex items-center justify-center gap-3 mt-5">
                 <button className='cursor-pointer px-6 py-1 rounded-lg bg-[#202020] disabled:opacity-70 text-white font-nunito-sans' onClick={() => tryAgain()}>Try again</button>
-                <button className='cursor-pointer px-6 py-1 rounded-lg text-black disabled:opacity-70 bg-[#E7E8EB] font-nunito-sans' onClick={() => closeModal()}>Change</button>
+                <button className='cursor-pointer px-6 py-1 rounded-lg text-black disabled:opacity-70 bg-[#E7E8EB] font-nunito-sans' onClick={() => closeModal()}>Cancel</button>
             </div>
         </motion.div>
     </motion.div>
   )
 }
 
-export default PaymentFailedModal;
+export default ConfirmationFailedModal;

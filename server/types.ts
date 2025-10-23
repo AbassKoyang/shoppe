@@ -3,6 +3,8 @@ import { ProductSchema, UserSchema } from "./schema";
 
 export type ProductStatus = 'available' | 'pending' | 'sold' | 'delivered';
 export type TransactionStatus = 'pending' | 'released' | 'cancelled';
+export type OrderStatus =  'pending' | 'delivered' | 'completed' | 'cancelled';
+
 
 export type ProductType = z.infer<typeof ProductSchema>;
 
@@ -35,6 +37,7 @@ export interface PaymentCard {
 }
 export type OrderDataType = {
   id?: string;
+  status: OrderStatus;
   buyerInfo: User;
   sellerInfo: User;
   productDetails: ProductType;

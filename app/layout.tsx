@@ -7,6 +7,8 @@ import TransitionProvider from "@/lib/transition-provider";
 import Navbar from "@/components/Navbar";
 import "react-datepicker/dist/react-datepicker.css";
 import "./globals.css";
+import { NotificationProvider } from "@/lib/NotificationProvider";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 
 
 const raleway = Raleway({
@@ -34,11 +36,16 @@ export default function RootLayout({
         className={`${raleway.variable} ${nunitosans.variable} antialiased`}
       >
         {/* <TransitionProvider> */}
-            <AuthProvider>
+           <AuthProvider>
             <QueryProvider>
                 <main className="w-full min-h-dvh relative">
+                <NotificationProvider>
+
                   {children}
                   <Navbar />
+                  <ServiceWorkerRegister/>
+                  </NotificationProvider>
+
                 </main>
             </QueryProvider>
             </AuthProvider>

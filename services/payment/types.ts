@@ -28,6 +28,7 @@ export type TransactionType = {
   }
   export type OrderDataType = {
     id?: string;
+    status: 'pending' | 'delivered' | 'completed' | 'cancelled';
     buyerInfo: User;
     sellerInfo: User;
     productDetails: ProductType;

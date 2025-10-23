@@ -7,7 +7,7 @@ import cors from 'cors';
 import { handleSocketEvents } from "./socket";
 import { transactionService } from "./services/transaction.service";
 import { paystackService } from "./services/paystack.service";
-import { db } from "./firebase-admin";
+import { db, messaging } from "./firebase-admin";
 import crypto from 'crypto';
 import { PaymentMethodType, ProductType, User } from "./types";
 
@@ -28,7 +28,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO with CORS configuration
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://useshoppe.vercel.app"], // Added https://
+    origin: ["https://localhost:3000", "https://useshoppe.vercel.app"], // Added https://
     methods: ["GET", "POST"],
     credentials: true, // Optional: if you need to send cookies
   },
@@ -118,6 +118,7 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
        const updatedProductDoc = await db.collection('products').doc(productId).get();
        const updatedProduct  = {id: updatedProductDoc.id, ...updatedProductDoc.data()} as ProductType;
         const order = await transactionService.createOrder({
+          status: 'pending',
           buyerInfo: buyer,
           sellerInfo: seller,
           productDetails: updatedProduct,
@@ -150,47 +151,54 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
   }
 });
 
-// ============================================
-// GET USER'S SAVED CARDS
-// ============================================
-app.get('/api/users/:userId/cards', async (req: Request, res: Response) => {
+//test notis endpoint
+
+app.post('/api/notification', async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params;
-
-    const cardsSnapshot = await db.collection('cards')
-      .where('userId', '==', userId)
-      .get();
-
-    const cards = cardsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      // Don't expose authorization code to frontend
-      authorisationCode: undefined,
-    }));
-
-    res.json({ cards });
-  } catch (error: any) {
-    console.error('Get cards error:', error);
-    res.status(500).json({ error: error.message });
+    const {receiverId, chatId, message, type} = req.body;
+    const receiverDoc = await db.collection('users').doc(receiverId).get();
+      const token = receiverDoc.data()?.token;
+      if(token){
+      await messaging.send({
+        notification: {
+          title: "New Message ✉️",
+          body: message.length > 50 ? message.slice(0,50) + "..." : message,
+        },
+        data: {
+          chatId,
+          type: type,
+        },
+        webpush: {
+          fcmOptions: { link: `http://localhost:3000/chat/${chatId}` },
+         },
+        token: token,
+      })
+    console.log("notification sent to:", receiverId)
+    } else {
+      console.log("notification not sent. No fcm token for user:", receiverId)
+    }
+  } catch (error) {
+    console.error("failed to send notification", error)
   }
-});
+})
 
-// ============================================
-// BUYER CONFIRMS RECEIPT
-// ============================================
-app.post('/api/transactions/:transactionId/confirm-receipt', async (req: Request, res: Response) => {
+
+app.post('/api/orders/:orderId/confirm-receipt', async (req: Request, res: Response) => {
   try {
-    const { transactionId } = req.params;
+    const { orderId } = req.params;
     const { buyerId } = req.body;
+    console.log(orderId, buyerId);
 
-    // Get transaction
-    const transaction = await transactionService.getTransaction(transactionId);
-
+    const order = await transactionService.getOrder(orderId);
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+    const transaction = await transactionService.getTransaction(order.transactionDetails.id || '');
+    console.log(transaction)
     if (!transaction) {
       return res.status(404).json({ error: 'Transaction not found' });
     }
 
-    // Verify buyer
     if (transaction.buyerId !== buyerId) {
       return res.status(403).json({ error: 'Unauthorized' });
     }
@@ -199,27 +207,30 @@ app.post('/api/transactions/:transactionId/confirm-receipt', async (req: Request
       return res.status(400).json({ error: 'Transaction already processed' });
     }
 
-    // Get seller details
     const sellerDoc = await db.collection('users').doc(transaction.sellerId).get();
     const seller = { id: sellerDoc.id, ...sellerDoc.data() } as User;
+    console.log(seller)
 
     if (!seller.bankDetails?.recipientCode) {
+      console.log("no bank details")
       return res.status(400).json({ error: 'Seller payment details not configured' });
     }
 
-    // Transfer funds to seller
-    const transferReference = `TRANSFER_${transactionId}_${Date.now()}`;
-    const transfer = await paystackService.transferFunds({
-      amount: transaction.sellerAmount,
-      recipient: seller.bankDetails.recipientCode,
-      reason: `Payment for product ${transaction.productId}`,
-      reference: transferReference,
-    });
+    const transferReference = `TRANSFER_${transaction.id}_${Date.now()}`;
+    // const transfer = await paystackService.transferFunds({
+    //   amount: transaction.sellerAmount,
+    //   recipient: seller.bankDetails.recipientCode,
+    //   reason: `Payment for product ${transaction.productId}`,
+    //   reference: transferReference,
+    // });
+    // console.log(transferReference);
 
     // Update transaction
-    await transactionService.updateTransactionStatus(transactionId, 'released', {
-      paystackTransferId: transfer.data.id,
+    await transactionService.updateTransactionStatus(transaction.id || '', 'released', {
+      paystackTransferId: transferReference,
     });
+
+    await transactionService.updateOrderStatus(orderId, 'completed', 'sold', 'released');
 
     // Update product status to sold
     await transactionService.updateProductStatus(transaction.productId, 'sold');
@@ -228,7 +239,7 @@ app.post('/api/transactions/:transactionId/confirm-receipt', async (req: Request
       success: true,
       message: 'Payment released to seller',
       transaction: {
-        id: transactionId,
+        id: transaction.id,
         status: 'released',
         sellerAmount: transaction.sellerAmount / 100,
         platformFee: transaction.platformFee / 100,
@@ -240,104 +251,6 @@ app.post('/api/transactions/:transactionId/confirm-receipt', async (req: Request
   }
 });
 
-// ============================================
-// GET TRANSACTION DETAILS
-// ============================================
-app.get('/api/transactions/:transactionId', async (req: Request, res: Response) => {
-  try {
-    const { transactionId } = req.params;
-    const transaction = await transactionService.getTransaction(transactionId);
-
-    if (!transaction) {
-      return res.status(404).json({ error: 'Transaction not found' });
-    }
-
-    // Get related product and user details
-    const [productDoc, buyerDoc, sellerDoc] = await Promise.all([
-      db.collection('products').doc(transaction.productId).get(),
-      db.collection('users').doc(transaction.buyerId).get(),
-      db.collection('users').doc(transaction.sellerId).get(),
-    ]);
-
-    res.json({
-      transaction,
-      product: productDoc.exists ? { id: productDoc.id, ...productDoc.data() } : null,
-      buyer: buyerDoc.exists ? { id: buyerDoc.id, name: buyerDoc.data()?.name, email: buyerDoc.data()?.email } : null,
-      seller: sellerDoc.exists ? { id: sellerDoc.id, name: sellerDoc.data()?.name, email: sellerDoc.data()?.email } : null,
-    });
-  } catch (error: any) {
-    console.error('Get transaction error:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// ============================================
-// GET USER'S TRANSACTIONS (AS BUYER OR SELLER)
-// ============================================
-app.get('/api/users/:userId/transactions', async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.params;
-    const { role } = req.query; // 'buyer' or 'seller'
-
-    let query;
-    if (role === 'buyer') {
-      query = db.collection('transactions').where('buyerId', '==', userId);
-    } else if (role === 'seller') {
-      query = db.collection('transactions').where('sellerId', '==', userId);
-    } else {
-      // Get both
-      const [buyerSnapshot, sellerSnapshot] = await Promise.all([
-        db.collection('transactions').where('buyerId', '==', userId).get(),
-        db.collection('transactions').where('sellerId', '==', userId).get(),
-      ]);
-
-      const transactions = [
-        ...buyerSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), userRole: 'buyer' })),
-        ...sellerSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), userRole: 'seller' })),
-      ];
-
-      return res.json({ transactions });
-    }
-
-    const snapshot = await query.orderBy('createdAt', 'desc').get();
-    const transactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-    res.json({ transactions });
-  } catch (error: any) {
-    console.error('Get transactions error:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// // ============================================
-// // PAYSTACK WEBHOOK (OPTIONAL - FOR MONITORING)
-// // ============================================
-// app.post('/api/webhooks/paystack', async (req: Request, res: Response) => {
-//   try {
-//     // Verify signature
-//     const hash = crypto.createHmac('sha512', process.env.PAYSTACK_SECRET_KEY!)
-//       .update(JSON.stringify(req.body))
-//       .digest('hex');
-
-//     if (hash !== req.headers['x-paystack-signature']) {
-//       return res.status(401).json({ error: 'Invalid signature' });
-//     }
-
-//     const event = req.body;
-
-//     // Log transfer events for monitoring
-//     if (event.event === 'transfer.success') {
-//       console.log('Transfer successful:', event.data.reference);
-//     } else if (event.event === 'transfer.failed') {
-//       console.log('Transfer failed:', event.data.reference);
-//     }
-
-//     res.json({ status: 'success' });
-//   } catch (error: any) {
-//     console.error('Webhook error:', error);
-//     res.status(500).json({ error: error.message });
-//   }
-// });
 
 const PORT: number = parseInt(process.env.PORT || "4000", 10);
 

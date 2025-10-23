@@ -1,4 +1,3 @@
-
 import ArrowRightButton from "@/components/ArrowRightButton";
 import CategoryPreview from "@/components/CategoryPreview";
 import HomeHeader from "@/components/HomeHeader";
@@ -7,9 +6,12 @@ import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import SponsoredBanner from "@/components/SponsoredBanner";
 import TopProductAvatar from "@/components/TopProductAvatar";
+import { useAuth } from "@/lib/contexts/auth-context";
+import socket from "@/lib/socket";
 import Link from "next/link";
 
 export default function Home() {
+
   return (
     <section className="w-full min-h-full px-4 [@media(min-width:375px)]:px-6 overflow-x-hidden">
       <HomeHeader />

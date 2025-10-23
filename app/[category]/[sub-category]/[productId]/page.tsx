@@ -197,7 +197,7 @@ const page = () => {
 
     try {
       const response = await fetch(
-        `${'http://localhost:4000'}/api/products/${productId}/buy`,
+        `${process.env.NEXT_PUBLIC_SOCKET_URL}/api/products/${productId}/buy`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -215,7 +215,7 @@ const page = () => {
         setTransactionDetails(data);
         console.log(data);
       } else {
-        setError(data.error);
+        setError(data);
       }
     } catch (error) {
       console.error('Purchase error:', error);

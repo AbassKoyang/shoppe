@@ -42,6 +42,7 @@ const OrderCard = ({order}:{order: OrderDataType}) => {
       const rawTs = order.createdAt ?? new Date();
     const resolvedDate = rawTs?.toDate ? rawTs.toDate() : (rawTs instanceof Date ? rawTs : new Date(rawTs));
     const orderDate = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toLocaleString();
+    const orderStatus = order.status ? order.status.substring(0,1).toUpperCase() +  order.status.substring(1) : '';
 
   return (
     <div  className='w-full h-[110px] mt-2'>
@@ -72,7 +73,7 @@ const OrderCard = ({order}:{order: OrderDataType}) => {
                             <p className='text-[12px] text-black font-nunito-sans font-normal max-w-[150px]'>{desc}</p>
                         </div>
                         <div className='flex items-center gap-5 mb-0.5'>
-                            <span className={`text-[10px] font-raleway font-normal ${order.productDetails.status == 'sold' ? 'bg-green-400 text-white' : 'bg-amber-400 text-white'} py-0 px-3 rounded-2xl`}>{order.productDetails.status?.toUpperCase()}</span>
+                            <span className={`text-[10px] font-raleway font-normal ${order.productDetails.status == 'sold' ? 'bg-green-400 text-white' : 'bg-amber-400 text-white'} py-0 px-3 rounded-2xl`}>{orderStatus}</span>
                             <p className='text-[10px] font-nunito-sans font-normal'>{orderDate.substring(0,10)}</p>
                         </div>
                     </div>
