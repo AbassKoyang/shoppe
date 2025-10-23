@@ -151,23 +151,25 @@ export function handleSocketEvents(io: Server): void {
 
     socket.on("sendNewMessageNotification", async ({receiverId, message, type, chatId}:{receiverId: string; message: string; type: string; chatId: string}) => {
       const receiverDoc = await db.collection('users').doc(receiverId).get();
-      const token = receiverDoc.data()?.token;
-      if(token){
-  
-      await messaging.send({
-        notification: {
-          title: "New Message ✉️",
-          body: message.length > 50 ? message.slice(0,50) + "..." : message,
-        },
-        data: {
-          chatId,
-          type: type,
-        },
-        webpush: {
-          fcmOptions: { link: `http://localhost:3000/chat/${chatId}` },
-         },
-        token: token,
-      })
+      const tokens = receiverDoc.data()?.fcmTokens;
+      if(tokens){
+        // for (const token of receiverDoc.data()?.fcmTokens){
+          await messaging.send({
+            notification: {
+              title: "New Message ✉️",
+              body: message.length > 50 ? message.slice(0,50) + "..." : message,
+            },
+            data: {
+              chatId,
+              type: type,
+              url: `http://localhost:3000/chat/${chatId}`
+            },
+            webpush: {
+              fcmOptions: { link: `http://localhost:3000/chat/${chatId}` },
+             },
+            token: tokens[0],
+          })
+        // }
     console.log("notification sent to:", receiverId)
     } else {
       console.log("notification not sent. No fcm token for user:", receiverId)

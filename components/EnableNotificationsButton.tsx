@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { db, requestNotificationPermission } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
-import { doc, updateDoc } from 'firebase/firestore';
+import { arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { useAuth } from '@/lib/contexts/auth-context';
 
 export function EnableNotificationsButton({ userId }: { userId: string }) {
@@ -25,7 +25,12 @@ export function EnableNotificationsButton({ userId }: { userId: string }) {
       
       async function saveTokenToFirestore(userId: string, token: string) {
         const ref = doc(db, "users", userId);
-        await updateDoc(ref, { token: token});
+        const userDoc = await getDoc(ref);
+        if(userDoc.data()?.fcmTokens?.includes(token)){
+          console.log('Token already registered')
+        } else {
+          await updateDoc(ref, {fcmTokens: arrayUnion(token)})
+        }
       }
       saveTokenToFirestore(userId || '', fcmToken)
     }

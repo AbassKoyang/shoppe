@@ -20,11 +20,13 @@ importScripts(
    '[firebase-messaging-sw.js] Received background message ',
    payload
   );
-  const link = payload.data?.fcmOptions?.link ?? payload.data?.link; // Prioritize fcmOptions link
+  const link = payload.data?.fcmOptions?.link ?? payload.data?.url; // Prioritize fcmOptions link
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
    body: payload.notification.body,
    data: { url: link },
+   icon: '/vercel.svg',
+   badge: '/vercel.svg'
   };
   self.registration.showNotification(notificationTitle, notificationOptions);
  });

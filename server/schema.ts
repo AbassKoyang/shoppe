@@ -28,6 +28,7 @@ export const UserSchema = z.object({
       accountName: z.string(),
       currency: z.string(),
     }).optional(),
+    fcmTokens: z.string().array().optional(),
     createdAt: z.iso.datetime(), // Firestore Timestamp
     updatedAt: z.iso.datetime(),
   });

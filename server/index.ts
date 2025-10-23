@@ -157,22 +157,25 @@ app.post('/api/notification', async (req: Request, res: Response) => {
   try {
     const {receiverId, chatId, message, type} = req.body;
     const receiverDoc = await db.collection('users').doc(receiverId).get();
-      const token = receiverDoc.data()?.token;
-      if(token){
-      await messaging.send({
-        notification: {
-          title: "New Message ✉️",
-          body: message.length > 50 ? message.slice(0,50) + "..." : message,
-        },
-        data: {
-          chatId,
-          type: type,
-        },
-        webpush: {
-          fcmOptions: { link: `http://localhost:3000/chat/${chatId}` },
-         },
-        token: token,
-      })
+      const tokens = receiverDoc.data()?.fcmTokens;
+      if(tokens){
+        for (const token of tokens){
+          await messaging.send({
+            notification: {
+              title: "New Message ✉️",
+              body: message.length > 50 ? message.slice(0,50) + "..." : message,
+            },
+            data: {
+              chatId,
+              type: type,
+              url: `http://localhost:3000/chat/${chatId}`
+            },
+            webpush: {
+              fcmOptions: { link: `http://localhost:3000/chat/${chatId}` },
+             },
+            token: token,
+          })
+        }
     console.log("notification sent to:", receiverId)
     } else {
       console.log("notification not sent. No fcm token for user:", receiverId)
