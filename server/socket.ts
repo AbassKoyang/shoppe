@@ -153,7 +153,7 @@ export function handleSocketEvents(io: Server): void {
       const receiverDoc = await db.collection('users').doc(receiverId).get();
       const tokens = receiverDoc.data()?.fcmTokens;
       if(tokens){
-        // for (const token of receiverDoc.data()?.fcmTokens){
+        for (const token of receiverDoc.data()?.fcmTokens){
           await messaging.send({
             notification: {
               title: "New Message ✉️",
@@ -167,9 +167,9 @@ export function handleSocketEvents(io: Server): void {
             webpush: {
               fcmOptions: { link: `http://localhost:3000/chat/${chatId}` },
              },
-            token: tokens[0],
+            token: token,
           })
-        // }
+        }
     console.log("notification sent to:", receiverId)
     } else {
       console.log("notification not sent. No fcm token for user:", receiverId)
