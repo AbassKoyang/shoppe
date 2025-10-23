@@ -348,7 +348,7 @@ const updateEditedMessage = (messageId: string, text: string) => {
   )
 }
 
-export function TestNotificationButton({userId, chatId}: {chatId: string; userId: string; }) {
+function TestNotificationButton({userId, chatId}: {chatId: string; userId: string; }) {
   const testNotification = async () => {
     const permission = await Notification.requestPermission();
 
