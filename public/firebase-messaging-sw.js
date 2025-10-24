@@ -27,6 +27,7 @@ importScripts(
    data: { url: link },
    icon: '/icon-512.png',
    badge: '/icon-512.png',
+   tag: payload.data?.chatId || 'New notification',
    requireInteraction: true,
     vibrate: [200, 100, 200],
     data: payload.data,

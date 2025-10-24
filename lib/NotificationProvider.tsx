@@ -44,6 +44,11 @@ export function NotificationProvider({children}:{children: ReactNode}) {
       }) => {
         console.log('New notification received:', { receiverId, message, type, chatId });
         toast(<div>New Notfication: {message}</div>)
+        new Notification('New Message:', {
+          icon: '/icon-512.png',
+          body: message,
+          tag: "new-message",
+        })
       };
   
       socket.on('newMessageNotification', handleNewMessageNotification);
