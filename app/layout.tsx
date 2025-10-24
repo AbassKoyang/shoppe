@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./globals.css";
 import { NotificationProvider } from "@/lib/NotificationProvider";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import { MobileNotificationPrompt } from "@/components/MobileNotificationPrompt";
 
 
 const raleway = Raleway({
@@ -21,7 +22,13 @@ const nunitosans = Nunito_Sans({subsets: ['latin'],
 
 export const metadata: Metadata = {
   title: "Shopee",
-  description: "The next gen shopping app",
+  description: "The Next Gen Clothing Markeplace",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Shopee",
+  },
 };
 
 export default function RootLayout({
@@ -32,6 +39,15 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+        <head>
+        <link rel="manifest" href="/manifest.json" />
+          <link rel="apple-touch-icon" href="/icon-192.png" />
+          <meta name="mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+          <meta name="apple-mobile-web-app-title" content="Shopee" />
+          <meta name="theme-color" content="#004CFF" />
+        </head>
       <body
         className={`${raleway.variable} ${nunitosans.variable} antialiased`}
       >
@@ -40,12 +56,11 @@ export default function RootLayout({
             <QueryProvider>
                 <main className="w-full min-h-dvh relative">
                 <NotificationProvider>
-
+                  <MobileNotificationPrompt />
                   {children}
                   <Navbar />
                   <ServiceWorkerRegister/>
                   </NotificationProvider>
-
                 </main>
             </QueryProvider>
             </AuthProvider>

@@ -16,25 +16,28 @@ class NotificationService {
       const userDoc = await db.collection('users').doc(userId).get();
       const user = userDoc.data();
 
-      if (!user?.fcmToken) {
-        console.log(`No FCM token found for user ${userId}`);
+      if (!user?.fcmTokens) {
+        console.log(`No FCM tokens found for user ${userId}`);
         return null;
       }
 
       // Send notification
-      const message = {
-        token: user.fcmToken,
-        notification: {
-          title: payload.title,
-          body: payload.body,
-        },
-        data: payload.data || {},
-      };
 
-      const response = await admin.messaging().send(message);
-      console.log('Notification sent successfully:', response);
-      
-      return response;
+      for (const token of user.fcmTokens){
+       const response =  await admin.messaging().send({
+            token: token,
+            notification: {
+              title: payload.title,
+              body: payload.body.length > 50 ? payload.body.slice(0,50) + "..." : payload.body,
+              imageUrl: 'https://useshoppe.vercel.app/icon-512.png',
+            },
+            data: payload.data || {},
+        })
+
+        console.log('Notification sent successfully:', response);
+        return response;
+      }
+
     } catch (error: any) {
       console.error('Error sending notification:', error);
       
@@ -56,50 +59,54 @@ class NotificationService {
   }
 
   // Notification templates for escrow events
-  async notifyProductPurchase(sellerId: string, buyerName: string, productTitle: string, transactionId: string) {
+  async notifyProductPurchase(sellerId: string, buyerName: string, productTitle: string, orderId: string) {
     return this.sendToUser(sellerId, {
       title: '🎉 New Purchase!',
       body: `${buyerName} just bought "${productTitle}"`,
       data: {
         type: 'purchase',
-        transactionId,
-        action: 'view_transaction',
+        orderId,
+        action: 'view_order',
+        url: `/orders/${orderId}`
       },
     });
   }
 
-  async notifyReceiptConfirmed(sellerId: string, productTitle: string, amount: number, transactionId: string) {
+  async notifyReceiptConfirmed(sellerId: string, productTitle: string, amount: number, orderId: string) {
     return this.sendToUser(sellerId, {
       title: '💰 Payment Released!',
       body: `You received ₦${amount.toLocaleString()} for "${productTitle}"`,
       data: {
         type: 'payment_released',
-        transactionId,
-        action: 'view_transaction',
+        orderId,
+        action: 'view_order',
+        url: `/orders/${orderId}`
       },
     });
   }
 
-  async notifyPaymentPending(buyerId: string, productTitle: string, transactionId: string) {
+  async notifyPaymentPending(buyerId: string, productTitle: string, orderId: string) {
     return this.sendToUser(buyerId, {
       title: '⏳ Payment Pending',
       body: `Your payment for "${productTitle}" is being processed`,
       data: {
         type: 'payment_pending',
-        transactionId,
-        action: 'view_transaction',
+        orderId,
+        action: 'view_order',
+        url: `/orders/${orderId}`
       },
     });
   }
 
-  async notifyDeliveryReminder(buyerId: string, productTitle: string, transactionId: string) {
+  async notifyMarkAsDelivered(buyerId: string, productTitle: string, orderId: string) {
     return this.sendToUser(buyerId, {
       title: '📦 Confirm Receipt',
-      body: `Have you received "${productTitle}"? Confirm to release payment to seller`,
+      body: `Your order for "${productTitle}" has been delivered and is on its way to you. Have you received "${productTitle}"? Confirm to release payment to seller`,
       data: {
-        type: 'delivery_reminder',
-        transactionId,
+        type: 'order_delivered',
+        orderId,
         action: 'confirm_receipt',
+        url: `/orders/${orderId}`
       },
     });
   }

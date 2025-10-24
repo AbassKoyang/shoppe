@@ -25,8 +25,22 @@ importScripts(
   const notificationOptions = {
    body: payload.notification.body,
    data: { url: link },
-   icon: '/vercel.svg',
-   badge: '/vercel.svg'
+   icon: '/icon-512.png',
+   badge: '/icon-512.png',
+   requireInteraction: true,
+    vibrate: [200, 100, 200],
+    data: payload.data,
+    actions: [
+      {
+        action: 'open',
+        title: 'Open',
+      },
+      {
+        action: 'close',
+        title: 'Dismiss',
+      }
+    ],
+
   };
   self.registration.showNotification(notificationTitle, notificationOptions);
  });

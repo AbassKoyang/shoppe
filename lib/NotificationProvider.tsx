@@ -43,9 +43,6 @@ export function NotificationProvider({children}:{children: ReactNode}) {
         chatId: string;
       }) => {
         console.log('New notification received:', { receiverId, message, type, chatId });
-        new Notification('New notis', {
-            body: message
-        })
         toast(<div>New Notfication: {message}</div>)
       };
   

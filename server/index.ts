@@ -10,6 +10,7 @@ import { paystackService } from "./services/paystack.service";
 import { db, messaging } from "./firebase-admin";
 import crypto from 'crypto';
 import { PaymentMethodType, ProductType, User } from "./types";
+import { notificationService } from './services/notification.service';
 
 const app = express();
 
@@ -126,8 +127,9 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
           createdAt: new Date()
         })
 
-      console.log(order);
+        await notificationService.notifyProductPurchase(seller.id || '', buyer.profile.name, product.title ,order.id)
 
+        console.log(order);
 
       res.json({
         success: true,
@@ -158,12 +160,14 @@ app.post('/api/notification', async (req: Request, res: Response) => {
     const {receiverId, chatId, message, type} = req.body;
     const receiverDoc = await db.collection('users').doc(receiverId).get();
       const tokens = receiverDoc.data()?.fcmTokens;
+      console.log(tokens);
       if(tokens){
         for (const token of tokens){
           await messaging.send({
             notification: {
               title: "New Message ✉️",
               body: message.length > 50 ? message.slice(0,50) + "..." : message,
+              imageUrl: 'https://useshoppe.vercel.app/icon-512.png',
             },
             data: {
               chatId,
@@ -237,6 +241,8 @@ app.post('/api/orders/:orderId/confirm-receipt', async (req: Request, res: Respo
 
     // Update product status to sold
     await transactionService.updateProductStatus(transaction.productId, 'sold');
+    await notificationService.notifyReceiptConfirmed(seller.id || '', order.productDetails.title, order.transactionDetails.sellerAmount, order.id || '')
+
 
     res.json({
       success: true,
