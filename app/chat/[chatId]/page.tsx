@@ -358,7 +358,11 @@ function TestNotificationButton({userId, chatId}: {chatId: string; userId: strin
     }
 
     const registration = await navigator.serviceWorker.ready;
-
+    new Notification('Test notissss', {
+          icon: '/icon-512.png',
+          body: 'Helooooooooooooooo test notification from browser notif api',
+          tag: "new-message",
+        })
     console.log('Service worker ready:', registration);
     try {
       await axios.post(`${process.env.NEXT_PUBLIC_SOCKET_URL}/api/notification`, {
