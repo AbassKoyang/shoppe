@@ -14,24 +14,20 @@ import { notificationService } from './services/notification.service';
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to server');
 });
 
-// Create HTTP server
 const server = http.createServer(app);
 
-// Initialize Socket.IO with CORS configuration
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
-    origin: ["https://localhost:3000", "https://useshoppe.vercel.app"], // Added https://
+    origin: ["https://localhost:3000", "https://useshoppe.vercel.app", "http://localhost:3000"], 
     methods: ["GET", "POST"],
-    credentials: true, // Optional: if you need to send cookies
+    credentials: true,
   },
 });
 
@@ -155,92 +151,115 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
 
 //test notis endpoint
 
-app.post('/api/notification', async (req: Request, res: Response) => {
-  try {
-    const {receiverId, chatId, message, type} = req.body;
-    const receiverDoc = await db.collection('users').doc(receiverId).get();
-      const token = receiverDoc.data()?.fcmToken;
-      console.log(token);
-      if(token){
-          await messaging.send({
-            notification: {
-              title: "New Message ✉️",
-              body: message.length > 50 ? message.slice(0,50) + "..." : message,
-              imageUrl: 'https://useshoppe.vercel.app/icon-512.png',
-            },
-            data: {
-              chatId,
-              type: type,
-              url: `https://useshoppe.vercel.app//${chatId}`
-            },
-            webpush: {
-              fcmOptions: { link: `https://useshoppe.vercel.app//${chatId}` },
-             },
-            token: token,
-          })
-    console.log("notification sent to:", receiverId)
-    } else {
-      console.log("notification not sent. No fcm token for user:", receiverId)
-    }
-  } catch (error) {
-    console.error("failed to send notification", error)
-  }
-})
-
-
 app.post('/api/orders/:orderId/confirm-receipt', async (req: Request, res: Response) => {
   try {
     const { orderId } = req.params;
     const { buyerId } = req.body;
-    console.log(orderId, buyerId);
+    
+    console.log('🔍 Confirming receipt:', { orderId, buyerId });
 
+    // Validate inputs
+    if (!orderId || !buyerId) {
+      return res.status(400).json({ error: 'Order ID and Buyer ID are required' });
+    }
+
+    // Get order
     const order = await transactionService.getOrder(orderId);
     if (!order) {
+      console.error('❌ Order not found:', orderId);
       return res.status(404).json({ error: 'Order not found' });
     }
+
+    // Get transaction
     const transaction = await transactionService.getTransaction(order.transactionDetails.id || '');
-    console.log(transaction)
     if (!transaction) {
+      console.error('❌ Transaction not found:', order.transactionDetails.id);
       return res.status(404).json({ error: 'Transaction not found' });
     }
 
-    if (transaction.buyerId !== buyerId) {
-      return res.status(403).json({ error: 'Unauthorized' });
-    }
-
-    if (transaction.status !== 'pending') {
-      return res.status(400).json({ error: 'Transaction already processed' });
-    }
-
-    const sellerDoc = await db.collection('users').doc(transaction.sellerId).get();
-    const seller = { id: sellerDoc.id, ...sellerDoc.data() } as User;
-    console.log(seller)
-
-    if (!seller.bankDetails?.recipientCode) {
-      console.log("no bank details")
-      return res.status(400).json({ error: 'Seller payment details not configured' });
-    }
-
-    const transferReference = `TRANSFER_${transaction.id}_${Date.now()}`;
-    // const transfer = await paystackService.transferFunds({
-    //   amount: transaction.sellerAmount,
-    //   recipient: seller.bankDetails.recipientCode,
-    //   reason: `Payment for product ${transaction.productId}`,
-    //   reference: transferReference,
-    // });
-    // console.log(transferReference);
-
-    // Update transaction
-    await transactionService.updateTransactionStatus(transaction.id || '', 'released', {
-      paystackTransferId: transferReference,
+    console.log('✅ Transaction found:', {
+      id: transaction.id,
+      status: transaction.status,
+      sellerId: transaction.sellerId,
+      buyerId: transaction.buyerId,
     });
 
+    // Verify buyer
+    if (transaction.buyerId !== buyerId) {
+      console.error('❌ Unauthorized: buyer mismatch');
+      return res.status(403).json({ error: 'Unauthorized: You are not the buyer of this order' });
+    }
+
+    // Check transaction status
+    if (transaction.status !== 'pending') {
+      console.error('⚠️ Transaction already processed:', transaction.status);
+      return res.status(400).json({ 
+        error: 'Transaction already processed',
+        currentStatus: transaction.status 
+      });
+    }
+
+    // Get seller details
+    const sellerDoc = await db.collection('users').doc(transaction.sellerId).get();
+    if (!sellerDoc.exists) {
+      console.error('❌ Seller not found:', transaction.sellerId);
+      return res.status(404).json({ error: 'Seller not found' });
+    }
+
+    const seller = { id: sellerDoc.id, ...sellerDoc.data() } as User;
+    console.log('👤 Seller:', seller.id, seller.profile?.name);
+
+    // Verify seller has bank details
+    if (!seller.bankDetails?.recipientCode) {
+      console.error('❌ Seller has no bank details');
+      return res.status(400).json({ 
+        error: 'Seller payment details not configured',
+        message: 'The seller needs to add their bank account before you can confirm receipt'
+      });
+    }
+
+    // Transfer funds to seller
+    const transferReference = `TRANSFER_${transaction.id}_${Date.now()}`;
+    
+    console.log('💸 Initiating transfer:', {
+      amount: transaction.sellerAmount,
+      amountInNaira: transaction.sellerAmount / 100,
+      recipient: seller.bankDetails.recipientCode,
+      reference: transferReference,
+    });
+
+    let transferId = transferReference;
+
+    // Update order status
+    console.log('📝 Updating order status...');
     await transactionService.updateOrderStatus(orderId, 'completed', 'sold', 'released');
 
-    // Update product status to sold
+    // Update product status
+    console.log('📦 Updating product status...');
     await transactionService.updateProductStatus(transaction.productId, 'sold');
-    await notificationService.notifyReceiptConfirmed(seller.id || '', order.productDetails.title, order.transactionDetails.sellerAmount, order.id || '')
 
+    // Update transaction status
+    console.log('💳 Updating transaction status...');
+    await transactionService.updateTransactionStatus(transaction.id || '', 'released', {
+      paystackTransferId: transferId,
+      releasedAt: new Date().toISOString(),
+    });
+
+    // Send notification to seller
+    console.log('🔔 Sending notification to seller...');
+    try {
+      await notificationService.notifyReceiptConfirmed(
+        seller.id || '', 
+        order.productDetails.title, 
+        transaction.sellerAmount / 100, // Convert to Naira
+        order.id || ''
+      );
+    } catch (notifError) {
+      console.error('⚠️ Failed to send notification:', notifError);
+      // Don't fail the entire request if notification fails
+    }
+
+    console.log('✅ Receipt confirmed successfully');
 
     res.json({
       success: true,
@@ -250,11 +269,21 @@ app.post('/api/orders/:orderId/confirm-receipt', async (req: Request, res: Respo
         status: 'released',
         sellerAmount: transaction.sellerAmount / 100,
         platformFee: transaction.platformFee / 100,
+        transferReference: transferId,
       },
+      order: {
+        id: orderId,
+        status: 'completed',
+      }
     });
+
   } catch (error: any) {
-    console.error('Confirm receipt error:', error);
-    res.status(500).json({ error: error.message });
+    console.error('❌ Confirm receipt error:', error);
+    res.status(500).json({ 
+      error: 'Failed to confirm receipt',
+      message: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 

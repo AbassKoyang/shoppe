@@ -10,6 +10,7 @@ import "./globals.css";
 import { NotificationProvider } from "@/lib/NotificationProvider";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import { MobileNotificationPrompt } from "@/components/MobileNotificationPrompt";
+import { Toaster } from "@/components/ui/sonner";
 
 
 const raleway = Raleway({
@@ -61,6 +62,7 @@ export default function RootLayout({
                   <Navbar />
                   <ServiceWorkerRegister/>
                   </NotificationProvider>
+                  <Toaster />
                 </main>
             </QueryProvider>
             </AuthProvider>

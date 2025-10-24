@@ -1,6 +1,7 @@
 // services/notification.service.ts
 import admin from 'firebase-admin';
 import { db } from '../firebase-admin';
+import { io } from '..';
 
 interface NotificationPayload {
   title: string;
@@ -71,6 +72,9 @@ class NotificationService {
   }
 
   async notifyReceiptConfirmed(sellerId: string, productTitle: string, amount: number, orderId: string) {
+    io.to(sellerId).emit("paymentReleasedNotification", {sellerId, body:  `You received ₦${amount.toLocaleString()} for "${productTitle}"`, title: 'Payment Released!', orderId})
+    console.log('Notification sent to:', sellerId);
+
     return this.sendToUser(sellerId, {
       title: '💰 Payment Released!',
       body: `You received ₦${amount.toLocaleString()} for "${productTitle}"`,
