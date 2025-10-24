@@ -16,16 +16,15 @@ class NotificationService {
       const userDoc = await db.collection('users').doc(userId).get();
       const user = userDoc.data();
 
-      if (!user?.fcmTokens) {
+      if (!user?.fcmToken) {
         console.log(`No FCM tokens found for user ${userId}`);
         return null;
       }
 
       // Send notification
 
-      for (const token of user.fcmTokens){
        const response =  await admin.messaging().send({
-            token: token,
+            token: user.fcmToken,
             notification: {
               title: payload.title,
               body: payload.body.length > 50 ? payload.body.slice(0,50) + "..." : payload.body,
@@ -36,7 +35,6 @@ class NotificationService {
 
         console.log('Notification sent successfully:', response);
         return response;
-      }
 
     } catch (error: any) {
       console.error('Error sending notification:', error);

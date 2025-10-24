@@ -151,26 +151,25 @@ export function handleSocketEvents(io: Server): void {
 
     socket.on("sendNewMessageNotification", async ({receiverId, message, type, chatId}:{receiverId: string; message: string; type: string; chatId: string}) => {
       const receiverDoc = await db.collection('users').doc(receiverId).get();
-      const tokens = receiverDoc.data()?.fcmTokens;
-      if(tokens){
-        for (const token of receiverDoc.data()?.fcmTokens){
+      const token = receiverDoc.data()?.fcmToken;
+      if(token){
           await messaging.send({
             notification: {
               title: "New Message ✉️",
               body: message.length > 50 ? message.slice(0,50) + "..." : message,
+              imageUrl: 'https://useshoppe.vercel.app/icon-512.png'
             },
             data: {
               chatId,
               type: type,
-              url: `http://localhost:3000/chat/${chatId}`
+              url: `https://useshoppe.vercel.app/${chatId}`
             },
             webpush: {
-              fcmOptions: { link: `http://localhost:3000/chat/${chatId}` },
+              fcmOptions: { link: `https://useshoppe.vercel.app/${chatId}` },
              },
             token: token,
           })
-        }
-    console.log("notification sent to:", receiverId)
+          console.log("notification sent to:", receiverId)
     } else {
       console.log("notification not sent. No fcm token for user:", receiverId)
     }

@@ -159,10 +159,9 @@ app.post('/api/notification', async (req: Request, res: Response) => {
   try {
     const {receiverId, chatId, message, type} = req.body;
     const receiverDoc = await db.collection('users').doc(receiverId).get();
-      const tokens = receiverDoc.data()?.fcmTokens;
-      console.log(tokens);
-      if(tokens){
-        for (const token of tokens){
+      const token = receiverDoc.data()?.fcmToken;
+      console.log(token);
+      if(token){
           await messaging.send({
             notification: {
               title: "New Message ✉️",
@@ -172,14 +171,13 @@ app.post('/api/notification', async (req: Request, res: Response) => {
             data: {
               chatId,
               type: type,
-              url: `http://localhost:3000/chat/${chatId}`
+              url: `https://useshoppe.vercel.app//${chatId}`
             },
             webpush: {
-              fcmOptions: { link: `http://localhost:3000/chat/${chatId}` },
+              fcmOptions: { link: `https://useshoppe.vercel.app//${chatId}` },
              },
             token: token,
           })
-        }
     console.log("notification sent to:", receiverId)
     } else {
       console.log("notification not sent. No fcm token for user:", receiverId)

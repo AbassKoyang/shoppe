@@ -25,12 +25,7 @@ export function EnableNotificationsButton({ userId }: { userId: string }) {
       
       async function saveTokenToFirestore(userId: string, token: string) {
         const ref = doc(db, "users", userId);
-        const userDoc = await getDoc(ref);
-        if(userDoc.data()?.fcmTokens?.includes(token)){
-          console.log('Token already registered')
-        } else {
-          await updateDoc(ref, {fcmTokens: arrayUnion(token)})
-        }
+          await updateDoc(ref, {fcmToken: token})
       }
       saveTokenToFirestore(userId || '', fcmToken)
     }
