@@ -45,17 +45,31 @@ class NotificationService {
     }
   }
 
+  async createNotification(receiverId: string, type: string, title: string, body: string){
+    await db.collection('notifications').doc(receiverId).collection('items').add({
+      type,
+      title,
+      body,
+      isRead: false,
+      createdAt: new Date().toISOString(),
+    })
+  }
+
   async sendToMultipleUsers(userIds: string[], payload: NotificationPayload) {
     const promises = userIds.map(userId => this.sendToUser(userId, payload));
     return Promise.all(promises);
   }
 
   async notifyProductPurchase(sellerId: string, buyerName: string, productTitle: string, orderId: string) {
+    this.createNotification(sellerId, 'new-purchase',  '🎉 New Purchase!',  `${buyerName} just bought "${productTitle}"`,)
+    io.to(sellerId).emit("newPurchaseNotification", {sellerId, body:  `${buyerName} just bought "${productTitle}"`, title: '🎉 New Purchase!', orderId})
+    console.log('Notification sent to:', sellerId);
+
     return this.sendToUser(sellerId, {
       title: '🎉 New Purchase!',
       body: `${buyerName} just bought "${productTitle}"`,
       data: {
-        type: 'purchase',
+        type: 'new_purchase',
         orderId,
         action: 'view_order',
         url: `/orders/${orderId}`
@@ -64,11 +78,11 @@ class NotificationService {
   }
 
   async notifyReceiptConfirmed(sellerId: string, productTitle: string, amount: number, orderId: string) {
-    io.to(sellerId).emit("paymentReleasedNotification", {sellerId, body:  `You received ₦${amount.toLocaleString()} for "${productTitle}"`, title: 'Payment Released!', orderId})
+    io.to(sellerId).emit("paymentReleasedNotification", {sellerId, body:  `You received ₦${amount.toLocaleString()} for "${productTitle}"`, title: '🎉 Payment Released!', orderId})
     console.log('Notification sent to:', sellerId);
 
     return this.sendToUser(sellerId, {
-      title: '💰 Payment Released!',
+      title: '🎉 Payment Released!',
       body: `You received ₦${amount.toLocaleString()} for "${productTitle}"`,
       data: {
         type: 'payment_released',
@@ -79,12 +93,15 @@ class NotificationService {
     });
   }
 
-  async notifyPaymentPending(buyerId: string, productTitle: string, orderId: string) {
+  async notifyOrderPending(buyerId: string, productTitle: string, orderId: string) {
+    io.to(buyerId).emit("orderPendingNotification", {buyerId, body:  `Your payment for "${productTitle}" has been received, payment will be released to seller when the item is delivered`, title: '⏳ Order Pending', orderId})
+    console.log('Notification sent to:', buyerId);
+    
     return this.sendToUser(buyerId, {
-      title: '⏳ Payment Pending',
-      body: `Your payment for "${productTitle}" is being processed`,
+      title: '⏳ Order Pending',
+      body: `Your payment for "${productTitle}" has been received, payment will be released to seller when the item is delivered`,
       data: {
-        type: 'payment_pending',
+        type: 'order_pending',
         orderId,
         action: 'view_order',
         url: `/orders/${orderId}`
@@ -93,6 +110,9 @@ class NotificationService {
   }
 
   async notifyMarkAsDelivered(buyerId: string, productTitle: string, orderId: string) {
+    io.to(buyerId).emit("orderDeliveredNotification", {buyerId, body:  `Your order for "${productTitle}" has been delivered and is on its way to you. Have you received "${productTitle}"? Confirm to release payment to seller`, title: '📦 Confirm Receipt', orderId})
+    console.log('Notification sent to:', buyerId);
+
     return this.sendToUser(buyerId, {
       title: '📦 Confirm Receipt',
       body: `Your order for "${productTitle}" has been delivered and is on its way to you. Have you received "${productTitle}"? Confirm to release payment to seller`,

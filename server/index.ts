@@ -116,6 +116,7 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
         })
 
         await notificationService.notifyProductPurchase(seller.id || '', buyer.profile.name, product.title ,order.id)
+        await notificationService.notifyOrderPending(buyer.id || '', product.title, order.id)
 
         console.log(order);
 

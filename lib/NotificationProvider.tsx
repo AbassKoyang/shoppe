@@ -73,13 +73,84 @@ export function NotificationProvider({children}:{children: ReactNode}) {
           },
         })
       };
+
+
+    const handleNewPurchaseNotification = ({
+        sellerId,
+        body,
+        title,
+        orderId,
+      }: {
+        sellerId: string;
+        body: string;
+        title: string;
+        orderId: string;
+      }) => {
+        console.log('New notification received:', { sellerId, body, title, orderId });
+        toast(title, {
+          description: body.length > 50 ? body.slice(0,50) + "..." : body,
+          action: {
+            label: "View Order",
+            onClick: () => router.push(`https://useshoppe.vercel.app/orders/${orderId}`),
+          },
+        })
+      };
+
+
+    const handleOrderPendingNotification = ({
+        buyerId,
+        body,
+        title,
+        orderId,
+      }: {
+        buyerId: string;
+        body: string;
+        title: string;
+        orderId: string;
+      }) => {
+        console.log('New notification received:', { buyerId, body, title, orderId });
+        toast(title, {
+          description: body.length > 50 ? body.slice(0,50) + "..." : body,
+          action: {
+            label: "View Order",
+            onClick: () => router.push(`https://useshoppe.vercel.app/orders/${orderId}`),
+          },
+        })
+      };
+      
+    const handleOrderDeliveredNotification = ({
+        buyerId,
+        body,
+        title,
+        orderId,
+      }: {
+        buyerId: string;
+        body: string;
+        title: string;
+        orderId: string;
+      }) => {
+        console.log('New notification received:', { buyerId, body, title, orderId });
+        toast(title, {
+          description: body.length > 50 ? body.slice(0,50) + "..." : body,
+          action: {
+            label: "View Order",
+            onClick: () => router.push(`https://useshoppe.vercel.app/orders/${orderId}`),
+          },
+        })
+      };
   
       socket.on('newMessageNotification', handleNewMessageNotification);
       socket.on('paymentReleasedNotification', handlePaymentReleasedNotification);
+      socket.on('newPurchaseNotification', handleNewPurchaseNotification);
+      socket.on('orderPendingNotification', handleOrderPendingNotification);
+      socket.on('orderDeliveredNotification', handleOrderDeliveredNotification);
   
       return () => {
         socket.off('newMessageNotification', handleNewMessageNotification);
         socket.off('paymentReleasedNotification', handlePaymentReleasedNotification);
+        socket.off('newPurchaseNotification', handleNewPurchaseNotification);
+        socket.off('orderPendingNotification', handleOrderPendingNotification);
+        socket.off('orderDeliveredNotification', handleOrderDeliveredNotification);
       };
     }, [user?.uid]);
 
