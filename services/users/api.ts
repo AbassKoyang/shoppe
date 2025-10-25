@@ -30,6 +30,23 @@ export const fetchUserByEmail = async (email: string) : Promise<User | null> => 
         throw error;
     }
 }
+export const fetchUserById = async (userId: string) : Promise<User | null> => {
+    const userRef = doc(db, 'users', userId);
+    try {
+        const userDoc = await getDoc(userRef);
+        if(userDoc.exists()){
+            return {
+                id: userDoc.id,
+                ...userDoc.data(),
+            } as User;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error('Error fethcing user by userId:', error);
+        throw error;
+    }
+}
 
 export const updateUserProfile = async ({uid, name, email, imageUrl, language} : {uid: string; name: string; email: string; imageUrl: string; language: 'English' | 'Français'}) => {
     try {

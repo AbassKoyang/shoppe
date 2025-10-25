@@ -45,11 +45,12 @@ class NotificationService {
     }
   }
 
-  async createNotification(receiverId: string, type: string, title: string, body: string){
+  async createNotification(receiverId: string, type: string, title: string, body: string, orderId: string){
     await db.collection('notifications').doc(receiverId).collection('items').add({
       type,
       title,
       body,
+      link: `/orders/${orderId}`,
       isRead: false,
       createdAt: new Date().toISOString(),
     })
@@ -61,7 +62,7 @@ class NotificationService {
   }
 
   async notifyProductPurchase(sellerId: string, buyerName: string, productTitle: string, orderId: string) {
-    this.createNotification(sellerId, 'new-purchase',  '🎉 New Purchase!',  `${buyerName} just bought "${productTitle}"`,)
+    this.createNotification(sellerId, 'new-purchase',  '🎉 New Purchase!',  `${buyerName} just bought "${productTitle}"`, orderId)
     io.to(sellerId).emit("newPurchaseNotification", {sellerId, body:  `${buyerName} just bought "${productTitle}"`, title: '🎉 New Purchase!', orderId})
     console.log('Notification sent to:', sellerId);
 
@@ -78,6 +79,8 @@ class NotificationService {
   }
 
   async notifyReceiptConfirmed(sellerId: string, productTitle: string, amount: number, orderId: string) {
+    this.createNotification(sellerId, 'payment-released',  '🎉 Payment Released!', `You received ₦${amount.toLocaleString()} for "${productTitle}"`, orderId)
+
     io.to(sellerId).emit("paymentReleasedNotification", {sellerId, body:  `You received ₦${amount.toLocaleString()} for "${productTitle}"`, title: '🎉 Payment Released!', orderId})
     console.log('Notification sent to:', sellerId);
 
@@ -94,6 +97,8 @@ class NotificationService {
   }
 
   async notifyOrderPending(buyerId: string, productTitle: string, orderId: string) {
+    this.createNotification(buyerId, 'order-pending',   '⏳ Order Pending',  `Your payment for "${productTitle}" has been received, payment will be released to seller when the item is delivered`, orderId);
+
     io.to(buyerId).emit("orderPendingNotification", {buyerId, body:  `Your payment for "${productTitle}" has been received, payment will be released to seller when the item is delivered`, title: '⏳ Order Pending', orderId})
     console.log('Notification sent to:', buyerId);
     
@@ -110,6 +115,8 @@ class NotificationService {
   }
 
   async notifyMarkAsDelivered(buyerId: string, productTitle: string, orderId: string) {
+    this.createNotification(buyerId, 'order-delivered', '📦 Confirm Receipt', `Your order for "${productTitle}" has been delivered and is on its way to you. Have you received "${productTitle}"? Confirm to release payment to seller`, orderId);
+
     io.to(buyerId).emit("orderDeliveredNotification", {buyerId, body:  `Your order for "${productTitle}" has been delivered and is on its way to you. Have you received "${productTitle}"? Confirm to release payment to seller`, title: '📦 Confirm Receipt', orderId})
     console.log('Notification sent to:', buyerId);
 

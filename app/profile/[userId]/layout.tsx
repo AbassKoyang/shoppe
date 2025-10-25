@@ -5,18 +5,23 @@ import JustForYouProductCard from '@/components/JustForYouProductCard'
 import ProfileNav from '@/components/profile/ProfileNav'
 import ProfileProductCardSkeleton from '@/components/profile/ProfileProductCardSkeleton'
 import UserHeader from '@/components/profile/UserHeader'
+import VisitorProfile from '@/components/profile/VisitorProfile'
 import TopProductAvatar from '@/components/TopProductAvatar'
 import { useAuth } from '@/lib/contexts/auth-context'
 import { useFetchProductPerUser } from '@/services/products/queries'
+import { useParams } from 'next/navigation'
 import React from 'react'
 
 const layout = ({children} :{children: React.ReactNode}) => {
+  const params = useParams<{userId: string}>();
+  const userId = params.userId;
   const {user} = useAuth();
-  const {isError, isLoading, data: products} = useFetchProductPerUser(user?.uid || '');
   const permission = Notification.permission;
 
   return (
     <section className="w-full mt-2 relative overflow-x-hidden mb-[300px]">
+    { user?.uid == userId && (
+      <>
         <UserHeader />
         {permission !== 'granted' && (
             <div className="w-full mt-3">
@@ -31,7 +36,9 @@ const layout = ({children} :{children: React.ReactNode}) => {
         )}
         <ProfileNav />
         {children}
-       
+      </>
+    )}
+    {user?.uid !== userId && (<VisitorProfile userId={userId}  />)}
     </section>
   )
 }

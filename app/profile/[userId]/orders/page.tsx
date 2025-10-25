@@ -12,7 +12,7 @@ const page = () => {
   return (
     <section className='w-full'>
         {isLoading && (
-            <div className='w-full'>
+            <div className='w-full mt-3'>
                 <OrderCardSkeleton />
                 <OrderCardSkeleton />
                 <OrderCardSkeleton />

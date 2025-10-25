@@ -2,13 +2,14 @@
 import { useAuth } from "@/lib/contexts/auth-context";
 import { CATEGORIES } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { RiChat3Line, RiHome6Line, RiSearch2Line, RiShoppingBag4Line, RiUserLine } from "react-icons/ri";
 import ProtectedRoute from "./ProtectedRoute";
 
 const Navbar = () => {
     const pathname = usePathname();
+    const params = useParams();
     const {user} = useAuth();
     const isHome = pathname == '/' || pathname.includes('sub-categories') || pathname.includes('categories');
     const router = useRouter();
@@ -31,6 +32,7 @@ if(pathname.includes('/auth')) return null;
 if(pathname.includes('/chat')) return null;
 if(pathname.startsWith('/orders')) return null;
 if(pathname.startsWith('/sales')) return null;
+if(pathname.startsWith('/profile') && params?.userId !== user?.uid) return null;
 
     return (
         <ProtectedRoute>
