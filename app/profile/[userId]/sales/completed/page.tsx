@@ -1,14 +1,14 @@
 'use client'
-import EmptyOrders from '@/components/profile/EmptyOrders'
-import OrderCard from '@/components/profile/OrderCard'
+import EmptySales from '@/components/profile/EmptySales'
 import OrderCardSkeleton from '@/components/profile/OrderCardSkeleton'
+import SalesCard from '@/components/profile/SalesCard'
 import { useAuth } from '@/lib/contexts/auth-context'
-import { useGetPendingOrders } from '@/services/payment/queries'
+import { useGetCompletedSales} from '@/services/payment/queries'
 import React from 'react'
 
 const page = () => {
     const {user} = useAuth();
-    const {isLoading, isError, data: orders, error} = useGetPendingOrders(user?.uid || '')
+    const {isLoading, isError, data: orders, error} = useGetCompletedSales(user?.uid || '')
   return (
     <section className='w-full'>
         {isLoading && (
@@ -22,16 +22,16 @@ const page = () => {
         )}
         {isError && (
            <div className='w-full h-[60vh] flex items-center justify-center'>
-           <p className='font-nunito-sans'>Oops, Failed to load orders.</p>
+           <p className='font-nunito-sans'>Oops, Failed to load sales.</p>
            </div>
         )}
         {orders && orders.length === 0  && (
-              <EmptyOrders title="You've no pending order" desc='Orders that are yet to be received will appear here' />
+            <EmptySales title="You've not made completed sale yet" desc="Items you've sold will appear here" />
         )}
         {orders && (
             <div className='w-full mt-3'>
                 {orders.map((order) => (
-                    <OrderCard order={order} />
+                    <SalesCard order={order} />
                 ))}
             </div>
         )}

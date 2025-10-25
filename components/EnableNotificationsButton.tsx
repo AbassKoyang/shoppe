@@ -40,7 +40,7 @@ export function EnableNotificationsButton({ userId }: { userId: string }) {
   }
 
   return (
-    <Button onClick={handleRequestPermission} variant="outline">
+    <Button onClick={handleRequestPermission} variant="outline" className='bg-dark-blue outline-0 stroke-0 border-0 text-white py-1.5 rounded-[40px] font-nunito-sans font-semibold mt-2'>
       Enable Notifications
     </Button>
   );

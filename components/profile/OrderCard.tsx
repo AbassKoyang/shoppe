@@ -34,7 +34,7 @@ const OrderCard = ({order}:{order: OrderDataType}) => {
     
       const title = formatTitle(order.productDetails.title);
       
-      const desc = formatDescription(order.productDetails.description);
+      const desc = formatDescription(order.productDetails.description, 40);
     
       const productLink = formatProductLink(order.productDetails.category, order.productDetails.subCategory, order.productDetails?.id || '');
       console.log(order.createdAt);
@@ -47,7 +47,7 @@ const OrderCard = ({order}:{order: OrderDataType}) => {
   return (
     <div  className='w-full h-[110px] mt-2'>
         <div className="w-full h-full flex justify-between items-center">
-        <div className="h-full flex items-start gap-3 max-w-[90%]">
+        <div className="h-full flex items-start gap-3 w-full">
                 <Link href={productLink} className="w-[130px] relative">
                     <div className="w-full relative h-full p-[5px] rounded-[9px] bg-white overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
                         <Image
@@ -65,21 +65,21 @@ const OrderCard = ({order}:{order: OrderDataType}) => {
                         <Image src={order.sellerInfo.profile.imageUrl ? order.sellerInfo.profile.imageUrl : defaultProfileAvatar} width={31} height={31}  className='' alt='Profile avatar' />
                     </div>
                 </Link>
-                <div className="flex flex-col h-full">
-                    <div className=" h-full flex flex-col justify-between">
+                <div className="flex flex-col justify-between h-full w-[calc(100%-130px)]">
+                    <div className="w-full flex items-center justify-between">
                         <div className="">
                             <h5 className='font-raleway font-bold text-[20px] tracking-[-0.18px] text-[#202020]'>{formattedPrice}</h5>
                             <h5 className='font-raleway font-bold text-[18px] tracking-[-0.18px] text-[#202020]'>{title}</h5>
-                            <p className='text-[12px] text-black font-nunito-sans font-normal max-w-[150px]'>{desc}</p>
+                            <p className='text-[12px] text-black font-nunito-sans font-normal max-w-[120px]'>{desc}</p>
                         </div>
-                        <div className='flex items-center gap-5 mb-0.5'>
-                            <span className={`text-[10px] font-raleway font-normal ${order.productDetails.status == 'sold' ? 'bg-green-400 text-white' : 'bg-amber-400 text-white'} py-0 px-3 rounded-2xl`}>{orderStatus}</span>
-                            <p className='text-[10px] font-nunito-sans font-normal'>{orderDate.substring(0,10)}</p>
-                        </div>
+                        <ArrowRightButton url={`/orders/${order.id}`} />
                     </div>
+                    <div className='w-full flex items-center justify-between mb-0.5'>
+                        <span className={`text-[10px] font-raleway font-normal ${order.status == 'completed' ? 'bg-green-500 text-white' : 'bg-amber-500 text-white'} py-0 px-3 rounded-2xl`}>{orderStatus}</span>
+                        <p className='text-[10px] font-nunito-sans font-normal'>{orderDate.substring(0,10)}</p>
+                     </div>
                 </div>
            </div>
-           <ArrowRightButton url={`/orders/${order.id}`} />
         </div>
     </div>
 )

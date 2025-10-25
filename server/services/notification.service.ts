@@ -1,4 +1,3 @@
-// services/notification.service.ts
 import admin from 'firebase-admin';
 import { db } from '../firebase-admin';
 import { io } from '..';
@@ -10,10 +9,8 @@ interface NotificationPayload {
 }
 
 class NotificationService {
-  // Send notification to a specific user
   async sendToUser(userId: string, payload: NotificationPayload) {
     try {
-      // Get user's FCM token
       const userDoc = await db.collection('users').doc(userId).get();
       const user = userDoc.data();
 
@@ -21,8 +18,6 @@ class NotificationService {
         console.log(`No FCM tokens found for user ${userId}`);
         return null;
       }
-
-      // Send notification
 
        const response =  await admin.messaging().send({
             token: user.fcmToken,
@@ -40,7 +35,6 @@ class NotificationService {
     } catch (error: any) {
       console.error('Error sending notification:', error);
       
-      // Remove invalid token
       if (error.code === 'messaging/registration-token-not-registered') {
         await db.collection('users').doc(userId).update({
           fcmToken: admin.firestore.FieldValue.delete(),
@@ -51,13 +45,11 @@ class NotificationService {
     }
   }
 
-  // Send notification to multiple users
   async sendToMultipleUsers(userIds: string[], payload: NotificationPayload) {
     const promises = userIds.map(userId => this.sendToUser(userId, payload));
     return Promise.all(promises);
   }
 
-  // Notification templates for escrow events
   async notifyProductPurchase(sellerId: string, buyerName: string, productTitle: string, orderId: string) {
     return this.sendToUser(sellerId, {
       title: '🎉 New Purchase!',

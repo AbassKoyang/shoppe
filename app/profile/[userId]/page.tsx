@@ -13,8 +13,8 @@ const page = () => {
   const {isError, isLoading, data: products} = useFetchProductPerUser(user?.uid || '');
 
   return (
-    <div className="w-full mt-6">
-    <div className="w-full flex justify-between flex-wrap">
+    <div className="w-full mt-0">
+    <div className="w-full flex justify-between flex-wrap mt-[-20px]">
     {products && products.length > 0 && products.map((product) => (
       <JustForYouProductCard product={product} />
     ))}

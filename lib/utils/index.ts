@@ -426,9 +426,9 @@ export const formatProductCardImageUrl = (url: string, preset: {
 }) => {
   return url.substring(0,50) + `w_${preset.width}${preset.height? `,h_${preset.height}` : ''}${preset.ar_? `,ar_${preset.ar_}` : ''},${preset.c_fill ? 'c_fill' : ''},${preset.g_auto ? 'g_auto' : ''},${preset.q_auto ? 'q_auto' : ''},${preset.f_auto ? 'f_auto' : ''},${preset.e_sharpen ? 'e_sharpen' : ''}${preset.dpr_auto ? ',dpr_auto' : ''}/` + url.substring(50);
 }
-export const formatDescription = (desc: string) => {
-  const newDesc = desc.substring(0, 45);
-  if (desc.length > 45 ) return newDesc + '...'
+export const formatDescription = (desc: string, count: number = 50) => {
+  const newDesc = desc.substring(0, count);
+  if (desc.length > count ) return newDesc + '...'
   return desc;
 }
 export const formatProductLink = (category: string, subCategory: string, id: string) => {

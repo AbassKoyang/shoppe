@@ -79,7 +79,7 @@ class TransactionService {
       updateData.releasedAt = new Date();
     }
 
-    await this.collection.doc(id).update(updateData);
+    await this.ordersCollection.doc(id).update(updateData);
   }
 
   // Update product status

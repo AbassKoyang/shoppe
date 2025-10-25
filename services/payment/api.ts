@@ -114,7 +114,7 @@ export const addBank = async ({name, bankCode, accountNumber, userId, bankName }
 export const getPendingOrders = async (userId: string) : Promise<OrderDataType[]> => {
   try {
     const ordersRef = collection(db, 'orders');
-    const q = query(ordersRef, where("buyerInfo.id", "==", userId), where("productDetails.status", "==", 'pending'), orderBy('createdAt', 'desc'));
+    const q = query(ordersRef, where("buyerInfo.id", "==", userId), where("status", "==", 'pending'), orderBy('createdAt', 'desc'));
     
     const ordersSnapshot = await getDocs(q);
     return ordersSnapshot.docs.map((doc) => ({
@@ -129,7 +129,7 @@ export const getPendingOrders = async (userId: string) : Promise<OrderDataType[]
 export const getDeliveredOrders = async (userId: string) : Promise<OrderDataType[]> => {
   try {
     const ordersRef = collection(db, 'orders');
-    const q = query(ordersRef, where("buyerInfo.id", "==", userId), where("productDetails.status", "==", 'sold'), orderBy('createdAt', 'desc'));
+    const q = query(ordersRef, where("buyerInfo.id", "==", userId), where("status", "==", 'completed'), orderBy('createdAt', 'desc'));
     
     const ordersSnapshot = await getDocs(q);
     return ordersSnapshot.docs.map((doc) => ({
@@ -153,6 +153,38 @@ export const getOrderById = async (orderId: string) : Promise<OrderDataType> => 
     } as OrderDataType;
   } catch (error) {
     console.error('Error fetching order:', error);
+    throw error;
+  }
+};
+
+
+export const getPendingSales = async (userId: string) : Promise<OrderDataType[]> => {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const q = query(ordersRef, where("sellerInfo.id", "==", userId), where("status", "==", 'pending'), orderBy('createdAt', 'desc'));
+    
+    const ordersSnapshot = await getDocs(q);
+    return ordersSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    })) as OrderDataType[];
+  } catch (error) {
+    console.error('Error fetching pending sales:', error);
+    throw error;
+  }
+};
+export const getCompletedSales = async (userId: string) : Promise<OrderDataType[]> => {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const q = query(ordersRef, where("sellerInfo.id", "==", userId), where("status", "==", 'completed'), orderBy('createdAt', 'desc'));
+    
+    const ordersSnapshot = await getDocs(q);
+    return ordersSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    })) as OrderDataType[];
+  } catch (error) {
+    console.error('Error fetching completed sales:', error);
     throw error;
   }
 };

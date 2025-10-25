@@ -30,6 +30,7 @@ if(pathname.includes('/settings')) return null;
 if(pathname.includes('/auth')) return null;
 if(pathname.includes('/chat')) return null;
 if(pathname.startsWith('/orders')) return null;
+if(pathname.startsWith('/sales')) return null;
 
     return (
         <ProtectedRoute>

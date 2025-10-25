@@ -62,7 +62,12 @@ export default function RootLayout({
                   <Navbar />
                   <ServiceWorkerRegister/>
                   </NotificationProvider>
-                  <Toaster />
+                  <Toaster
+                  richColors
+                  position='top-center'
+                  duration={5000}
+                  theme="dark"
+                  />
                 </main>
             </QueryProvider>
             </AuthProvider>

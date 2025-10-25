@@ -6,14 +6,15 @@ import Link from 'next/link'
 import React from 'react'
 
 const UserHeader = () => {
-    const {user} = useAuth()
+    const {user} = useAuth();
+    const firstName = user?.profile.name && user?.profile.name.split(' ')[0].length > 8 ? user?.profile.name.split(' ')[0].substring(0,8) : user?.profile.name.split(' ')[0];
   return (
     <div className='w-full flex items-center justify-between py-4'>
         <div className='flex items-center gap-2'>
             <Link href='/settings/profile' className='relative size-[50px] rounded-full overflow-hidden object-contain object-center border-[2px] border-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]'>
                 <Image src={user?.profile.imageUrl ? user.profile.imageUrl : defaultProfileAvatar} width={46} height={46}  className='' alt='Profile avatar' />
             </Link>
-            <h5 className='text-[16px] font-medium font-nunito-sans text-white px-4 py-1.5 rounded-4xl bg-dark-blue'>Hi, Koyang</h5>
+            <h5 className='text-[16px] font-medium font-nunito-sans text-black px-4 py-1.5 rounded-4xl bg-[#E5EBFC]'>Hi, {firstName}</h5>
         </div>
         <div className=" flex items-center gap-2">
         <Link  href='/' className='cursor-pointer size-[35px] flex items-center justify-center bg-[#E5EBFC] rounded-full'>

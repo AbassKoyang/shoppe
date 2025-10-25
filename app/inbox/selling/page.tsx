@@ -63,7 +63,7 @@ const page = () => {
     ))}
     {isError && (
          <div className='w-full h-[60vh] flex items-center justify-center'>
-         <p>Oops, Failed to load Chats.</p>
+         <p className='font-nunito-sans'>Oops, Failed to load Chats.</p>
          </div>
     )}
     <div className='w-full flex items-center justify-center py-3' ref={ref}>

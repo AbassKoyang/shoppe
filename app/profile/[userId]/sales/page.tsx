@@ -1,8 +1,41 @@
+'use client'
+import EmptySales from '@/components/profile/EmptySales'
+import OrderCardSkeleton from '@/components/profile/OrderCardSkeleton'
+import SalesCard from '@/components/profile/SalesCard'
+import { useAuth } from '@/lib/contexts/auth-context'
+import { useGetPendingSales} from '@/services/payment/queries'
 import React from 'react'
 
 const page = () => {
+    const {user} = useAuth();
+    const {isLoading, isError, data: orders, error} = useGetPendingSales(user?.uid || '')
   return (
-    <div>page</div>
+    <section className='w-full'>
+        {isLoading && (
+            <div className='w-full'>
+                <OrderCardSkeleton />
+                <OrderCardSkeleton />
+                <OrderCardSkeleton />
+                <OrderCardSkeleton />
+                <OrderCardSkeleton />
+            </div>
+        )}
+        {isError && (
+           <div className='w-full h-[60vh] flex items-center justify-center'>
+           <p className='font-nunito-sans'>Oops, Failed to load sales.</p>
+           </div>
+        )}
+        {orders && orders.length === 0  && (
+              <EmptySales title='No pending sales' desc="Items that are yet to be delivered will appear here" />
+        )}
+        {orders && (
+            <div className='w-full mt-3'>
+                {orders.map((order) => (
+                    <SalesCard order={order} />
+                ))}
+            </div>
+        )}
+    </section>
   )
 }
 

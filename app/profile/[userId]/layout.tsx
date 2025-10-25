@@ -13,20 +13,22 @@ import React from 'react'
 const layout = ({children} :{children: React.ReactNode}) => {
   const {user} = useAuth();
   const {isError, isLoading, data: products} = useFetchProductPerUser(user?.uid || '');
+  const permission = Notification.permission;
 
   return (
     <section className="w-full mt-2 relative overflow-x-hidden mb-[300px]">
         <UserHeader />
-        <div className="w-full mt-3">
-          <div className="w-full p-4 rounded-[10px] flex items-end justify-between bg-[#F9F9F9]">
-            <div className="">
-              <h6 className='font-raleway font-bold text-[#202020] text-[14px]'>Announcement</h6>
-              <p className='font-nunito-sans text-[10px] font-normal text-black max-w-[250px]'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas hendrerit luctus libero ac vulputate.</p>
-              <EnableNotificationsButton userId={user?.uid || ''} />
+        {permission !== 'granted' && (
+            <div className="w-full mt-3">
+            <div className="w-full p-4 rounded-[10px] bg-[#F9F9F9]">
+              <div className="w-full">
+                <h6 className='font-raleway font-bold text-[#202020] text-[14px]'>Important</h6>
+                <p className='font-nunito-sans text-[10px] font-normal text-black'>To receive notifications on: Click the button below. Tap the menu (⋮) in your browser Select "Add to Home screen" or "Install app". Tap "Add" or "Install". Open the app from your home screen.</p>
+                <EnableNotificationsButton userId={user?.uid || ''} />
+              </div>
             </div>
-            <ArrowRightButton/>
           </div>
-        </div>
+        )}
         <ProfileNav />
         {children}
        
