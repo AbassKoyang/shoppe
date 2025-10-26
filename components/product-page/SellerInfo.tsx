@@ -19,7 +19,7 @@ const SellerInfo = ({sellerId}: {sellerId: string}) => {
                     <Image className='object-cover object-center' blurDataURL="/assets/images/default-profile-avatar.webp" alt="Profile picture" width={60} height={60} src={seller?.profile.imageUrl ? seller.profile.imageUrl : defaultProfileAvatar} />
                 </Link >
                 <div className="">
-                    <h3 className='text-[15px] font-raleway font-normal text-[#202020]'>Posted by <Link href={`/profile/${sellerId}`} className='text-dark-blue font-bold'>{seller?.profile.name}</Link></h3>
+                    <h3 className='text-[15px] font-raleway font-normal text-[#202020]'>Posted by <Link href={`/profile/${sellerId}`} className='text-dark-blue font-bold'>{seller?.profile.name.length && seller?.profile.name.length > 11 ? seller?.profile.name.substring(0,11) +'...' : seller?.profile.name }</Link></h3>
                     <div className="flex items-center gap-2 mt-1">
                         <Calendar className='size-[12px] text-black' />
                         <p className='font-nunito-sans text-black font-normal text-[10px]'>Member since {seller?.createdAt.substring(0,10)}</p>

@@ -98,6 +98,19 @@ export const isProductInWishlist = async (productId: string, userId: string) => 
     console.error('Error checking if product is alreayd in wishlist:', error)
   }
 }
+export const incrementProductViews = async (productId: string) => {
+  const docRef = doc(db, 'products', productId);
+    try {
+        const productDoc = await getDoc(docRef);
+        const product = {id: productDoc.id, ...productDoc.data()} as ProductType
+        await updateDoc(docRef, {
+        views: product.views ? product.views + 1 : null,
+      })
+    } catch (error) {
+        console.error('Error adding item to wishlist', error);
+        throw error;
+    }
+};
 
 
 export const fetchProductsByCategory = async (

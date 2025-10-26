@@ -4,30 +4,28 @@ import {algoliasearch, SearchResponse} from 'algoliasearch';
 const ALGOLIA_APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!;
 const ALGOLIA_WRITE_API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_WRITE_API_KEY!;
 const ALGOLIA_SEARCH_API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!;
-const ALGOLIA_INDEX_NAME = "products"; // your Algolia index name
+const ALGOLIA_INDEX_NAME = "products"; 
 
-// const client = algoliasearch();
 const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_WRITE_API_KEY)
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
-  // ✅ Collect filters
   const subCategory = searchParams.get("subCategory");
   const location = searchParams.get("location");
   const currency = searchParams.get("currency");
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
   const discountPercentage = searchParams.get("discountPercentage");
-  const size = searchParams.getAll("size")[0]?.split(','); // array
+  const size = searchParams.getAll("size")[0]?.split(',');
   const gender = searchParams.get("gender");
   const condition = searchParams.get("condition");
-  const order = searchParams.get("order"); // Popular | Newest | Oldest
+  const order = searchParams.get("order");
   console.log('subCategory', subCategory);
 
- // 🔹 facetFilters (categorical filters)
- const facetFilters: string[][] = [];
- if (location) facetFilters.push([`location:${location}`]);
+  const facetFilters: string[][] = [['status:sold']];
+ let filters = '';
+ if (location) filters = `location:${location}`
  if (subCategory) facetFilters.push([`subCategory:${subCategory}`]);
  if (currency) facetFilters.push([`currency:${currency}`]);
  if (gender) facetFilters.push([`gender:${gender}`]);
@@ -42,12 +40,10 @@ export async function GET(req: NextRequest) {
 }
   
 
- // 🔹 numericFilters
  const numericFilters: string[][] = [];
  if (minPrice) numericFilters.push([`price>=${minPrice}`]);
  if (maxPrice) numericFilters.push([`price<=${maxPrice}`]);
  if (discountPercentage) numericFilters.push([`discountPercentage>=${discountPercentage}`]);
- // 🔹 sort by order
  let sortBy: string | undefined;
  if (order === "Newest") sortBy = "createdAt_desc";
  if (order === "Oldest") sortBy = "createdAt_asc";
@@ -60,6 +56,7 @@ export async function GET(req: NextRequest) {
             indexName: sortBy ? `${ALGOLIA_INDEX_NAME}_${sortBy}` : ALGOLIA_INDEX_NAME,
             facetFilters,
             numericFilters,
+            filters
           },
         ],
       });

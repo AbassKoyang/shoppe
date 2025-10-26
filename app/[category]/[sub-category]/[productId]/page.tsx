@@ -4,7 +4,7 @@ import ProductImagesCarousel from "@/components/ProductImagesCarousel";
 import ProductPageSkeleton from "@/components/ProductPageSkeleton";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { formatPrice } from "@/lib/utils";
-import { addProductToRecentlyViewed, addProductToWishlist, isProductInWishlist, removeProductFromWishlist } from "@/services/products/api";
+import { addProductToRecentlyViewed, addProductToWishlist, incrementProductViews, isProductInWishlist, removeProductFromWishlist } from "@/services/products/api";
 import { useFetchSingleProduct } from "@/services/products/queries";
 import { ProductType, WishlistType } from "@/services/products/types";
 import { QueryClient, useMutation } from "@tanstack/react-query";
@@ -178,6 +178,9 @@ const page = () => {
 
   useEffect(() => {
     handleAddProductToRecentlyViewed()
+  }, [product])
+  useEffect(() => {
+    if(product) incrementProductViews(product?.id || '')
   }, [product])
 
 
