@@ -22,9 +22,9 @@ export async function GET(req: NextRequest) {
   const condition = searchParams.get("condition");
   const order = searchParams.get("order"); 
 
- const facetFilters: string[][] = [['status:sold']];
+ const facetFilters: string[][] = [['status:available']];
  let filters = '';
- if (location) filters = `location:${location}`
+ if (location) filters = `location:"${location}"`
  if (category) facetFilters.push([`category:${category}`]);
  if (currency) facetFilters.push([`currency:${currency}`]);
  if (gender) facetFilters.push([`gender:${gender}`]);
@@ -48,6 +48,8 @@ export async function GET(req: NextRequest) {
  if (order === "Newest") sortBy = "createdAt_desc";
  if (order === "Oldest") sortBy = "createdAt_asc";
  if (order === "Popular") sortBy = "popular_desc";
+ console.log("filters =", filters)
+ console.log("facetfilters =", facetFilters)
 
   try {
     const res = await client.search({

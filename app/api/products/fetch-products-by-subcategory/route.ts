@@ -23,9 +23,9 @@ export async function GET(req: NextRequest) {
   const order = searchParams.get("order");
   console.log('subCategory', subCategory);
 
-  const facetFilters: string[][] = [['status:sold']];
- let filters = '';
- if (location) filters = `location:${location}`
+  const facetFilters: string[][] = [['status:available']];
+  let filters = '';
+  if (location) filters = `location:"${location}"`
  if (subCategory) facetFilters.push([`subCategory:${subCategory}`]);
  if (currency) facetFilters.push([`currency:${currency}`]);
  if (gender) facetFilters.push([`gender:${gender}`]);

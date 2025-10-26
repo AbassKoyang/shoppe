@@ -104,13 +104,14 @@ export const incrementProductViews = async (productId: string) => {
         const productDoc = await getDoc(docRef);
         const product = {id: productDoc.id, ...productDoc.data()} as ProductType
         await updateDoc(docRef, {
-        views: product.views ? product.views + 1 : null,
+        views: product.views ? product.views + 1 : 0,
       })
     } catch (error) {
-        console.error('Error adding item to wishlist', error);
+        console.error('Error incremeting item views', error);
         throw error;
     }
 };
+
 
 
 export const fetchProductsByCategory = async (

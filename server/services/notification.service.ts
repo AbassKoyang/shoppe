@@ -52,7 +52,8 @@ class NotificationService {
       body,
       link: `/orders/${orderId}`,
       isRead: false,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
+      userId: receiverId,
     })
   }
 
