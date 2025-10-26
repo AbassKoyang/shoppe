@@ -1,8 +1,10 @@
+'use client';
 import NotificationPageHeader from '@/components/profile/NotificationPageHeader'
 import { useAuth } from '@/lib/contexts/auth-context';
 import { db } from '@/lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import React, { useEffect } from 'react';
+
 type NotificationType = {
     type: string;
     titletype: string;
