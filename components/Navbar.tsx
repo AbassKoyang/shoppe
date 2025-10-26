@@ -27,7 +27,8 @@ const Navbar = () => {
 
 if(hideNavbar) return null;
 if(pathname == '/add-product') return null;
-if(pathname.includes('/settings')) return null;
+if(pathname == '/add-product') return null;
+if(pathname.startsWith('/edit-product')) return null;
 if(pathname.includes('/auth')) return null;
 if(pathname.includes('/chat')) return null;
 if(pathname.startsWith('/orders')) return null;

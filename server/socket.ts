@@ -162,10 +162,10 @@ export function handleSocketEvents(io: Server): void {
             data: {
               chatId,
               type: type,
-              url: `https://useshoppe.vercel.app/${chatId}`
+              url: `https://useshoppe.vercel.app/chat/${chatId}`
             },
             webpush: {
-              fcmOptions: { link: `https://useshoppe.vercel.app/${chatId}` },
+              fcmOptions: { link: `https://useshoppe.vercel.app/chat/${chatId}` },
              },
             token: token,
           })

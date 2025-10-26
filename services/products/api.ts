@@ -24,6 +24,27 @@ export const addProduct = async (data : ProductType) => {
         console.error('Error from addProduct', error);
     }
 };
+
+export const editProduct = async (data : ProductType) => {
+    try {
+        const res = await fetch('/api/products/edit', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data),
+        })
+        if(!res.ok){
+          throw new Error("Failed to edit product");
+        }
+        console.log('Product edited succesfully 2');
+        return res.json();
+    } catch (error) {
+        console.error('Error from editProduct', error);
+        throw new Error("Failed to edit product");
+    }
+};
+
 export const addProductToWishlist = async (data : WishlistType, userId: string) => {
   const colRef = collection(db, 'wishlists');
     try {
