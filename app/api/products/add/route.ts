@@ -19,6 +19,7 @@ export const POST = async (req: Request) => {
             status: 'available',
             price: Number(body.price) || 0,
             discount: Number(body.discount) || 0,
+            createdAt: Date.now(),
         })
         console.log('Product added to firestore succesfully');
         await client.saveObject({indexName: ALGOLIA_INDEX_NAME, body:{

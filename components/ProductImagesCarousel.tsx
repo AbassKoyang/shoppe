@@ -11,10 +11,13 @@ import { Button } from './ui/button';
 import { formatProductCardImageUrl } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, PenLine } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { ProductType } from '@/services/products/types';
+import { useAuth } from '@/lib/contexts/auth-context';
 
-const ProductImagesCarousel = ({viewportWidth, images}: {viewportWidth: number; images: string[]}) => {
+const ProductImagesCarousel = ({viewportWidth, images, product}: {viewportWidth: number; images: string[]; product: ProductType}) => {
+  const {user} = useAuth();
     const [api, setApi] = useState<CarouselApi>();
     const [current, setCurrent] = useState(0);
     const [count, setCount] = useState(0);

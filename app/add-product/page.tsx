@@ -94,14 +94,6 @@ const Page = () => {
       }
       try {
         setLoading(true);
-        // if(Number(data.price) <= 0){
-        //   form.setError('price', {message: "Price must be > 0"});
-        //   return;
-        // }
-        // if(Number(data.discount) < 0){
-        //   form.setError('discount', {message: "Discount must be >= 0"});
-        //   return;
-        // }
         const uploadedUrls = await Promise.all(
           data.images.map(async (file: File) => {
             const formData = new FormData();

@@ -123,11 +123,8 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
       res.json({
         success: true,
         message: 'Payment successful',
-        transaction: {
-          id: transaction.id,
-          amount: amountInKobo / 100,
-          reference,
-          status: 'pending',
+        order: {
+          id: order.id,
         },
       });
     } else {

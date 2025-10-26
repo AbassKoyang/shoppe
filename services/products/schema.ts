@@ -146,6 +146,8 @@ export const ProductSchema = z
     location: z.string().optional(),
     views: z.number().optional(),
     status: z.literal(['available', 'pending', 'sold']).optional(),
+    createdAt: z.date().optional(),
+    updatedAt: z.date().optional(),
   });
 
  export  const filterSChema = z.object({
