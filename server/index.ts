@@ -354,6 +354,24 @@ app.post('/api/orders/:orderId/mark-as-delivered', async (req: Request, res: Res
   }
 });
 
+app.post("/send-email", async (req: Request, res: Response) => {
+  const { to, name, message, link, subject } = req.body;
+
+  if (!to || !name || !message || !link || !subject) {
+    return res.status(400).json({ error: "Missing fields" });
+  }
+
+  await notificationService.queueEmail({
+    to,
+    name,
+    message,
+    link,
+    subject
+  })
+
+  res.json({ status: "queued" });
+});
+
 
 const PORT: number = parseInt(process.env.PORT || "4000", 10);
 

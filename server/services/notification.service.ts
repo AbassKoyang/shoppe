@@ -1,6 +1,8 @@
 import admin from 'firebase-admin';
 import { db } from '../firebase-admin';
 import { io } from '..';
+import { emailQueue } from "../lib/queues/emailQueue";
+import { ReactNode } from 'react';
 
 interface NotificationPayload {
   title: string;
@@ -132,6 +134,15 @@ class NotificationService {
       },
     });
   }
+
+async queueEmail({to, subject, message, name, link} : {to: string; subject: string; message: string; name: string; link: string}) {
+  await emailQueue.add("sendEmail", { to, subject, message, name, link }, {
+    attempts: 3,
+    backoff: { type: "exponential", delay: 5000 },
+  });
+  console.log("Email job added for:", to);
+}
+
 }
 
 export const notificationService = new NotificationService();
