@@ -1,6 +1,6 @@
 import { db } from '@/lib/firebase';
-import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc} from 'firebase/firestore';
-import { User } from './types';
+import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc, orderBy, limit, startAfter, DocumentSnapshot} from 'firebase/firestore';
+import { fetchNotificationsParamsType, fetchNotificationsReturnType, NotificationType, User } from './types';
 
 export const saveUserToDB = async (data: User, uid: string) => {
     try {
@@ -184,3 +184,41 @@ export const deleteAccount = async (uid: string) => {
         throw error;
     }
 }
+
+const PAGE_SIZE = 10;
+
+export const fetchNotifications = async ({pageParam, userId}: fetchNotificationsParamsType) : Promise<fetchNotificationsReturnType> => {
+    const colRef = collection(db, 'notifications');
+    let q;
+    if(!pageParam) {
+        q = query(colRef, where("userId", "==", userId), orderBy("createdAt", 'desc'), limit(PAGE_SIZE))
+    } else {
+        q = query(colRef, where("userId", "==", userId), orderBy("createdAt", 'desc'), limit(PAGE_SIZE), startAfter(pageParam))
+    }
+    
+    try {
+        const snapshot = await getDocs(q);
+        const lastDoc : DocumentSnapshot = snapshot.docs[snapshot.docs.length - 1];
+        const notifications = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+        })) as NotificationType[];
+        return {notifications, lastVisible: lastDoc}
+
+    } catch (error) {
+        console.error('Error fethcing notifications:', error);
+        throw error;
+    }
+}
+
+export const updateNotification = async (notificationId: string) => {
+    try {
+        await updateDoc(doc(db, 'notifications', notificationId), {
+            "isRead": true
+            });
+        console.log('Country updated succesfully')
+    } catch (error) {
+        console.error(error);
+    }
+};
+

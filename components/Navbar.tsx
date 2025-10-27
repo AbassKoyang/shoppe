@@ -27,13 +27,13 @@ const Navbar = () => {
 
 if(hideNavbar) return null;
 if(pathname == '/add-product') return null;
-if(pathname == '/add-product') return null;
+if(pathname == '/settings') return null;
 if(pathname.startsWith('/edit-product')) return null;
 if(pathname.includes('/auth')) return null;
 if(pathname.includes('/chat')) return null;
 if(pathname.startsWith('/orders')) return null;
 if(pathname.startsWith('/sales')) return null;
-if(pathname.startsWith('/profile') && params?.userId !== user?.uid) return null;
+if(pathname.startsWith('/profile') && params?.userId !== user?.uid && pathname !== '/profile/notifications' ) return null;
 
     return (
         <ProtectedRoute>

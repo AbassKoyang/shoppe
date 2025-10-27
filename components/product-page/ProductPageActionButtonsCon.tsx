@@ -3,15 +3,20 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { ProductType } from '@/services/products/types';
 import { Heart, LoaderCircle, MessageCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoHeart } from 'react-icons/io5'
 
 const ProductPageActionButtonsCon = ({isInWishList, loading, product, productId, removeFromWishList, addToWishList, openModal} : {isInWishList: boolean; loading: boolean; product: ProductType;  productId: string; removeFromWishList: () => void; addToWishList: () => void; openModal: () => void}) => {
-    const {user} = useAuth();
+  const {user} = useAuth();
+  const [User, setUser] = useState(user);
     const router = useRouter();
+    useEffect(() => {
+      setUser(user);
+    }, [user])
+    
   return (
     <>
-    {user?.uid !== product.sellerId || product.status !== 'sold' && (
+    {User?.uid !== product.sellerId || product.status !== 'sold' && (
         <div className="w-[97%] fixed bottom-3 left-[50%] translate-x-[-50%] px-3 [@media(min-width:375px)]:px-3 py-3 bg-white flex items-center justify-between rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
             {isInWishList ? (
                     <button onClick={removeFromWishList} className="cursor-pointer w-[47px] h-[47px] rounded-full bg-[#F9F9F9] flex items-center justify-center">

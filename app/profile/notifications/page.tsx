@@ -1,21 +1,43 @@
 'use client';
+import NotificationCard from '@/components/profile/NotificationCard';
 import NotificationPageHeader from '@/components/profile/NotificationPageHeader'
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { db } from '@/lib/firebase';
+import { useFetchNotifications } from '@/services/users/queries';
+import axios from 'axios';
 import { doc, updateDoc } from 'firebase/firestore';
-import React, { useEffect } from 'react';
+import { LoaderCircle } from 'lucide-react';
+import React, { useEffect, useMemo } from 'react';
+import { useInView } from 'react-intersection-observer';
 
-type NotificationType = {
-    type: string;
-    titletype: string;
-    body: string;
-    link: string;
-    isRead: boolean;
-    createdAt: number;
-    userId: string;
-}
+
 const page = () => {
     const {user} = useAuth();
+    const { ref, inView } = useInView();
+
+    const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    error,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    } = useFetchNotifications(user?.uid || '');
+
+    useEffect(() => {
+        if (inView && hasNextPage) {
+          fetchNextPage();
+        }
+      }, [inView, hasNextPage, fetchNextPage]);
+
+    console.log(data);  
+
+    const allNotifications = useMemo(() => {
+        return data?.pages.flatMap(page => page.notifications) ;
+      }, [data]);
+
     const updateLastSeen = async (userId: string) => {
        try {
         await updateDoc(doc(db, "users", userId), {
@@ -34,7 +56,18 @@ const page = () => {
   return (
     <section className='w-full'>
         <NotificationPageHeader />
-
+        {isLoading && (
+            <p>Loading</p>
+        )}
+        {isError && (
+            <p>Error, {error.message}</p>
+        )}
+        {allNotifications && allNotifications.map((notis) => (
+            <NotificationCard key={notis.id} notification={notis} />
+        ))}
+            <div className='w-full flex items-center justify-center py-3' ref={ref}>
+                {isFetchingNextPage ? <LoaderCircle className="animate-spin size-[26px] text-dark-blue" /> : null}
+            </div>
     </section>
   )
 }

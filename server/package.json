@@ -10,6 +10,7 @@
     "dev": "tsx watch index.ts",
     "dev:worker": "tsx watch lib/workers/emailWorkers.ts",
     "start": "tsx index.ts",
+    "start:worker": "tsx lib/workers/emailWorkers.ts",
     "build": "echo 'No build step required'"
   },
   "dependencies": {

@@ -8,4 +8,23 @@ export type CountryType = {
     value: string;
     label: string;
 }
-// export type FirebaseUserType = z.infer<typeof FirebaseUserSchema>;
+export type NotificationType = {
+    id?: string;
+    type: string;
+    title: string;
+    body: string;
+    link: string;
+    isRead: boolean;
+    createdAt: number;
+    userId: string;
+}
+export type PageParam = unknown;
+
+export interface fetchNotificationsParamsType {
+  pageParam: PageParam;
+  userId: string;
+}
+export interface fetchNotificationsReturnType {
+  notifications: NotificationType[],
+  lastVisible: any,
+}

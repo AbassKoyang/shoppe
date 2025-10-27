@@ -3,28 +3,24 @@
 import ProductImagesCarousel from "@/components/ProductImagesCarousel";
 import ProductPageSkeleton from "@/components/ProductPageSkeleton";
 import { useAuth } from "@/lib/contexts/auth-context";
-import { formatPrice } from "@/lib/utils";
 import { addProductToRecentlyViewed, addProductToWishlist, incrementProductViews, isProductInWishlist, removeProductFromWishlist } from "@/services/products/api";
 import { useFetchSingleProduct } from "@/services/products/queries";
 import { ProductType, WishlistType } from "@/services/products/types";
 import { QueryClient, useMutation } from "@tanstack/react-query";
-import { Heart, LoaderCircle, MessageCircle, MessageSquareText, Settings } from "lucide-react";
-import { IoHeart } from "react-icons/io5";
 import { redirect, useParams, useRouter } from "next/navigation"
 import { useState, useEffect, use } from "react";
 import { IoIosShareAlt } from "react-icons/io";
-import { toast } from "react-toastify";
 import { usePaymentMethods } from "@/services/payment/queries";
 import { Card, CardContent } from "@/components/ui/card";
 import { OrderDataType, paymentMethodType } from "@/services/payment/types";
 import BuyProductModal from "@/components/product-page/BuyProductModal";
 import PaymentInProgressModal from "@/components/product-page/PaymentInProgressModal";
 import PaymentFailedModal from "@/components/product-page/PaymentFailedModal";
-import { string } from "zod";
 import PaymentSuccesfulModal from "@/components/product-page/PaymentSuccessfulModal";
 import Specification from "@/components/product-page/Specification";
 import ProductPageActionButtonsCon from "@/components/product-page/ProductPageActionButtonsCon";
 import SellerInfo from "@/components/product-page/SellerInfo";
+import { toast } from "react-toastify";
 
 type transactionDetailsType = {
   success: boolean;
