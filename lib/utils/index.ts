@@ -86,18 +86,18 @@ export const states: CountryType[] = [
 ];
 
 
-export const CATEGORIES : Array<{value: string; label: CategoryType}> = [
-  { value: "tops", label: "Tops" },
-  { value: "bottoms", label: "Bottoms" },
-  { value: "dresses", label: "Dresses" },
-  { value: "outerwear", label: "Outerwear" },
-  { value: "shoes", label: "Shoes" },
-  { value: "bags", label: "Bags" },
-  { value: "accessories", label: "Accessories" },
-  { value: "underwear", label: "Underwear" },
-  { value: "swimwear", label: "Swimwear" },
-  { value: "activewear", label: "Activewear" },
-  { value: "other", label: "Other" },
+export const CATEGORIES : Array<{value: string; label: CategoryType, images: string[]}> = [
+  { value: "tops", label: "Tops", images: []},
+  { value: "bottoms", label: "Bottoms", images: [] },
+  { value: "dresses", label: "Dresses", images: []},
+  { value: "outerwear", label: "Outerwear", images: []},
+  { value: "shoes", label: "Shoes", images: []},
+  { value: "bags", label: "Bags", images: []},
+  { value: "accessories", label: "Accessories", images: []},
+  { value: "underwear", label: "Underwear", images: []},
+  { value: "swimwear", label: "Swimwear", images: []},
+  { value: "activewear", label: "Activewear", images: [] },
+  { value: "other", label: "Other", images: []},
 ];
 export const SUB_CATEGORIES = {
   "Tops": [

@@ -11,16 +11,24 @@ import RecentlyViewedProductsPreview from '@/components/wishlist/RecentlyViewedP
 import WishlistProductCard from '@/components/wishlist/WishlistProductCard'
 import { useAuth } from '@/lib/contexts/auth-context'
 import { useFetchUserWishlist } from '@/services/products/queries'
+import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 const page = () => {
   const {user} = useAuth();
   const {isError, isLoading, data: wishlist} = useFetchUserWishlist(user?.uid || '');
+  const router = useRouter()
 
   return (
     <section className="w-full mt-4 relative overflow-x-hidden mb-[300px]">
-        <h2 className='font-raleway font-bold text-[28px] tracking-[-0.28px] leading-[1px] mt-2'>Wishlist</h2>
+      <div className="w-full flex items-center gap-3 mt-4">
+        <button onClick={() => router.back()} className="flex items-center justify-center cursor-pointer">
+            <ArrowLeft className="size-[30px]" />
+        </button>
+        <h2 className='font-raleway font-bold text-[28px] tracking-[-0.28px] leading-[1px]'>Wishlist</h2>
+      </div>
         <RecentlyViewedProductsPreview />
   
         <div className="w-full mt-3">

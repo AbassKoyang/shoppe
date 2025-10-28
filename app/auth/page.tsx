@@ -18,7 +18,7 @@ const WelcomeScreen = () => {
         <div className='flex items-center justify-center flex-col'>
             <Image width={140} height={140} className='mt-6' src={logo} alt='Shopee Logo'/>
             <h1 className='font-bold text-[52px] mt-5 leading-[1]'>Shoppe</h1>
-            <p className='mt-5 max-w-[249px] leading-[1.3] text-md font-light text-center'>Beautiful eCommerce UI Kit for your online store</p>
+            <p className='mt-5 max-w-[249px] leading-[1.3] text-md font-light text-center'>The Next Gen Online Clothing Marketplace</p>
         </div>
         <div className='mt-18 flex flex-col items-center'>
             <PrimaryButton additionalStyles='' text="Let's get started" primaryButtonFunction={handleSignUpClick} />

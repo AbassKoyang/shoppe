@@ -9,7 +9,7 @@ const Transaction = ({transaction}: {transaction: OrderDataType}) => {
     const price : string = String(transaction.transactionDetails.sellerId === user?.uid ? transaction.transactionDetails.sellerAmount : transaction.transactionDetails.amount);
     const rawTs = transaction.createdAt;
     const resolvedDate = rawTs?.toDate ? rawTs.toDate() : (rawTs instanceof Date ? rawTs : new Date(rawTs));
-    const date = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toDateString().substring(0,11);
+    const date = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toDateString().substring(0,15);
     const amount = formatPrice(price, transaction.productDetails.currency || '');
 
   return (

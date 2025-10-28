@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
     const res = await client.search({
         requests: [
           {
-            query: `${query} ${location}` || '',
+            query: `${query}` || '',
             indexName: sortBy ? `${ALGOLIA_INDEX_NAME}_${sortBy}` : ALGOLIA_INDEX_NAME,
             facetFilters,
             numericFilters,

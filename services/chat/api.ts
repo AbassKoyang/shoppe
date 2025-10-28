@@ -124,7 +124,7 @@ export const getAllChats = async ({pageParam, userId}: GetAllChatsParamsType) : 
           where("sellerId", "==", userId),
           where("buyerId", "==", userId)
         )
-      ),  orderBy('createdAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
+      ),  orderBy('updatedAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
     }
     
     const chatsSnapshot = await getDocs(q);
@@ -132,7 +132,7 @@ export const getAllChats = async ({pageParam, userId}: GetAllChatsParamsType) : 
     const promises = chatsSnapshot.docs.map(async (chatDoc) => {
       const chatData = { id: chatDoc.id, ...chatDoc.data() as Omit<chatType, 'id' | 'messages'>, messages: [] as any[]};
       const messagesRef = collection(db, "chats", chatDoc.id, "messages");
-      const messagesQuery = query(messagesRef);
+      const messagesQuery = query(messagesRef, orderBy("timestamp", "asc"));
       const messagesSnapshot = await getDocs(messagesQuery);
 
       messagesSnapshot.docs.forEach((messageDoc) => {
@@ -157,9 +157,9 @@ export const getSellingChats = async ({pageParam, userId}: GetAllChatsParamsType
     const chatRef = collection(db, 'chats');
     let q;
     if(!pageParam) {
-      q = query(chatRef, where("sellerId", "==", userId), where("archived", "==", false), orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
+      q = query(chatRef, where("sellerId", "==", userId), where("archived", "==", false), orderBy('updatedAt', 'desc'), limit(PAGE_SIZE));
     } else {
-      q = query(chatRef, where("sellerId", "==", userId), where("archived", "==", false), orderBy('createdAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
+      q = query(chatRef, where("sellerId", "==", userId), where("archived", "==", false), orderBy('updatedAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
     }
     
     const chatsSnapshot = await getDocs(q);
@@ -191,9 +191,9 @@ export const getBuyingChats = async ({pageParam, userId}: GetAllChatsParamsType)
     const chatRef = collection(db, 'chats');
     let q;
     if(!pageParam) {
-      q = query(chatRef, where("buyerId", "==", userId), where("archived", "==", false), orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
+      q = query(chatRef, where("buyerId", "==", userId), where("archived", "==", false), orderBy('updatedAt', 'desc'), limit(PAGE_SIZE));
     } else {
-      q = query(chatRef, where("buyerId", "==", userId), where("archived", "==",false), orderBy('createdAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
+      q = query(chatRef, where("buyerId", "==", userId), where("archived", "==",false), orderBy('updatedAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
     }
     
     const chatsSnapshot = await getDocs(q);
@@ -259,7 +259,7 @@ export const getArchivedChats = async ({pageParam, userId}: GetAllChatsParamsTyp
           where("sellerId", "==", userId),
           where("buyerId", "==", userId)
         )
-      ), orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
+      ), orderBy('updatedAt', 'desc'), limit(PAGE_SIZE));
     } else {
       q = query(chatRef, and(
         where("archived", "==", true),
@@ -267,7 +267,7 @@ export const getArchivedChats = async ({pageParam, userId}: GetAllChatsParamsTyp
           where("sellerId", "==", userId),
           where("buyerId", "==", userId)
         )
-      ), orderBy('createdAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
+      ), orderBy('updatedAt', 'desc'), startAfter(pageParam), limit(PAGE_SIZE));
     }
     
     const chatsSnapshot = await getDocs(q);

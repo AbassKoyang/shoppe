@@ -1,11 +1,13 @@
 'use client';
+import { useAuth } from "@/lib/contexts/auth-context";
 import { addRecentSearch } from "@/lib/utils/recentSearches";
-import { Plus, Search } from "lucide-react"
+import { Plus, Search, UserRoundPlus } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 const HomeHeader = () => {
+  const {user} = useAuth()
   const [query, setQuery] = useState('');
   const router = useRouter();
     const handleFormSubmit = (e: FormEvent) => {
@@ -26,9 +28,15 @@ const HomeHeader = () => {
                 <Search strokeWidth={1} className="size-[19px] text-dark-blue" />
               </button>
           </form>
-          <Link href='/add-product' className="size-[30px] rounded-full bg-dark-blue flex items-center justify-center">
-           <Plus className="text-white size-[16px]" />
-          </Link>
+          {user ? (
+            <Link href='/add-product' className="size-[30px] rounded-full bg-dark-blue flex items-center justify-center">
+             <Plus className="text-white size-[16px]" />
+           </Link>
+          ) : (
+            <Link href='/auth/signup' className="size-[30px] rounded-full bg-dark-blue flex items-center justify-center">
+              <UserRoundPlus className="text-white size-[16px]" />
+            </Link>
+          )}
        </div>
     </header>
   )

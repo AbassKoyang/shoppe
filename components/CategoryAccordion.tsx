@@ -19,7 +19,7 @@ const CategoryAccordion = ({category} : {category: CategoryType}) => {
         </div>
         <div className={`w-full mt-3 grid grid-cols-2 grid-rows-5 gap-1.5 ${isAccordionOpen ? 'h-[350px]' : 'h-0'} transition-all duration-300 ease-in-out overflow-hidden`}>
             {SUB_CATEGORIES[`${category}`].map((subcat) => (
-                <Link href={`/sub-categories/${subcat}`} className="font-raleway font-bold text-[15px] rounded-[7px] border-3 border-[#FFEBEB] cols-span-1 row-span-1 py-2">{subcat}</Link>
+                <Link href={`/sub-categories/${subcat}`} className="font-raleway font-bold text-[15px] rounded-[7px] border-3 border-[#FFEBEB] cols-span-1 row-span-1 py-2 flex items-center justify-center">{subcat}</Link>
             ))}
         </div>
     </div>

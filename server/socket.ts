@@ -2,7 +2,6 @@ import { Server, Socket } from "socket.io";
 import { db, messaging } from "./firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
 
-// Define types for socket events
 interface JoinChatPayload {
   productId: string;
   buyerId: string;
@@ -45,6 +44,7 @@ interface ChatDocument {
   sellerId: string;
   participants: string[];
   createdAt: Timestamp;
+  updatedAt: Timestamp;
   archived: boolean;
 }
 
@@ -122,6 +122,9 @@ export function handleSocketEvents(io: Server): void {
         
         if (docSnapshot.exists) {
           await db.collection("chats").doc(roomId).collection("messages").add(messageData);
+          await db.collection("chats").doc(roomId).update({
+            updatedAt: Timestamp.now()
+          })
         } else {
           const chatData: ChatDocument = {
             productId,
@@ -129,6 +132,7 @@ export function handleSocketEvents(io: Server): void {
             sellerId,
             participants,
             createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now(),
             archived: false,
           };
           

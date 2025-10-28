@@ -42,7 +42,7 @@ const RecentlyViewedProductCard = ({product}:{product: any }) => {
                  sizes="(max-width: 768px) 100px, 150px"
                   className="rounded-[5px] object-cover z-10"/>
             </div>
-            <h5 className="text-black text-[17px] font-raleway font-bold mt-1.5 text-left">${formattedPrice}</h5>
+            <h5 className="text-black text-[17px] font-raleway font-bold mt-1.5 text-left">{formattedPrice}</h5>
             <h6 className="text-black text-[14px] font-raleway font-bold mt text-left">{title}</h6>
             <p className="text-black text-[12px] font-nunito-sans font-normal max-w-full text-left mt">{desc}</p>
          </Link>

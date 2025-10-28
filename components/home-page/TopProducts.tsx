@@ -43,7 +43,7 @@ const TopProducts = () => {
             {products?.map((product) => (
                 <TopProductAvatar product={product} />
             ))}
-                <div className='w-[140px] h-[140px] flex items-center justify-center' ref={ref}>
+                <div className='flex items-center justify-center' ref={ref}>
                     {isFetchingNextPage ? <LoaderCircle className="animate-spin size-[26px] text-dark-blue" /> : null}
                 </div>
              </div>

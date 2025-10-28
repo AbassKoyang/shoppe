@@ -17,13 +17,14 @@ import {
 
 import { Input } from '@/components/ui/input';
 import PrimaryButton from '@/components/PrimaryButton';
-import { defaultProfileAvatar, loginArrow, loginBubble1, loginBubble2, loginHeartIcon, loginProfilePic, logo } from '@/public/assets/images/exports';
+import { defaultProfileAvatar, eyeIcon, loginArrow, loginBubble1, loginBubble2, loginHeartIcon, loginProfilePic, logo } from '@/public/assets/images/exports';
 import Image from 'next/image';
 import { fetchUserByEmail } from '@/services/users/api';
 import { LoaderCircle } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { PasswordOTP } from '@/components/password-otp';
+import Link from 'next/link';
 
 const LoginPageContent = () => {
   const [loading, setLoading] = useState(false);
@@ -31,7 +32,7 @@ const LoginPageContent = () => {
   const [user, setUser] = useState<User | null>(null);
   const [password, setPassword] = useState('');
   const [isWrongPassword, setIsWrongPassword] = useState(false);
-  const searchParams = useSearchParams();
+  const [showPassword, setShowPassword] = useState(false);
 
 
   const router = useRouter();
@@ -137,14 +138,11 @@ const LoginPageContent = () => {
         }; 
 
         const handleUserLogin = async () => {
+            setLoading(true);
             try {
                 await signInWithEmailAndPassword(auth, user?.profile.email!, password);
                 toast.success("Signed in successfully!");
-                let redirectPath = searchParams.get("redirect") || "/";
-                if (redirectPath === "/login" || redirectPath === "/signup") {
-                    redirectPath = "/"; // or your default home
-                }
-                router.push(redirectPath);
+                router.replace('/');
               } catch (error: any) {
                 console.log(error, error.code);
                 switch (error.code) {
@@ -166,7 +164,7 @@ const LoginPageContent = () => {
                 }
                 
             } finally {
-
+                setLoading(false);
             }
         };
 
@@ -212,31 +210,35 @@ const LoginPageContent = () => {
         <>
          <div className='w-full min-h-dvh px-6 flex flex-col items-center justify-between z-50'>
             <div className='mb-8 flex flex-col items-center justify-center mt-20'>
-              <Image width={125} height={125} src={user?.profile.imageUrl || defaultProfileAvatar} alt='Profile picture' className='border-white border-8 rounded-full' />
+              <div className="size-[133px] border-white border-8 rounded-full overflow-hidden flex items-center justify-center">
+                <Image width={125} height={125} src={user?.profile.imageUrl || defaultProfileAvatar} blurDataURL="/assets/images/default-profile-avatar.webp" alt='Profile picture' className='object-cover object-center' />
+              </div>
               <h1 className='text-[#202020] text-[28px] font-bold leading-[1.1] mt-8'>Hello, {user?.profile.name.split(' ')[0]}!</h1>
               <p className='font-light text-xl text-black mt-14 mb-6'>Type your password</p>
-              <PasswordOTP 
-                value={password}
-                onChange={setPassword}
-                maxLength={6}
-                onComplete={handleUserLogin}
-                disabled={loading || !isDirty}
-                wrongPassword={isWrongPassword}
-             />
+                   
+                    <div className='w-full flex items-center justify-between'>
+                        <Input value={password} onChange={(e) => setPassword(e.target.value)} type={showPassword? 'text' : 'password'} placeholder='Password' className={`${isWrongPassword ? 'border-1 border-red-500' : 'border-0'} border-0 py-6 px-6 bg-gray-100 placeholder:text-gray-400 text-black/70 text-lg outline-0 focus-within:outline-2 outline-[#004CFF] rounded-xl mr-1 w-[90%]`} />
+
+                        <button type='button' onClick={() => {setShowPassword(!showPassword)}} className='outline-0 stroke-0'><Image width={18} src={eyeIcon} alt='Eye icons' /></button>
+                    </div>
+                    <button onClick={() => handleUserLogin()} disabled={loading || isWrongPassword} className={`mt-2 w-full cursor-pointer bg-dark-blue hover:opacity-90 transition-all duration-200 ease-in-out text-[#F3F3F3] text-[22px] font-extralight flex items-center justify-center rounded-xl px-18 py-1`}>
+                    {loading ? <LoaderCircle className='animate-spin' /> : 'Login'}
+                    </button>
              {isWrongPassword ? (
               <button onClick={() => router.push('/auth/password-recovery')} className='cursor-pointer border-0 outline-none font-normal text-lg text-black my-6'>Forgot your password?</button>
              ) : (
-              <p className='font-normal text-xs text-black my-6'>Enter your 6-charcater password</p>
+              <p className='font-normal text-xs text-black my-6'>Enter your password</p>
              )}
             </div>
 
             <div className='mt-18 flex flex-col items-center'>
-                <button onClick={() => router.push('/auth/login')} className='group cursor-pointer flex gap-3 justify-center items-center text-[15px] font-light text-[#202020] mt-3'>
+                <Link href='/auth/login' className='group cursor-pointer flex gap-3 justify-center items-center text-[15px] font-light text-[#202020] mt-3'>
                     <p>Not You?</p>
                     <span className='size-[30px] rounded-full bg-[#004CFF] group-hover:opacity-90 transition-all duration-200 ease-in-out flex justify-center items-center'>
                         <Image width={14.46} height={11.39} src={loginArrow} alt='login arrow' />
-                    </span></button>
-                </div>
+                    </span>
+                </Link>
+            </div>
          </div>
         </>
        )}

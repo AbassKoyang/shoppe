@@ -111,7 +111,7 @@ const Message = ({m, chatId, removeDeletedMessage, updateEditedMessage} : {m: me
 
     const rawTs = (m as any).timestamp ?? (m as any).createdAt;
     const resolvedDate = rawTs?.toDate ? rawTs.toDate() : (rawTs instanceof Date ? rawTs : new Date(rawTs));
-    const messageDate = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toLocaleString().substring(11);
+    const messageDate = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toLocaleDateString() + '' + resolvedDate.toLocaleTimeString();
 
 
     return (

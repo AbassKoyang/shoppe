@@ -39,8 +39,8 @@ const page = () => {
     const formSchema = z.object({
         username: z.string().min(1, 'Name is required').min(3, 'Name must be at least 3 characters long.'),
         email: z.string().min(1, {error: 'Email is required.'}).email({error: 'Invalid email address.'}),
-        password: z.string().min(1, 'Password is required').min(4, 'Password must be at least 4 characters').max(6, 'Password must not exceed 6 characters'),
-        confirmPassword: z.string().min(1, 'Confirm password is required').min(4, 'Password must be at least 4 characters').max(6, 'Password must not exceed 6 characters'),
+        password: z.string().min(1, 'Password is required').min(4, 'Password must be at least 4 characters').max(12, 'Password must not exceed 12 characters'),
+        confirmPassword: z.string().min(1, 'Confirm password is required').min(4, 'Password must be at least 4 characters').max(12, 'Password must not exceed 12 characters'),
     }).refine((data) => data.password === data.confirmPassword, {
         message: 'Passwords do not match.',
         path: ['confirmPassword'],
@@ -61,7 +61,7 @@ const page = () => {
         mutationKey: ['createUser'],
         mutationFn: ({data, uid} : {data: any; uid: string}) => saveUserToDB(data, uid),
         onSuccess: (data) => {
-            toast.success(`User created successfully`);
+            toast.success(`Signed up successfully`);
         }
     });
 
@@ -115,19 +115,6 @@ const page = () => {
                     toast.error(
                         <RetryToast label='Try again' message="Network error: Please check your internet connection and try again." retry={() => handleSignUp(data)} />, toastStyles.error
                     );
-                // } else if(error.code !== 'auth/email-already-in-use' && error.code !== 'auth/network-request-failed' && error.code !== 'auth/weak-password') {
-                //     toast.error(
-                //         <div>
-                //             <p>An unexpected error occurred. Please try again.</p>
-                //             <button 
-                //                 onClick={() => handleSignUp(data)}
-                //                 className="mt-2 px-4 py-2 bg-[#004CFF] text-white rounded-lg hover:bg-blue-600 transition-colors"
-                //             >
-                //                 Try Again
-                //             </button>
-                //         </div>,
-                //         toastStyles.error
-                //     );
                 }
                 console.log(error);
             } finally {

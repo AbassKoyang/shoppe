@@ -11,7 +11,7 @@ import { useAuth } from '@/lib/contexts/auth-context'
 import { getViewedOnSpecificDate, getViewedToday, getViewedYesterday } from '@/services/products/api'
 import { useFetchUserWishlist, useGetViewedToday } from '@/services/products/queries'
 import { recentlyViewedType } from '@/services/products/types'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { BsCheck } from 'react-icons/bs';
@@ -19,9 +19,11 @@ import { Calendar } from '@/components/ui/calendar'
 import EmptyRecentlyViewed from '@/components/recently-viewed/EmptyRecentlyViewed'
 import {motion} from 'framer-motion';
 import PopularProducts from '@/components/home-page/PopularProducts'
+import { useRouter } from 'next/router'
 
 const page = () => {
   const {user} = useAuth();
+  const router = useRouter();
   const [day, setDay] = useState<'today' | 'yesterday' | Date>('today');
   const [recViewed, setRecViewed] = useState<recentlyViewedType[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -85,6 +87,8 @@ const page = () => {
 
   return (
     <section className="w-full mt-2 relative overflow-x-hidden mb-[300px]">
+
+
       <motion.div
       initial={{y: '-150%'}}
       animate={{y: isdateOpen ? '0%' : '-150%'}}
@@ -107,9 +111,15 @@ const page = () => {
           </button>
         </div>
       </motion.div>
-        <h2 className='font-raleway font-bold text-[28px] tracking-[-0.28px]'>Recently Viewed</h2>
-        <div className="w-full flex items-center justify-between mt-3">
-          
+
+
+        <div className="w-full flex items-center gap-3 mt-4">
+          <button onClick={() => router.back()} className="flex items-center justify-center cursor-pointer">
+              <ArrowLeft className="size-[30px]" />
+          </button>
+          <h2 className='font-raleway font-bold text-[28px] tracking-[-0.28px] leading-[1px]'>Recently Viewed</h2>
+        </div>
+        <div className="w-full flex items-center justify-between mt-5">
           <button type='button' onClick={() => {setDay('today'); setSelectedDate(null)}} className={`${day === 'today' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[122px] w-[45%] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
               <p className={`${day === 'today' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Today</p>
               <div className={`${day === 'today' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>

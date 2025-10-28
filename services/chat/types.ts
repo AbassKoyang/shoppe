@@ -18,6 +18,7 @@ export type chatType = {
     messages: messageType[];
     participants: AppUserType[];
     archived?: boolean;
+    updatedAt?: any;
 }
 export type ChatDataType = {
     userInfo: AppUserType;

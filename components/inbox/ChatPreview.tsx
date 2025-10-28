@@ -25,7 +25,7 @@ const ChatPreview = ({chat}: {chat: chatType}) => {
     const formattedPreviewMessage = formatPreviewMessage(chat.messages[chat.messages.length -1].text);
     const rawTs = (chat.messages[chat.messages.length -1] as any).timestamp ?? (chat.messages[chat.messages.length -1] as any).createdAt;
     const resolvedDate = rawTs?.toDate ? rawTs.toDate() : (rawTs instanceof Date ? rawTs : new Date(rawTs));
-    const messageDate = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toLocaleString().substring(11);
+    const messageDate = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toLocaleTimeString() + '' + resolvedDate.toLocaleDateString();
 
   return (
     <Link href={`/chat/${chat.id}`} className='w-full'>
