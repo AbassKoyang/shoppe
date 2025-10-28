@@ -10,7 +10,7 @@ const CategoryPreview = ({label, images} : {label: string; images: string[]}) =>
   return (
         <>
             {isLoading && (
-                <div className='size-full bg-gray-200 rounded-[9px] grid grid-cols-2 grid-rows-2 gap-1.5 p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]'>
+                <div className='pointer w-[49%] h-[220px] bg-gray-200 rounded-[9px] grid grid-cols-2 grid-rows-2 gap-1.5 p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] mb-1'>
                     <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
                     <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
                     <div className="col-span-1 row-span-1 rounded-[5px] bg-gray-300 animate-pulse"></div>
@@ -24,7 +24,7 @@ const CategoryPreview = ({label, images} : {label: string; images: string[]}) =>
                 </div>
             )}
             {!isError && !isLoading && (
-                <button onClick={() => router.push(`/categories/${label}`)} className='cursor-pointer col-span-1 row-span-1 rounded-[9px] p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]'>
+                <button onClick={() => router.push(`/categories/${label}`)} className='cursor-pointer w-[49%] h-[220px] rounded-[9px] p-1.5 shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] mb-1'>
                 <div className="w-full h-[83%] grid grid-cols-2 grid-rows-2 gap-1">
                     <div className="col-span-1 row-span-1 gap-1 rounded-[5px] object-center object-contain overflow-hidden">
                         <img className='size-full' src="/assets/images/clothing-1.png" alt="clothing picture" />

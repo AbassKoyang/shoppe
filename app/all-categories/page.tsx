@@ -21,7 +21,7 @@ const page = () => {
           </button>
           <h3 className="text-[22px] font-raleway font-bold text-[#202020]">All Categories</h3>
         </div>
-        <div className="w-full h-[1100px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
+        <div className="w-full flex items-start justify-between flex-wrap mt-3 mb-[100px]">
             {CATEGORIES.map((cat) => (
           <CategoryPreview label={cat.label}  images={cat.images}/>
             ))}

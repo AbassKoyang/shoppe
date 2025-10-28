@@ -26,7 +26,7 @@ export default function Home() {
             <ArrowRightButton url={`/all-categories`} />
           </div>
         </div>
-        <div className="w-full h-[660px] grid grid-cols-2 grid-rows-3 gap-1.5 mt-3">
+        <div className="w-full flex items-start justify-between flex-wrap mt-3">
           <CategoryPreview label="Dresses"  images={[]}/>
           <CategoryPreview label="Shoes"  images={[]}/>
           <CategoryPreview label="Bags"  images={[]}/>
