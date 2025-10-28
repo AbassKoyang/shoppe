@@ -20,7 +20,7 @@ const RecentlyViewedProductsPreview = () => {
 
 
   return (
-    <section className="w-full mt-5">
+    <section className="w-full mt-4">
           <div className="w-full flex items-center justify-between">
           <h3 className="text-[22px] font-raleway font-bold text-[#202020]">Recently Viewed</h3>
           <div className="flex items-center gap-3">

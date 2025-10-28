@@ -11,7 +11,7 @@ import React from 'react'
 const page = () => {
     const router = useRouter();
   return (
-    <section className="w-full min-h-full px-4 [@media(min-width:375px)]:px-6 overflow-x-hidden scrollbar-hide">
+    <section className="w-full min-h-full scrollbar-hide">
       <HomeHeader />
       <SponsoredBanner />
       <div className="w-full mt-6">

@@ -19,7 +19,7 @@ import { Calendar } from '@/components/ui/calendar'
 import EmptyRecentlyViewed from '@/components/recently-viewed/EmptyRecentlyViewed'
 import {motion} from 'framer-motion';
 import PopularProducts from '@/components/home-page/PopularProducts'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 const page = () => {
   const {user} = useAuth();
@@ -86,7 +86,7 @@ const page = () => {
   
 
   return (
-    <section className="w-full mt-2 relative overflow-x-hidden mb-[300px]">
+    <section className="w-full relative overflow-x-hidden mb-[300px]">
 
 
       <motion.div

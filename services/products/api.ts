@@ -102,9 +102,10 @@ export const incrementProductViews = async (productId: string) => {
   const docRef = doc(db, 'products', productId);
     try {
         const productDoc = await getDoc(docRef);
-        const product = {id: productDoc.id, ...productDoc.data()} as ProductType
+        const product = {id: productDoc.id, ...productDoc.data()} as ProductType;
+        const newViewsCount = product.views ? (product.views + 1) : 0
         await updateDoc(docRef, {
-        views: product.views ? product.views + 1 : 0,
+        views: newViewsCount,
       })
     } catch (error) {
         console.error('Error incremeting item views', error);

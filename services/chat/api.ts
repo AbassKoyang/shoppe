@@ -116,7 +116,7 @@ export const getAllChats = async ({pageParam, userId}: GetAllChatsParamsType) : 
           where("sellerId", "==", userId),
           where("buyerId", "==", userId)
         )
-      ), orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
+      ), orderBy('updatedAt', 'desc'), limit(PAGE_SIZE));
     } else {
       q = query(chatRef, and(
         where("archived", "==", false),
