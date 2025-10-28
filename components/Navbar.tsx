@@ -16,16 +16,15 @@ const Navbar = () => {
     const {user} = useAuth();
     const isHome = pathname == '/' || pathname.includes('sub-categories') || pathname.includes('categories') || pathname === '/most-popular-products' || pathname === '/new-products' || pathname === '/just-for-you'
     const router = useRouter();
-    const navBarRef = useRef<HTMLElement>(null);
 
     useGSAP(() => {
-        gsap.from('.nav-animate', {
-            y: 20,
+        const tl = gsap.timeline();
+        tl.from('.nav-animate', {
+            bottom: -30,
             duration: 0.3, 
             ease: "power2.inOut" ,
-            stagger: 0.1,
         })
-        gsap.from('.gsap-animate', {
+        tl.from('.gsap-animate', {
             y: 50,
             duration: 0.3, 
             ease: "power1.inOut" ,
@@ -35,9 +34,8 @@ const Navbar = () => {
                 grid: 'auto',
                 ease: 'power2.inOut',
             },
-            delay: 1
         })
-    }, {dependencies: [user, params], scope:navBarRef, revertOnUpdate: true })
+    }, {dependencies: [user]})
 
     const hideNavbar = useMemo(() => {
 
@@ -61,8 +59,8 @@ if(pathname.startsWith('/sales')) return null;
 if(pathname.startsWith('/profile') && params?.userId !== user?.uid && pathname !== '/profile/notifications' ) return null;
 
     return (
-        <ProtectedRoute>
-        <nav ref={navBarRef} className="nav-animate overflow-hidden w-[calc(100%-32px)] [@media(min-width:375px)]:w-[calc(100%-48px)] bg-white flex items-center justify-between px-4 py-3 fixed bottom-3 left-[50%] translate-x-[-50%] z-100 rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
+        <nav className="nav-animate overflow-hidden w-[calc(100%-32px)] [@media(min-width:375px)]:w-[calc(100%-48px)] px-4 py-3 bg-white fixed bottom-3 left-[50%] translate-x-[-50%] z-100 rounded-[40px] shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
+            <div className="w-full flex items-center justify-between overflow-hidden bg-white">
             <Link href='/' className={`gsap-animate px-3 py-2 rounded-4xl flex items-center ${isHome ? 'bg-dark-blue' : 'bg-transparent'}`}>
                 <RiHome6Line strokeWidth={1} className={`${isHome ? 'text-white bg-dark-blue size-[20px]' : 'text-black/75 bg-white size-[24px]'} z-20 transition-transform duration-300 ease-in-out`} />
                 <p className={`${isHome ? 'translate-x-0 opacity-100 w-auto ml-1' : '-translate-x-5 opacity-0 w-0 ml-0'} transition-all duration-300 ease-in-out text-[12px] font-nunito-sans text-white font-normal z-10`}>Home</p>
@@ -79,8 +77,8 @@ if(pathname.startsWith('/profile') && params?.userId !== user?.uid && pathname !
                 <RiUserLine strokeWidth={1} className={`${pathname.includes('profile') || pathname.startsWith('/wishlist') || pathname.startsWith('/settings') || pathname.includes('/recently-viewed')  ? 'text-white bg-dark-blue size-[20px]' : 'text-black/75 bg-white size-[24px]'} z-20 transition-transform duration-300 ease-in-out`} />
                 <p className={`${pathname.includes('profile') || pathname.startsWith('/wishlist') || pathname.startsWith('/settings') || pathname.includes('/recently-viewed') ? 'translate-x-0 opacity-100 w-auto ml-1' : '-translate-x-5 opacity-0 w-0 ml-0'} transition-all duration-300 ease-in-out text-[12px] font-nunito-sans text-white font-normal z-10`}>Profile</p>
             </Link>
+            </div>
         </nav>
-    </ProtectedRoute>
     )
 }
 
