@@ -76,7 +76,7 @@ const page = () => {
         <SettingsLink href='/settings/bank-details' text='Bank Details' />
 
         <h3 className='text-[20px] font-family-raleway font-extrabold mb-1 mt-7 text-[#202020]'>Shop</h3>
-        <SettingsLink href='/settings/country' text='Country' extraText={user?.shopPrefrences.country} />
+        <SettingsLink href='/settings/country' text='States' extraText={user?.shopPrefrences.country} />
         <SettingsLink href='/settings/currency' text='Currency' extraText={user?.shopPrefrences.currency} />
         <SettingsLink href='/settings/size' text='Sizes' extraText={user?.shopPrefrences.size} />
         <SettingsLink href='' text='Terms & Conditions' />

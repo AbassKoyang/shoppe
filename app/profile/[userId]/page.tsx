@@ -14,7 +14,7 @@ const page = () => {
 
   return (
     <div className="w-full mt-0">
-    <div className="w-full flex justify-between flex-wrap mt-[-20px]">
+    <div className="w-full flex justify-between flex-wrap mt-[0px]">
     {products && products.length > 0 && products.map((product) => (
       <JustForYouProductCard product={product} />
     ))}

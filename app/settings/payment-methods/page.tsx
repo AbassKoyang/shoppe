@@ -20,6 +20,8 @@ import EditPaymentMethodForm from '../components/EditPaymentMethod';
 import { paymentMethodType } from '@/services/payment/types';
 import { usePaymentMethods } from '@/services/payment/queries';
 import CardCarouselItem from '../components/CardCarouselItem';
+import Transactions from '../components/Transactions';
+import CreditCardSkeleton from '../components/CreditCardSkeleton';
 
 
 const PaymentMethodsPage = () => {
@@ -44,7 +46,7 @@ const PaymentMethodsPage = () => {
                 )}
 
                 {isLoading && (
-                    <div className='w-[88%] h-[155px] rounded-xl skeleton'></div>
+                   <CreditCardSkeleton />
                 )}
                 {paymentMethods && paymentMethods.length == 0 && (
                     <div className='w-[88%] h-[155px] flex items-center justify-center'>
@@ -67,6 +69,7 @@ const PaymentMethodsPage = () => {
                 )}
                 <AddPaymentMethodButton openModal={() => setIsAddModalOpen(true)} />
             </div>
+            <Transactions />
             <AddPaymentMethodForm  open = {isAddModalOpen} closeModal={() => setIsAddModalOpen(false)} />
             <EditPaymentMethodForm paymentMethod={selectedPaymentMethod || {id: '', userId: '', cardHolder: '', brand: '', last4: '', expiryMonth: '', expiryYear: '', email: '', authorisationCode: '', createdAt: '',}} open = {isEditModalOpen} closeModal={() => setIsEditModalOpen(false)} />
         </section>

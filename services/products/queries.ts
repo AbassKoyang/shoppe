@@ -1,12 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchProductCategoryCount, fetchProductPerUser, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, fetchUserWishlist, getViewedToday, getViewedYesterday, isProductInWishlist, searchProductsIndex } from "./api";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { fetchProductCategoryCount, fetchProductPerUser, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, fetchUserWishlist, getNewProducts, getPersonalizedProducts, getPopularProducts, getRecentlyViewed, getViewedToday, getViewedYesterday, isProductInWishlist, searchProductsIndex } from "./api";
 import { useSearchParams } from "next/navigation";
-import { ProductType } from "./types";
+import { fetchNewProductsReturnType, ProductType } from "./types";
 
 export const useFetchProductCategoryCount = (label: string) => {
   
     return useQuery({
-      queryKey: ["productsCount", label], // ✅ cache per user
+      queryKey: ["productsCount", label],
       queryFn: () => fetchProductCategoryCount(label),
       enabled: !!label,
     });
@@ -104,3 +104,52 @@ export const useSearchProductsIndex = (query: string) => {
       enabled: !!userId,
     });
   };
+  export const useGetRecentlyViewed= (userId: string) => {
+    return useQuery({
+      queryKey: ["recentlyViewed", userId], 
+      queryFn: () => getRecentlyViewed(userId),
+      enabled: !!userId,
+    });
+  };
+
+  export const useGetNewProducts= () => {
+    return useInfiniteQuery<fetchNewProductsReturnType, Error>({
+      queryKey: ['products'],
+      queryFn: ({pageParam}) =>  getNewProducts({pageParam}),
+      initialPageParam: null, 
+      getNextPageParam: (lastPage: fetchNewProductsReturnType) => {
+      if (!lastPage.lastVisible || lastPage.products.length < 4) {
+        return undefined;
+      }
+      return lastPage.lastVisible;
+    },
+    });
+};
+
+  export const useGetPopularProducts= () => {
+    return useInfiniteQuery<fetchNewProductsReturnType, Error>({
+      queryKey: ['products'],
+      queryFn: ({pageParam}) =>  getPopularProducts({pageParam}),
+      initialPageParam: null, 
+      getNextPageParam: (lastPage: fetchNewProductsReturnType) => {
+      if (!lastPage.lastVisible || lastPage.products.length < 4) {
+        return undefined;
+      }
+      return lastPage.lastVisible;
+    },
+    });
+};
+
+  export const useGetPersonalizedProducts= () => {
+    return useInfiniteQuery<fetchNewProductsReturnType, Error>({
+      queryKey: ['products'],
+      queryFn: ({pageParam}) =>  getPersonalizedProducts({pageParam}),
+      initialPageParam: null, 
+      getNextPageParam: (lastPage: fetchNewProductsReturnType) => {
+      if (!lastPage.lastVisible || lastPage.products.length < 4) {
+        return undefined;
+      }
+      return lastPage.lastVisible;
+    },
+    });
+};

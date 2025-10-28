@@ -1,11 +1,13 @@
 'use client'
 import ArrowRightButton from '@/components/ArrowRightButton'
+import PopularProducts from '@/components/home-page/PopularProducts'
 import JustForYouProductCard from '@/components/JustForYouProductCard'
 import ProductCard from '@/components/ProductCard'
 import ProfileProductCardSkeleton from '@/components/profile/ProfileProductCardSkeleton'
 import UserHeader from '@/components/profile/UserHeader'
 import TopProductAvatar from '@/components/TopProductAvatar'
 import EmptyWishlist from '@/components/wishlist/EmptyWishlist'
+import RecentlyViewedProductsPreview from '@/components/wishlist/RecentlyViewedProductsPreview'
 import WishlistProductCard from '@/components/wishlist/WishlistProductCard'
 import { useAuth } from '@/lib/contexts/auth-context'
 import { useFetchUserWishlist } from '@/services/products/queries'
@@ -18,20 +20,8 @@ const page = () => {
 
   return (
     <section className="w-full mt-4 relative overflow-x-hidden mb-[300px]">
-        <h2 className='font-raleway font-bold text-[28px] tracking-[-0.28px]'>Wishlist</h2>
-        <div className="w-full mt-6">
-            <div className="w-full flex items-center justify-between">
-                <h3 className="text-[21px] font-raleway font-bold text-[#202020]">Recently viewed</h3>
-               <ArrowRightButton />
-            </div>
-          <div className="w-full flex items-center justify-between mt-4">
-            <TopProductAvatar />
-            <TopProductAvatar />
-            <TopProductAvatar />
-            <TopProductAvatar />
-            <TopProductAvatar />
-          </div>
-      </div>
+        <h2 className='font-raleway font-bold text-[28px] tracking-[-0.28px] leading-[1px] mt-2'>Wishlist</h2>
+        <RecentlyViewedProductsPreview />
   
         <div className="w-full mt-3">
             <div className="w-full flex justify-between flex-wrap">
@@ -52,29 +42,10 @@ const page = () => {
               <ProfileProductCardSkeleton />
             )}
         </div>
-        <div className="w-full mt-8">
-            <div className="w-full flex items-center justify-between">
-                <h3 className="text-[22px] font-raleway font-bold text-[#202020]">Most Popular</h3>
-                <Link className="flex items-center gap-3" href='/'>
-                    <p className="text-[15px] font-raleway font-bold text-[#202020">See All</p>
-                    <ArrowRightButton />
-                </Link>
-            </div>
 
-            <div className="min-w-full mt-2">
-            <div className="w-full overflow-x-auto flex items-start gap-1.5 carousel-container scrollbar-hide">
-                <ProductCard/>
-                <ProductCard/>
-                <ProductCard/>
-                <ProductCard/>
-                <ProductCard/>
-                <ProductCard/>
-                <ProductCard/>
-            </div>
-            </div>
-        </div>
+            <PopularProducts />
     </section>
   )
 }
 
-export default page
+export default page;

@@ -1,6 +1,6 @@
 import { db } from "@/lib/firebase";
-import { OrderDataType, paymentMethodType, TransactionType } from "../payment/types";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { getTransactionsReturnType, OrderDataType, paymentMethodType, TransactionType } from "../payment/types";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, or, orderBy, query, serverTimestamp, startAfter, updateDoc, where } from "firebase/firestore";
 import { AppUserType } from "../users/types";
 import { ProductType } from "../products/types";
 
@@ -185,6 +185,34 @@ export const getCompletedSales = async (userId: string) : Promise<OrderDataType[
     })) as OrderDataType[];
   } catch (error) {
     console.error('Error fetching completed sales:', error);
+    throw error;
+  }
+};
+export const getTransactions = async ({pageParam, userId}:{pageParam: unknown, userId: string}) : Promise<getTransactionsReturnType> => {
+  try {
+    const ordersRef = collection(db, 'orders');
+    let q;
+    if(!pageParam){
+      q = query(ordersRef, or(
+        where("sellerInfo.id", "==", userId), 
+        where("buyerInfo.id", "==", userId)
+      ) , orderBy('createdAt', 'desc'), limit(10));
+    } else {
+      q = query(ordersRef, or(
+        where("sellerInfo.id", "==", userId), 
+        where("buyerInfo.id", "==", userId)
+      ) , orderBy('createdAt', 'desc'), limit(10), startAfter(pageParam));
+    }
+    
+    const ordersSnapshot = await getDocs(q);
+    const lastDoc = ordersSnapshot.docs[ordersSnapshot.docs.length -1]
+   const  orders = ordersSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    })) as OrderDataType[];
+    return {orders: orders, lastVisible: lastDoc} as getTransactionsReturnType;
+  } catch (error) {
+    console.error('Error fetching transactions:', error);
     throw error;
   }
 };

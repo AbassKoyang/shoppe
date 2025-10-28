@@ -24,9 +24,12 @@ export async function GET(req: NextRequest) {
   console.log('subCategory', subCategory);
 
   const facetFilters: string[][] = [['status:available']];
-  let filters = '';
-  if (location) filters = `location:"${location}"`
- if (subCategory) facetFilters.push([`subCategory:${subCategory}`]);
+  if (location) {
+    const locationTerms = location.split(/[,\s]+/).filter(Boolean);
+    const locationFilters = locationTerms.map((term) => `location_facets:${term}`);
+    facetFilters.push(locationFilters);
+  };
+if (subCategory) facetFilters.push([`subCategory:${subCategory}`]);
  if (currency) facetFilters.push([`currency:${currency}`]);
  if (gender) facetFilters.push([`gender:${gender}`]);
  if (condition) facetFilters.push([`condition:${condition}`]);
@@ -56,7 +59,6 @@ export async function GET(req: NextRequest) {
             indexName: sortBy ? `${ALGOLIA_INDEX_NAME}_${sortBy}` : ALGOLIA_INDEX_NAME,
             facetFilters,
             numericFilters,
-            filters
           },
         ],
       });

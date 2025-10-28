@@ -11,7 +11,7 @@ const Navbar = () => {
     const pathname = usePathname();
     const params = useParams();
     const {user} = useAuth();
-    const isHome = pathname == '/' || pathname.includes('sub-categories') || pathname.includes('categories');
+    const isHome = pathname == '/' || pathname.includes('sub-categories') || pathname.includes('categories') || pathname === '/most-popular-products' || pathname === '/new-products' || pathname === '/just-for-you'
     const router = useRouter();
 
     const hideNavbar = useMemo(() => {
@@ -27,7 +27,7 @@ const Navbar = () => {
 
 if(hideNavbar) return null;
 if(pathname == '/add-product') return null;
-if(pathname == '/settings') return null;
+if(pathname.startsWith('/settings')) return null;
 if(pathname.startsWith('/edit-product')) return null;
 if(pathname.includes('/auth')) return null;
 if(pathname.includes('/chat')) return null;

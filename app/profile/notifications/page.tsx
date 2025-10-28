@@ -1,5 +1,6 @@
 'use client';
 import NotificationCard from '@/components/profile/NotificationCard';
+import NotificationCardSkeleton from '@/components/profile/NotificationCardSkeleton';
 import NotificationPageHeader from '@/components/profile/NotificationPageHeader'
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/contexts/auth-context';
@@ -57,10 +58,16 @@ const page = () => {
     <section className='w-full'>
         <NotificationPageHeader />
         {isLoading && (
-            <p>Loading</p>
+            <>
+            {Array.from({length: 10}).map((_, i) => (
+                <NotificationCardSkeleton key={i} />
+            ))}
+            </>
         )}
         {isError && (
-            <p>Error, {error.message}</p>
+            <div className='flex items-center justify-center w-full h-[100vh]'>
+                 <p className='font-nunito-sans'>Oops, failed to fetch notifications.</p>
+            </div>
         )}
         {allNotifications && allNotifications.map((notis) => (
             <NotificationCard key={notis.id} notification={notis} />

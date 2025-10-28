@@ -21,3 +21,12 @@ export type CategoryType =
     product: ProductType;
 }
 export type recentlyViewedType = z.infer<typeof recentlyViewedProductSchema>
+export type PageParam = unknown;
+
+export interface fetchNewProductsParamsType {
+  pageParam: PageParam;
+}
+export interface fetchNewProductsReturnType {
+  products: ProductType[],
+  lastVisible: any,
+}

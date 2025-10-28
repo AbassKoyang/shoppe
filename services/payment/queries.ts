@@ -1,5 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchPaymentMethods, getCompletedSales, getDeliveredOrders, getOrderById, getPendingOrders, getPendingSales } from "./api";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { fetchPaymentMethods, getCompletedSales, getDeliveredOrders, getOrderById, getPendingOrders, getPendingSales, getTransactions } from "./api";
+import { getTransactionsReturnType } from "./types";
 
 export const usePaymentMethods = (userId: string) => {
     return useQuery({
@@ -36,6 +37,20 @@ export const useGetCompletedSales = (userId: string) => {
       enabled: !!userId, 
     });
 };
+export const useGetTransactions = (userId: string) => {
+    return useInfiniteQuery<getTransactionsReturnType, Error>({
+      queryKey: ["transactions", userId], 
+      queryFn: ({pageParam}) => getTransactions({pageParam, userId}),
+      initialPageParam: null, 
+      getNextPageParam: (lastPage: getTransactionsReturnType) => {
+      if (!lastPage.lastVisible || lastPage.orders.length < 10) {
+        return undefined;
+      }
+    return lastPage.lastVisible;
+  },
+      enabled: !!userId, 
+    });
+};
 export const useGetOrderById = (orderId: string) => {
     return useQuery({
       queryKey: ["orders", orderId], 
@@ -43,3 +58,4 @@ export const useGetOrderById = (orderId: string) => {
       enabled: !!orderId, 
     });
 };
+

@@ -46,14 +46,14 @@ const SelectCountryButton = ({country, isCurrentCountry} : {country: string; isC
         try {
             await updateCountryMutation.mutateAsync({uid, country});
         } catch (error: any) {
-            console.error("❌ Error updating country:", error);
+            console.error("❌ Error updating state:", error);
       
           if (error?.code === "permission-denied") {
-            toast.error("You don’t have permission to update country.");
+            toast.error("You don’t have permission to update state.");
           } else if (error?.message?.includes("network")) {
             toast.error("Network error — check your connection and try again.");
           } else {
-            toast.error("Something went wrong while changing your country. Please try again.");
+            toast.error("Something went wrong while changing your state. Please try again.");
           }
         } finally {
             setLoading(false);

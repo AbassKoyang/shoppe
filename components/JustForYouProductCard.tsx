@@ -24,12 +24,12 @@ const JustForYouProductCard = ({product}:{product: any }) => {
 
   const title = formatTitle(product.title);
   
-  const desc = formatDescription(product.description);
+  const desc = formatDescription(product.description, 18);
 
   const productLink = formatProductLink(product.category, product.subCategory, product.objectID || product.id);
 
   return (
-        <Link href={productLink} className='w-[160px] mt-3'>
+        <Link href={productLink} className='w-[160px] mb-3'>
             <div className="w-full relative h-[160px] aspect-square p-[5px] rounded-[9px] bg-white overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
                 <Image
                   src={imageUrl}
@@ -50,7 +50,7 @@ const JustForYouProductCard = ({product}:{product: any }) => {
               <MapPin className='text-black/85 size-[10px]' />
               <p className="text-[9px] text-black/85 font-nunito-sans font-semibold text-left max-w-fit">{product.location}</p>
               </div>
-              <span className='text-black/85 text-[12px]'>-{product.discount}%</span>
+              <span className='text-black/85 text-[12px] mr-2'>-{product.discount}%</span>
             </div>
          </Link>
   )

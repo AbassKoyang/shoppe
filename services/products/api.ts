@@ -1,6 +1,6 @@
 import { db } from '@/lib/firebase';
-import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc, QueryConstraint, limit, orderBy, DocumentData} from 'firebase/firestore';
-import { ProductType, recentlyViewedType } from './types';
+import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc, QueryConstraint, limit, orderBy, DocumentData, startAfter, DocumentSnapshot} from 'firebase/firestore';
+import { fetchNewProductsParamsType, fetchNewProductsReturnType, ProductType, recentlyViewedType } from './types';
 import { formatFilterURL } from '@/lib/utils/formatFilterURL';
 import { WishlistType } from '../products/types';
 import { getEndOfDay, getStartOfDay } from '@/lib/utils';
@@ -293,6 +293,22 @@ export const getViewedToday = async (userId: string) : Promise<recentlyViewedTyp
   }
 };
 
+export const getRecentlyViewed = async (userId: string) : Promise<recentlyViewedType[]> => {
+  try {
+    const q = query(
+      collection(db, "recentlyViewed"),
+      where("userId", "==", userId),
+      limit(5)
+    );
+  
+    const snap = await getDocs(q);
+    return snap.docs.map(doc => ({id: doc.id, ...doc.data()})) as recentlyViewedType[];
+  } catch (error) {
+    console.error('erorrrrrr', error);
+    return [];
+  }
+};
+
 export const getViewedYesterday = async (userId: string) : Promise<recentlyViewedType[]> => {
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
@@ -335,3 +351,77 @@ export const getViewedOnSpecificDate = async (userId: string, selectedDate: Date
   }
   
 };
+
+export const getNewProducts = async ({pageParam} : fetchNewProductsParamsType) : Promise<fetchNewProductsReturnType> => {
+  const colRef = collection(db, 'products');
+  let q;
+  if(!pageParam){
+   q = query(colRef,where("status", "==", "available"), orderBy("createdAt", "desc"), limit(4),)
+  } else {
+    q = query(colRef,where("status", "==", "available"), orderBy("createdAt", "desc"), limit(4), startAfter(pageParam))
+  }
+  try {
+    const snapshot = await getDocs(q);
+    console.log(snapshot.docs)
+    const lastDoc : DocumentSnapshot = snapshot.docs[snapshot.docs.length - 1];
+    const products = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+  })) as ProductType[];
+  
+    return {products, lastVisible: lastDoc} as fetchNewProductsReturnType;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
+export const getPopularProducts = async ({pageParam} : fetchNewProductsParamsType) : Promise<fetchNewProductsReturnType> => {
+  const colRef = collection(db, 'products');
+  let q;
+  if(!pageParam){
+   q = query(colRef, where("status", "==", "available"), orderBy("views", "desc"), limit(4),)
+  } else {
+    q = query(colRef, where("status", "==", "available"), orderBy("views", "desc"), limit(4), startAfter(pageParam))
+  }
+  try {
+    const snapshot = await getDocs(q);
+    console.log(snapshot.docs)
+    const lastDoc : DocumentSnapshot = snapshot.docs[snapshot.docs.length - 1];
+    const products = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+  })) as ProductType[];
+  
+    return {products, lastVisible: lastDoc} as fetchNewProductsReturnType;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
+export const getPersonalizedProducts = async ({pageParam} : fetchNewProductsParamsType) : Promise<fetchNewProductsReturnType> => {
+  const colRef = collection(db, 'products');
+  let q;
+  if(!pageParam){
+   q = query(colRef, where("status", "==", "available"), orderBy("createdAt", "desc"), limit(4),)
+  } else {
+    q = query(colRef, where("status", "==", "available"), orderBy("createdAt", "desc"), limit(4), startAfter(pageParam))
+  }
+  try {
+    const snapshot = await getDocs(q);
+    console.log(snapshot.docs)
+    const lastDoc : DocumentSnapshot = snapshot.docs[snapshot.docs.length - 1];
+    const products = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+  })) as ProductType[];
+  
+    return {products, lastVisible: lastDoc} as fetchNewProductsReturnType;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

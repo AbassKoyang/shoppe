@@ -18,6 +18,7 @@ import { BsCheck } from 'react-icons/bs';
 import { Calendar } from '@/components/ui/calendar'
 import EmptyRecentlyViewed from '@/components/recently-viewed/EmptyRecentlyViewed'
 import {motion} from 'framer-motion';
+import PopularProducts from '@/components/home-page/PopularProducts'
 
 const page = () => {
   const {user} = useAuth();
@@ -152,27 +153,7 @@ const page = () => {
               <ProfileProductCardSkeleton />
             )}
         </div>
-        <div className="w-full mt-8">
-            <div className="w-full flex items-center justify-between">
-                <h3 className="text-[22px] font-raleway font-bold text-[#202020]">Most today</h3>
-                <div className="flex items-center gap-3">
-                    <p className="text-[15px] font-raleway font-bold text-[#202020">See All</p>
-                    <ArrowRightButton url={``} />
-                </div>
-            </div>
-
-            <div className="min-w-full mt-2">
-            <div className="w-full overflow-x-auto flex items-start gap-1.5 carousel-container scrollbar-hide">
-                <ProductCard/>
-                <ProductCard/>
-                <ProductCard/>
-                <ProductCard/>
-                <ProductCard/>
-                <ProductCard/>
-                <ProductCard/>
-            </div>
-            </div>
-        </div>
+            <PopularProducts />
     </section>
   )
 }

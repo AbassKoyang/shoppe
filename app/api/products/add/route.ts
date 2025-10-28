@@ -12,6 +12,8 @@ const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_WRITE_API_KEY);
 
 export const POST = async (req: Request) => {
   const body : ProductType = await req.json();
+  const location = body.location!
+  const locationFacets = location?.split(',');
     try {
         const colRef = collection(db, "products");
         const docRef = await addDoc(colRef, {
@@ -20,6 +22,7 @@ export const POST = async (req: Request) => {
             price: Number(body.price) || 0,
             discount: Number(body.discount) || 0,
             createdAt: Date.now(),
+            location_facets: [...locationFacets]
         })
         console.log('Product added to firestore succesfully');
         await client.saveObject({indexName: ALGOLIA_INDEX_NAME, body:{
@@ -40,6 +43,7 @@ export const POST = async (req: Request) => {
           color: body?.color || null,
           material: body?.material || null,
           location:  body.location,
+          location_facets: [...locationFacets],
           views:  body.views,
           status: 'available',
           createdAt: Date.now(),

@@ -24,9 +24,12 @@ export async function GET(req: NextRequest) {
   const order = searchParams.get("order");
 
     const facetFilters: string[][] = [['status:available']];
-    let filters = '';
-    if (location) filters = `location:"${location}"`
- if (currency) facetFilters.push([`currency:${currency}`]);
+    if (location) {
+      const locationTerms = location.split(/[,\s]+/).filter(Boolean);
+      const locationFilters = locationTerms.map((term) => `location_facets:${term}`);
+      facetFilters.push(locationFilters);
+    } ;
+  if (currency) facetFilters.push([`currency:${currency}`]);
  if (gender) facetFilters.push([`gender:${gender}`]);
  if (condition) facetFilters.push([`condition:${condition}`]);
  
@@ -61,11 +64,10 @@ export async function GET(req: NextRequest) {
     const res = await client.search({
         requests: [
           {
-            query: query || '',
+            query: `${query} ${location}` || '',
             indexName: sortBy ? `${ALGOLIA_INDEX_NAME}_${sortBy}` : ALGOLIA_INDEX_NAME,
             facetFilters,
             numericFilters,
-            filters
           },
         ],
       });

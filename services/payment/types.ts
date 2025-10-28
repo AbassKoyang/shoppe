@@ -35,3 +35,14 @@ export type TransactionType = {
     transactionDetails: TransactionType;
     createdAt: any;
 }
+
+export type PageParam = unknown;
+
+export interface getTransactionsParamType {
+  pageParam: PageParam;
+  userId: string;
+}
+export interface getTransactionsReturnType {
+  orders: OrderDataType[],
+  lastVisible: any,
+}
