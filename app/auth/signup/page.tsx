@@ -19,7 +19,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useMutation } from '@tanstack/react-query';
 import { saveUserToDB } from '@/services/users/api';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { LoaderCircle } from 'lucide-react';
 import { toastStyles } from '@/lib/utils';
 import UploadImageButton from '@/components/UploadImageComponent';

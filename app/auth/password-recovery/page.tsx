@@ -9,7 +9,7 @@ import { LoaderCircle } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 const page = () => {
     const [email, setEmail] = useState('');

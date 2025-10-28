@@ -38,8 +38,9 @@ const TopProducts = () => {
     <section className="w-full mt-8">
           <h3 className="text-[22px] font-raleway font-bold text-[#202020]">Top Products</h3>
 
+          <div className="min-w-full mt-2">
         {products && (
-         <div className="w-full flex items-center justify-between mt-2">
+         <div className="w-full flex items-center justify-between overflow-x-auto gap-1.5 carousel-container scrollbar-hide">
             {products?.map((product) => (
                 <TopProductAvatar product={product} />
             ))}
@@ -48,6 +49,7 @@ const TopProducts = () => {
                 </div>
              </div>
         )}
+        </div>
         {isLoading && (
          <div className="w-full flex items-center justify-between mt-2">
             {Array.from({length: 5}).map((_, i) => (

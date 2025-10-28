@@ -19,7 +19,7 @@ import PrimaryButton from '@/components/PrimaryButton';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addPaymentMethod, deletePaymentMethodById, updatePaymentMethod } from '@/services/payment/api';
 import { paymentMethodType } from '@/services/payment/types';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useAuth } from '@/lib/contexts/auth-context';
 import {LoaderCircle, Trash2 } from 'lucide-react';
 import {motion} from 'framer-motion';

@@ -86,7 +86,7 @@ const page = () => {
   
 
   return (
-    <section className="w-full relative overflow-x-hidden mb-[300px]">
+    <section className="w-full relative overflow-x-hidden mb-[100px]">
 
 
       <motion.div

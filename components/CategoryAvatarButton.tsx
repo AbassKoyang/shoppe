@@ -10,7 +10,7 @@ const CategoryAvatarButton = ({cat, isSelected, setSelectedCategories}:{cat:stri
             <BsCheck className="text-white" />
           </span>
         <div className="size-[60px] border-5 border-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)] rounded-full object-contain object-center overflow-hidden">
-            <img src="/assets/images/bags-1.png" alt="Clothing image" className="size-full"/>
+            <img src="/assets/images/product-fallback-image.png" alt="Clothing image" className="size-full"/>
         </div>
 
         <div className='w-[38px] overflow-x-hidden flex items-center gap-3'>

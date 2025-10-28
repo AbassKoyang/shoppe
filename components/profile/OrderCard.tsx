@@ -10,7 +10,7 @@ import { LoaderCircle, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react'
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import ArrowRightButton from '../ArrowRightButton';
 
 const OrderCard = ({order}:{order: OrderDataType}) => {

@@ -25,7 +25,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addProduct, editProduct } from '@/services/products/api';
 import { ProductType } from '@/services/products/types';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { ALPHA_SIZES, CATEGORIES, NUMERIC_SIZES, SUB_CATEGORIES } from '@/lib/utils';

@@ -7,7 +7,7 @@ import { LoaderCircle, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react'
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 const WishlistProductCard = ({product}:{product: ProductType}) => {
     const {user} = useAuth();

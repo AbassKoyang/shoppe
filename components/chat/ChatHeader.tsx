@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ChatProductCard from './ChatProductCard';
 import { QueryClient, useMutation } from '@tanstack/react-query';
 import { addChatToArchives, removeChatFromArchives } from '@/services/chat/api';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { chatType } from '@/services/chat/types';
 
 

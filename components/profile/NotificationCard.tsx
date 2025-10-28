@@ -6,7 +6,7 @@ import { QueryClient, useMutation } from '@tanstack/react-query'
 import { BanknoteArrowDown, BanknoteArrowUp, PackageCheck, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 const NotificationCard = ({notification}:{notification: NotificationType}) => {
     const {user} = useAuth();

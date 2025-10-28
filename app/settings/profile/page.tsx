@@ -18,7 +18,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { LoaderCircle } from 'lucide-react';
 import PrimaryButton from '@/components/PrimaryButton';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { toastStyles } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { updateUserProfile } from '@/services/users/api';

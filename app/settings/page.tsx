@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { deleteUser, signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { usePathname, useRouter } from 'next/navigation';
 import ConfirmSignout from './components/ConfirmSignOut';
 import ConfirmDeleteAccount from './components/ConfirmDeleteAccount';

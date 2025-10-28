@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import z, { email } from 'zod';
 import {User} from '@/services/users/types'
 
@@ -217,11 +217,11 @@ const LoginPageContent = () => {
               <p className='font-light text-xl text-black mt-14 mb-6'>Type your password</p>
                    
                     <div className='w-full flex items-center justify-between'>
-                        <Input value={password} onChange={(e) => setPassword(e.target.value)} type={showPassword? 'text' : 'password'} placeholder='Password' className={`${isWrongPassword ? 'border-1 border-red-500' : 'border-0'} border-0 py-6 px-6 bg-gray-100 placeholder:text-gray-400 text-black/70 text-lg outline-0 focus-within:outline-2 outline-[#004CFF] rounded-xl mr-1 w-[90%]`} />
+                        <Input value={password} onChange={(e) => setPassword(e.target.value)} type={showPassword? 'text' : 'password'} placeholder='Password' className={`${isWrongPassword ? 'border-1 border-red-500' : 'border-0'} py-8 px-6 bg-gray-100 placeholder:text-gray-400 text-black/70 text-lg outline-0 focus-within:outline-2 outline-[#004CFF] rounded-xl mr-1 w-[90%]`} />
 
                         <button type='button' onClick={() => {setShowPassword(!showPassword)}} className='outline-0 stroke-0'><Image width={18} src={eyeIcon} alt='Eye icons' /></button>
                     </div>
-                    <button onClick={() => handleUserLogin()} disabled={loading || isWrongPassword} className={`mt-2 w-full cursor-pointer bg-dark-blue hover:opacity-90 transition-all duration-200 ease-in-out text-[#F3F3F3] text-[22px] font-extralight flex items-center justify-center rounded-xl px-18 py-1`}>
+                    <button onClick={() => handleUserLogin()} disabled={loading || isWrongPassword} className={`mt-2 w-full cursor-pointer bg-dark-blue hover:opacity-90 transition-all duration-200 ease-in-out text-[#F3F3F3] text-[22px] font-extralight flex items-center justify-center rounded-xl px-18 py-3`}>
                     {loading ? <LoaderCircle className='animate-spin' /> : 'Login'}
                     </button>
              {isWrongPassword ? (

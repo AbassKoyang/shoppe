@@ -14,6 +14,7 @@ import SponsoredBanner from '@/components/SponsoredBanner';
 import { useGetTransactions } from '@/services/payment/queries';
 import { useAuth } from '@/lib/contexts/auth-context';
 import Transaction from './Transaction';
+import TransactionSkeleton from './TransactionSkeleton';
 
 const Transactions = () => {
     const {user} = useAuth();
@@ -42,7 +43,7 @@ const Transactions = () => {
       }, [data]);
 
   return (
-    <section className="w-full relative overflow-x-hidden overflow-y-auto h-[50vh] scrollbar-hide">
+    <section className="w-full relative overflow-x-hidden overflow-y-auto h-[60vh] scrollbar-hide">
         {transactions && (
             <div className="w-full flex justify-between flex-wrap mt-4">        
             {transactions?.map((transaction) => (
@@ -53,7 +54,7 @@ const Transactions = () => {
         {isLoading && (
             <div className="w-full flex justify-between flex-wrap mt-4">
                 {Array.from({length: 10}).map((_, i) => (
-                <ProductSkeleton key={i}/>
+                <TransactionSkeleton key={i}/>
                 ))}
             </div>
         )}

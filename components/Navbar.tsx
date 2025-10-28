@@ -21,15 +21,15 @@ const Navbar = () => {
         const tl = gsap.timeline();
         tl.from('.nav-animate', {
             bottom: -30,
-            duration: 0.3, 
+            duration: 0.6, 
             ease: "power2.inOut" ,
         })
         tl.from('.gsap-animate', {
             y: 50,
-            duration: 0.3, 
+            duration: 0.4, 
             ease: "power1.inOut" ,
             stagger: {
-                each: 0.09,
+                each: 0.08,
                 from: 'start',
                 grid: 'auto',
                 ease: 'power2.inOut',

@@ -16,7 +16,7 @@ const UserHeader = () => {
     const q = query(
         collection(db, "notifications"),
         where("userId", "==", userId),
-        where("isRead", "==", false)
+        where("createdAt", ">", user?.lastSeenNotificationsAt)
     );
 
     return onSnapshot(q, (snapshot) => {

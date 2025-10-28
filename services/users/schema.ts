@@ -63,8 +63,9 @@ export const AppUserSchema = z.object({
       currency: z.string(),
     }).optional(),
         fcmTokens: z.string().array().optional(),
-    createdAt: z.iso.datetime(), // Firestore Timestamp
+        createdAt: z.iso.datetime(),
     updatedAt: z.iso.datetime(),
+    lastSeenNotificationsAt: z.date().optional(),
   });
 
   // export const FirebaseUserSchema = z.object({

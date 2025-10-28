@@ -34,7 +34,7 @@ const Discover = () => {
       }, [data]);
 
   return (
-    <section className="w-full mt-8">
+    <section className="w-full mt-8 mb-[100px]">
         <div className="w-full flex items-center justify-between">
           <h3 className="text-[22px] font-raleway font-bold text-[#202020]">Discover</h3>
         </div>

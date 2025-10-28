@@ -176,7 +176,11 @@ const page = () => {
     handleAddProductToRecentlyViewed()
   }, [product])
   useEffect(() => {
-    if(product) incrementProductViews(product?.id || '')
+    if(product) {
+      incrementProductViews(product?.id || '')
+      console.log("innnnn")
+    }
+    console.log('outttt')
   }, [product])
 
 

@@ -4,7 +4,7 @@ import axios from 'axios'
 import { QueryClient, useMutation } from '@tanstack/react-query';
 import { addBank } from '@/services/payment/api';
 import z from 'zod';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useForm } from 'react-hook-form';
 import {motion} from 'framer-motion'

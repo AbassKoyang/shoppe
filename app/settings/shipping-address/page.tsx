@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useMutation } from '@tanstack/react-query';
 import { updateUserShippingAddress } from '@/services/users/api';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import RetryToast from '@/components/RetryToast';
 import { states, toastStyles } from '@/lib/utils';
 import { useRouter } from 'next/navigation';

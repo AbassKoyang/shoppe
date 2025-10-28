@@ -6,7 +6,7 @@ import { useLongPress } from '@/lib/hooks/useLongPress';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { deleteMessage, editMessage } from '@/services/chat/api';
 import { QueryClient, useMutation } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { Copy, LoaderCircle, PencilLine, SendHorizontal, Trash2, X } from 'lucide-react';
 
 const Message = ({m, chatId, removeDeletedMessage, updateEditedMessage} : {m: messageType; chatId: string; removeDeletedMessage: (messageId: string) => void, updateEditedMessage: (messageId: string, text: string) => void}) => {

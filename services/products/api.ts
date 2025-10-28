@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase';
-import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc, QueryConstraint, limit, orderBy, DocumentData, startAfter, DocumentSnapshot} from 'firebase/firestore';
+import {doc, collection, setDoc, addDoc, getDocs, where, query, updateDoc, serverTimestamp, deleteDoc, getDoc, QueryConstraint, limit, orderBy, DocumentData, startAfter, DocumentSnapshot, increment} from 'firebase/firestore';
 import { fetchNewProductsParamsType, fetchNewProductsReturnType, ProductType, recentlyViewedType } from './types';
 import { formatFilterURL } from '@/lib/utils/formatFilterURL';
 import { WishlistType } from '../products/types';
@@ -101,11 +101,8 @@ export const isProductInWishlist = async (productId: string, userId: string) => 
 export const incrementProductViews = async (productId: string) => {
   const docRef = doc(db, 'products', productId);
     try {
-        const productDoc = await getDoc(docRef);
-        const product = {id: productDoc.id, ...productDoc.data()} as ProductType;
-        const newViewsCount = product.views ? (product.views + 1) : 0
         await updateDoc(docRef, {
-        views: newViewsCount,
+        views: increment(1),
       })
     } catch (error) {
         console.error('Error incremeting item views', error);

@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import PrimaryButton from '@/components/PrimaryButton';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { LoaderCircle } from 'lucide-react';
 import {motion} from 'framer-motion';

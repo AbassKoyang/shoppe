@@ -22,7 +22,7 @@ const page = () => {
   const router = useRouter()
 
   return (
-    <section className="w-full mt-4 relative overflow-x-hidden mb-[300px]">
+    <section className="w-full mt-4 relative overflow-x-hidden mb-[100px]">
       <div className="w-full flex items-center gap-3">
         <button onClick={() => router.back()} className="flex items-center justify-center cursor-pointer">
             <ArrowLeft className="size-[30px]" />

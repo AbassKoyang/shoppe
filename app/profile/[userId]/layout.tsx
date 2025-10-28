@@ -34,6 +34,17 @@ const layout = ({children} :{children: React.ReactNode}) => {
             </div>
           </div>
         )}
+        {!user.bankDetails && (
+            <div className="w-full mt-2">
+            <div className="w-full flex items-end justify-between p-4 rounded-[10px] bg-[#F9F9F9]">
+              <div className="w-[80%]">
+                <h6 className='font-raleway font-bold text-[#202020] text-[14px]'>Important</h6>
+                <p className='font-nunito-sans text-[10px] font-normal text-black'> To be able to post items, you need to set your bank account and payment methods. You can do that in settings</p>
+              </div>
+              <ArrowRightButton url='/settings' />
+            </div>
+          </div>
+        )}
         <ProfileNav />
         {children}
       </>

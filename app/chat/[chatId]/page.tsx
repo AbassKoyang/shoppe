@@ -15,7 +15,7 @@ import axios from 'axios';
 import { Image, ImagePlus, LoaderCircle, SendHorizontal, X } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react'
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 const page = () => {
     const {user} = useAuth()

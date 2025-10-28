@@ -25,7 +25,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addProduct } from '@/services/products/api';
 import { ProductType } from '@/services/products/types';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { ALPHA_SIZES, CATEGORIES, NUMERIC_SIZES, SUB_CATEGORIES } from '@/lib/utils';
@@ -90,6 +90,15 @@ const Page = () => {
       console.log('Clickeddd', data)
       if(!user){
         toast.error("You must be logged in to add a product.");
+        return;
+      }
+      if(!user.bankDetails){
+        toast.warning("You must add a bank account before listing an item.", {
+          action: {
+            label: "Settings",
+            onClick: () => router.push('/settings')
+          }
+        });
         return;
       }
       try {
