@@ -30,7 +30,7 @@ const Navbar = () => {
             duration: 0.3, 
             ease: "power1.inOut" ,
             stagger: {
-                each: 0.1,
+                each: 0.09,
                 from: 'start',
                 grid: 'auto',
                 ease: 'power2.inOut',
