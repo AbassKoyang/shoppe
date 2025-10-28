@@ -14,7 +14,7 @@ import { useMutation } from '@tanstack/react-query';
 import { updateUserShippingAddress } from '@/services/users/api';
 import { toast } from 'react-toastify';
 import RetryToast from '@/components/RetryToast';
-import { countries, toastStyles } from '@/lib/utils';
+import { states, toastStyles } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import CountryCombobox from '@/app/settings/components/CountryCombobox';
 import {motion} from 'framer-motion'
@@ -168,11 +168,11 @@ const UpdateShippingAddressModal = ({open, closeModal} : {open: boolean; closeMo
                 name="country"
                 render={({ field }) => (
                     <FormItem className='mt-8'>
-                    <FormLabel className='text-[14px] font-nunito-sans font-semibold leading-0 mb-2.5'>Country</FormLabel>
+                    <FormLabel className='text-[14px] font-nunito-sans font-semibold leading-0 mb-2.5'>State</FormLabel>
                     <FormControl>
                         <CountryCombobox
-                        countries={countries}
-                        value={countries.find((b) => b.value === field.value) || null}
+                        countries={states}
+                        value={states.find((b) => b.value === field.value) || null}
                         onChange={(selected) => field.onChange(selected?.value)}
                         placeholder="Choose your Country"
                     />
