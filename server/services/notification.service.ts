@@ -3,6 +3,8 @@ import { db } from '../firebase-admin';
 import { io } from '..';
 import { emailQueue } from "../lib/queues/emailQueue";
 import { ReactNode } from 'react';
+import { transporter } from '../lib/mailer';
+import { notificationEmail } from '../components/NotificationEmail';
 
 interface NotificationPayload {
   title: string;
@@ -135,12 +137,20 @@ class NotificationService {
     });
   }
 
-async queueEmail({to, subject, message, name, link} : {to: string; subject: string; message: string; name: string; link: string}) {
-  await emailQueue.add("sendEmail", { to, subject, message, name, link }, {
-    attempts: 3,
-    backoff: { type: "exponential", delay: 5000 },
-  });
-  console.log("Email job added for:", to);
+async sendEmail({to, subject, message, name, link} : {to: string; subject: string; message: string; name: string; link: string}) {
+        const html = notificationEmail(name, message, link);
+
+        const mailOptions = {
+          from: `"Shoppee" <${process.env.GMAIL_USER}>`,
+          to,
+          subject,
+          html,
+        };
+      
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email sent:", info.messageId);
+
+        console.log(`Email sent successfully to ${to}`);
 }
 
 }

@@ -188,7 +188,16 @@ const page = () => {
   const handleBuyProduct = async (userId: string) => {
     if (!userId || !selectedCard || !productId) {
       console.error('Missing required data:', { userId, selectedCard, productId });
-      alert('Missing required information');
+      toast.warning('Missing required information');
+      return;
+    }
+    if (!user?.shippingAddress.address) {
+      toast.warning("You must add your delivery address before buying a product.", {
+        action: {
+          label: "Settings",
+          onClick: () => router.push('/settings')
+        }
+      });
       return;
     }
   

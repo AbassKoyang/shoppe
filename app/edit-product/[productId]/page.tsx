@@ -119,7 +119,7 @@ const Page = () => {
       mutationFn: (data: ProductType) => editProduct(data),
       onSuccess: (data) => {
         toast.success('Product edited succesfully');
-        queryClient.invalidateQueries({ queryKey: ['products']});
+        queryClient.invalidateQueries({ queryKey: ['products', 'newProducts', 'popularProducts', 'personalizedProducts', 'topProducts']});
         router.back();
       }
     });

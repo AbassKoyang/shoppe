@@ -14,8 +14,7 @@ const UserHeader = () => {
 
     const listenToUnreadCount = (userId: string, setCount: (count: number) => void) => {
     const q = query(
-        collection(db, "notifications"),
-        where("userId", "==", userId),
+        collection(db, "notifications", userId, "items"),
         where("createdAt", ">", user?.lastSeenNotificationsAt)
     );
 

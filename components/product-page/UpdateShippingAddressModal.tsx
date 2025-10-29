@@ -174,7 +174,7 @@ const UpdateShippingAddressModal = ({open, closeModal} : {open: boolean; closeMo
                         countries={states}
                         value={states.find((b) => b.value === field.value) || null}
                         onChange={(selected) => field.onChange(selected?.value)}
-                        placeholder="Choose your Country"
+                        placeholder="Choose your State"
                     />
                     </FormControl>
                     <FormMessage />

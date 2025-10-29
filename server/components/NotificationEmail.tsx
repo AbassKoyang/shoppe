@@ -5,11 +5,14 @@ export function notificationEmail(name: string, message: string, link: string) {
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
           <title>Notification</title>
           <style>
             body {
-              font-family: Arial, sans-serif;
-              background-color: #f9f9f9;
+              font-family: "Raleway", sans-serif;
+              background-color: #004cff;
               margin: 0;
               padding: 0;
             }
@@ -25,12 +28,12 @@ export function notificationEmail(name: string, message: string, link: string) {
               color: #333;
             }
             p {
-              color: #555;
+              color: #fff !important;
               line-height: 1.6;
             }
             a.button {
               display: inline-block;
-              background: #000;
+              background: #004cff;
               color: #fff !important;
               text-decoration: none;
               padding: 10px 16px;

@@ -188,7 +188,7 @@ export const fetchProductPerUser = async (id: string) => {
     const colRef = collection(db, "products");
 
     try {
-        const q = query(colRef, where('sellerId', '==', id ));
+        const q = query(colRef, where('sellerId', '==', id ), orderBy("createdAt", 'desc'));
         const querySnapshot = (await getDocs(q));
         
         if(!querySnapshot.empty){
@@ -401,6 +401,24 @@ export const getPopularProducts = async ({pageParam} : fetchNewProductsParamsTyp
   })) as ProductType[];
   
     return {products, lastVisible: lastDoc} as fetchNewProductsReturnType;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export const getTopProducts = async () : Promise<ProductType[]> => {
+  const colRef = collection(db, 'products');
+  const q = query(colRef, where("status", "==", "available"), orderBy("views", "desc"), limit(6),)
+  try {
+    const snapshot = await getDocs(q);
+    console.log(snapshot.docs)
+    const lastDoc : DocumentSnapshot = snapshot.docs[snapshot.docs.length - 1];
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+  })) as ProductType[];
+  
   } catch (error) {
     console.error(error);
     throw error;

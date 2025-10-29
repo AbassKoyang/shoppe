@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { fetchProductCategoryCount, fetchProductPerUser, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, fetchUserWishlist, getNewProducts, getPersonalizedProducts, getPopularProducts, getRecentlyViewed, getViewedToday, getViewedYesterday, isProductInWishlist, searchProductsIndex } from "./api";
+import { fetchProductCategoryCount, fetchProductPerUser, fetchProductsByCategory, fetchProductsBySubCategory, fetchSingleProduct, fetchUserWishlist, getNewProducts, getPersonalizedProducts, getPopularProducts, getRecentlyViewed, getTopProducts, getViewedToday, getViewedYesterday, isProductInWishlist, searchProductsIndex } from "./api";
 import { useSearchParams } from "next/navigation";
 import { fetchNewProductsReturnType, ProductType } from "./types";
 
@@ -112,6 +112,12 @@ export const useSearchProductsIndex = (query: string) => {
     });
   };
 
+  export const useGetTopProducts= () => {
+    return useQuery({
+      queryKey: ['topProducts'],
+      queryFn: ({pageParam}) =>  getTopProducts(),
+    });
+};
   export const useGetNewProducts= () => {
     return useInfiniteQuery<fetchNewProductsReturnType, Error>({
       queryKey: ['newProducts'],

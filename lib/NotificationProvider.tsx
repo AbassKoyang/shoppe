@@ -50,6 +50,10 @@ export function NotificationProvider({children}:{children: ReactNode}) {
         toast("New Message", {
           description: message.length > 50 ? message.slice(0,50) + "..." : message,
           action: {
+            actionButtonStyle : {
+              backgroundColor: '#004cff',
+              color: 'white',
+            },
             label: "View Message",
             onClick: () => router.push(`https://useshoppe.vercel.app/chat/${chatId}`),
           },
@@ -70,6 +74,10 @@ export function NotificationProvider({children}:{children: ReactNode}) {
         toast(title, {
           description: body.length > 50 ? body.slice(0,50) + "..." : body,
           action: {
+            actionButtonStyle : {
+              backgroundColor: '#004cff',
+              color: 'white',
+            },
             label: "View Order",
             onClick: () => router.push(`https://useshoppe.vercel.app/orders/${orderId}`),
           },
@@ -92,6 +100,10 @@ export function NotificationProvider({children}:{children: ReactNode}) {
         toast(title, {
           description: body.length > 50 ? body.slice(0,50) + "..." : body,
           action: {
+            actionButtonStyle : {
+              backgroundColor: '#004cff',
+              color: 'white',
+            },
             label: "View Order",
             onClick: () => router.push(`https://useshoppe.vercel.app/orders/${orderId}`),
           },
@@ -114,6 +126,10 @@ export function NotificationProvider({children}:{children: ReactNode}) {
         toast(title, {
           description: body.length > 50 ? body.slice(0,50) + "..." : body,
           action: {
+            actionButtonStyle : {
+              backgroundColor: '#004cff',
+              color: 'white',
+            },
             label: "View Order",
             onClick: () => router.push(`https://useshoppe.vercel.app/orders/${orderId}`),
           },
@@ -135,6 +151,10 @@ export function NotificationProvider({children}:{children: ReactNode}) {
         toast(title, {
           description: body.length > 50 ? body.slice(0,50) + "..." : body,
           action: {
+            actionButtonStyle : {
+              backgroundColor: '#004cff',
+              color: 'white',
+            },
             label: "View Order",
             onClick: () => router.push(`https://useshoppe.vercel.app/orders/${orderId}`),
           },

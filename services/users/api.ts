@@ -188,12 +188,12 @@ export const deleteAccount = async (uid: string) => {
 const PAGE_SIZE = 10;
 
 export const fetchNotifications = async ({pageParam, userId}: fetchNotificationsParamsType) : Promise<fetchNotificationsReturnType> => {
-    const colRef = collection(db, 'notifications');
+    const colRef = collection(db, 'notifications', userId, 'items');
     let q;
     if(!pageParam) {
-        q = query(colRef, where("userId", "==", userId), orderBy("createdAt", 'desc'), limit(PAGE_SIZE))
+        q = query(colRef, orderBy("createdAt", 'desc'), limit(PAGE_SIZE))
     } else {
-        q = query(colRef, where("userId", "==", userId), orderBy("createdAt", 'desc'), limit(PAGE_SIZE), startAfter(pageParam))
+        q = query(colRef, orderBy("createdAt", 'desc'), limit(PAGE_SIZE), startAfter(pageParam))
     }
     
     try {
