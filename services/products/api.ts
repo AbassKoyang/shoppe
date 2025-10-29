@@ -208,7 +208,8 @@ export const fetchUserWishlist = async (userId: string) : Promise<WishlistType[]
     const colRef = collection(db, "wishlists");
 
     try {
-        const q = query(colRef, where('userId', '==', userId ));
+        const q = query(colRef, where('userId', '==', userId ), orderBy("createdAt", 'desc')
+      );
         const querySnapshot = (await getDocs(q));
         
         if(!querySnapshot.empty){
@@ -280,7 +281,8 @@ export const getViewedToday = async (userId: string) : Promise<recentlyViewedTyp
       collection(db, "recentlyViewed"),
       where("userId", "==", userId),
       where("viewedAt", ">=", start),
-      where("viewedAt", "<=", end)
+      where("viewedAt", "<=", end),
+      orderBy("viewedAt", "desc")
     );
   
     const snap = await getDocs(q);
@@ -296,6 +298,7 @@ export const getRecentlyViewed = async (userId: string) : Promise<recentlyViewed
     const q = query(
       collection(db, "recentlyViewed"),
       where("userId", "==", userId),
+      orderBy("viewedAt", 'desc'),
       limit(5)
     );
   
@@ -319,7 +322,8 @@ export const getViewedYesterday = async (userId: string) : Promise<recentlyViewe
       collection(db, "recentlyViewed"),
       where("userId", "==", userId),
       where("viewedAt", ">=", start),
-      where("viewedAt", "<=", end)
+      where("viewedAt", "<=", end),
+      orderBy("viewedAt", 'desc')
     );  
   const snap = await getDocs(q);
   return snap.docs.map(doc => doc.data()) as recentlyViewedType[];
@@ -339,7 +343,8 @@ export const getViewedOnSpecificDate = async (userId: string, selectedDate: Date
       collection(db, "recentlyViewed"),
       where("userId", "==", userId),
       where("viewedAt", ">=", start),
-      where("viewedAt", "<=", end)
+      where("viewedAt", "<=", end),
+      orderBy("viewedAt", 'desc')
     );  
   const snap = await getDocs(q);
   return snap.docs.map(doc => doc.data()) as recentlyViewedType[];

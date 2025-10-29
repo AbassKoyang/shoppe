@@ -229,7 +229,6 @@ const SubCategoriesFilterModal = ({open, closeModal}:{open: boolean; closeModal:
                             </div>
                             <FormControl className='w-full'>
                                 <div className="w-full h-[54px] flex items-center overflow-x-auto scrollbar-hide gap-6 px-4 justify-between relative">
-                                    {/* <div className="h-[54px] flex items-center gap-6 px-4 w-max justify-between relative"> */}
                                         <div className={`${selectedSizeType === 'Numeric' ? 'w-[1700px]' : 'w-full'} z-10 h-[26px] rounded-[20px] bg-light-blue absolute top-[50%] left-0 translate-y-[-50%]`}></div>
                                         
                                         {selectedSizeType === 'Alpha' && ALPHA_SIZES.map((size) => (

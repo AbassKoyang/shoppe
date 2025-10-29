@@ -183,9 +183,8 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                                 </div>
                             </div>
                             <FormControl className='w-full'>
-                                <div className="w-full h-[54px] flex items-center justify-center overflow-x-auto scrollbar-hide">
-                                    <div className="h-[54px] flex items-center gap-6 px-4 w-max justify-between relative">
-                                        <div className="z-10 w-full h-[26px] rounded-[20px] bg-light-blue absolute top-[50%] left-0 translate-y-[-50%]"></div>
+                            <div className="w-full h-[54px] flex items-center overflow-x-auto scrollbar-hide gap-6 px-4 justify-between relative">
+                                        <div className={`${selectedSizeType === 'Numeric' ? 'w-[1700px]' : 'w-full'} z-10 h-[26px] rounded-[20px] bg-light-blue absolute top-[50%] left-0 translate-y-[-50%]`}></div>
                                         
                                         {selectedSizeType === 'Alpha' && ALPHA_SIZES.map((size) => (
                                             <button onClick={() => {
@@ -215,7 +214,6 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                                             <p className=''>{size}</p>
                                             </button>
                                         ))}
-                                    </div>
                                 </div>
                             </FormControl>
                             <FormMessage />
@@ -260,7 +258,7 @@ const FilterModal = ({open, closeModal}:{open: boolean; closeModal: () => void})
                         <FormItem className='w-full mb-6'>
                                 <FormLabel className='text-lg text-black/90 font-semibold mb-2 leading-0 font-nunito-sans'>Order</FormLabel>
                             <FormControl className='w-full'>
-                                <div className="w-full flex items-center justify-between gap-3 flex-wrap">
+                                <div className="w-full flex items-center justify-start gap-3 flex-wrap">
                                     <button type='button' onClick={() => setOrder('Popular')} className={`${order === 'Popular' ? 'justify-end gap-3' : 'justify-center'} cursor-pointer items-center min-w-[122px] p-1 flex  bg-[#E5EBFC] rounded-[18px]`}>
                                         <p className={`${order === 'Popular' ? 'font-bold text-dark-blue' : ' font-medium text-black'} font-raleway text-[15px]`}>Popular</p>
                                         <div className={`${order === 'Popular' ? 'size-[22px] border-2' : 'size-0 border-0'} flex  border-white items-center justify-center bg-dark-blue rounded-full transition-all duration-300 ease-in-out origin-center`}>
