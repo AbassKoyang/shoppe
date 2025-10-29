@@ -19,6 +19,7 @@ export type CategoryType =
     id?: string;
     userId: string;
     product: ProductType;
+    createdAt: any;
 }
 export type recentlyViewedType = z.infer<typeof recentlyViewedProductSchema>
 export type PageParam = unknown;

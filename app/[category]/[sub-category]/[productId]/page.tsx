@@ -97,6 +97,7 @@ const page = () => {
       const wish: WishlistType = {
         userId: user.uid,
         product: data,
+        createdAt: Date.now()
       };
   
       const succes = await addProductToWishlistMutation.mutateAsync({data: wish, userId: user?.uid});
