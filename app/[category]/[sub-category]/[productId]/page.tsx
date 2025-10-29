@@ -219,6 +219,7 @@ const page = () => {
         setisPaymentSuccessful(true)
         setOrderDetails(data.order);
         console.log(data);
+        queryClient.invalidateQueries({queryKey: ['product', 'products', 'newProducts', 'popularProducts', 'personalizedProducts']})
       } else {
         setError(data);
       }

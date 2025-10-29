@@ -131,7 +131,7 @@ const SalesDetailsCard = ({order}:{order: OrderDataType}) => {
             </div>
             <div className="flex flex-col gap-1.5">
                 <p className='font-nunito-sans text-[12px] text-gray-600 font-normal'>Status</p>
-                <span className={`text-[14px] font-raleway font-normal ${order.productDetails.status == 'sold' ? 'bg-green-500 text-white' : 'bg-amber-500 text-white'} py-0.5 px-3 rounded-sm`}>{orderStatus}</span>
+                <span className={`text-[14px] font-raleway font-normal ${order.status == 'completed' ? 'bg-green-500 text-white' : 'bg-amber-500 text-white'} py-0.5 px-3 rounded-sm`}>{orderStatus}</span>
             </div>
         </div>
         <div className="w-full px-3 pt-5 pb-2">

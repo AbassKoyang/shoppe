@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { db, messaging } from "./firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
+import admin from 'firebase-admin';
 
 interface JoinChatPayload {
   productId: string;
@@ -154,32 +155,49 @@ export function handleSocketEvents(io: Server): void {
     //Notification events
 
     socket.on("sendNewMessageNotification", async ({receiverId, message, type, chatId}:{receiverId: string; message: string; type: string; chatId: string}) => {
-      const receiverDoc = await db.collection('users').doc(receiverId).get();
-      const token = receiverDoc.data()?.fcmToken;
-      if(token){
-          await messaging.send({
-            notification: {
-              title: "New Message ✉️",
-              body: message.length > 50 ? message.slice(0,50) + "..." : message,
-              imageUrl: 'https://useshoppe.vercel.app/icon-512.png'
-            },
-            data: {
-              chatId,
-              type: type,
-              url: `https://useshoppe.vercel.app/chat/${chatId}`
-            },
-            webpush: {
-              fcmOptions: { link: `https://useshoppe.vercel.app/chat/${chatId}` },
-             },
-            token: token,
-          })
-          console.log("notification sent to:", receiverId)
-    } else {
-      console.log("notification not sent. No fcm token for user:", receiverId)
-    }
+      try {
+      const userDoc = await db.collection('users').doc(receiverId).get();
+      const user = userDoc.data();
 
-    io.to(receiverId).emit("newMessageNotification", {receiverId, message, type, chatId})
-    console.log('Message sent to:', receiverId);
+      if (user?.fcmToken) {
+        console.log(`No FCM tokens found for user ${receiverId}`);
+        return null;
+      }
+
+       const response =  await admin.messaging().send({
+        notification: {
+          title: "New Message ✉️",
+          body: message.length > 50 ? message.slice(0,50) + "..." : message,
+          imageUrl: 'https://useshoppe.vercel.app/icon-512.png'
+        },
+        data: {
+          chatId,
+          type: type,
+          url: `https://useshoppe.vercel.app/chat/${chatId}`
+        },
+        webpush: {
+          fcmOptions: { link: `https://useshoppe.vercel.app/chat/${chatId}` },
+         },
+        token: user?.fcmToken,
+        })
+
+        io.to(receiverId).emit("newMessageNotification", {receiverId, message, type, chatId})
+        console.log('Message sent to:', receiverId);
+        
+        console.log('Notification sent successfully:', response);
+        return response;
+
+    } catch (error: any) {
+      console.error('Error sending notification:', error);
+      
+      if (error.code === 'messaging/registration-token-not-registered') {
+        await db.collection('users').doc(receiverId).update({
+          fcmToken: admin.firestore.FieldValue.delete(),
+        });
+      }
+      
+      return null;
+    }
     })
 
     socket.on("join", (userId: string) => {

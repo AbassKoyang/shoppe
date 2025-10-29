@@ -365,7 +365,10 @@ export const getNewProducts = async ({pageParam} : fetchNewProductsParamsType) :
   }
   try {
     const snapshot = await getDocs(q);
-    console.log(snapshot.docs)
+    console.log('newProducts',snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+  })))
     const lastDoc : DocumentSnapshot = snapshot.docs[snapshot.docs.length - 1];
     const products = snapshot.docs.map((doc) => ({
       id: doc.id,

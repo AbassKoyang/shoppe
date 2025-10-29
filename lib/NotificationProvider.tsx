@@ -4,11 +4,12 @@ import { ReactNode, useEffect } from 'react';
 import { useAuth } from '@/lib/contexts/auth-context';
 import socket from '@/lib/socket';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export function NotificationProvider({children}:{children: ReactNode}) {
   const { user } = useAuth(); 
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -45,13 +46,14 @@ export function NotificationProvider({children}:{children: ReactNode}) {
         chatId: string;
       }) => {
         console.log('New notification received:', { receiverId, message, type, chatId });
+        if(pathname !== `chat/${chatId}`){
         toast("New Message", {
           description: message.length > 50 ? message.slice(0,50) + "..." : message,
           action: {
             label: "View Message",
             onClick: () => router.push(`https://useshoppe.vercel.app/chat/${chatId}`),
           },
-        })
+        })}
       };
     const handlePaymentReleasedNotification = ({
         sellerId,

@@ -114,7 +114,7 @@ export const useSearchProductsIndex = (query: string) => {
 
   export const useGetNewProducts= () => {
     return useInfiniteQuery<fetchNewProductsReturnType, Error>({
-      queryKey: ['products'],
+      queryKey: ['newProducts'],
       queryFn: ({pageParam}) =>  getNewProducts({pageParam}),
       initialPageParam: null, 
       getNextPageParam: (lastPage: fetchNewProductsReturnType) => {
@@ -128,7 +128,7 @@ export const useSearchProductsIndex = (query: string) => {
 
   export const useGetPopularProducts= () => {
     return useInfiniteQuery<fetchNewProductsReturnType, Error>({
-      queryKey: ['products'],
+      queryKey: ['popularProducts'],
       queryFn: ({pageParam}) =>  getPopularProducts({pageParam}),
       initialPageParam: null, 
       getNextPageParam: (lastPage: fetchNewProductsReturnType) => {
@@ -142,7 +142,7 @@ export const useSearchProductsIndex = (query: string) => {
 
   export const useGetPersonalizedProducts= () => {
     return useInfiniteQuery<fetchNewProductsReturnType, Error>({
-      queryKey: ['products'],
+      queryKey: ['personalizedProducts'],
       queryFn: ({pageParam}) =>  getPersonalizedProducts({pageParam}),
       initialPageParam: null, 
       getNextPageParam: (lastPage: fetchNewProductsReturnType) => {

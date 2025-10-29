@@ -1,6 +1,6 @@
 import { db } from "@/lib/firebase";
 import { getTransactionsReturnType, OrderDataType, paymentMethodType, TransactionType } from "../payment/types";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, or, orderBy, query, serverTimestamp, startAfter, updateDoc, where } from "firebase/firestore";
+import { addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, limit, or, orderBy, query, serverTimestamp, startAfter, updateDoc, where } from "firebase/firestore";
 import { AppUserType } from "../users/types";
 import { ProductType } from "../products/types";
 
@@ -114,7 +114,13 @@ export const addBank = async ({name, bankCode, accountNumber, userId, bankName }
 export const getPendingOrders = async (userId: string) : Promise<OrderDataType[]> => {
   try {
     const ordersRef = collection(db, 'orders');
-    const q = query(ordersRef, where("buyerInfo.id", "==", userId), where("status", "==", 'pending'), orderBy('createdAt', 'desc'));
+    const q = query(ordersRef, and(
+      where("buyerInfo.id", "==", userId), 
+    or(
+      where("status", "==", 'pending'),
+      where("status", "==", 'delivered'),
+    )),
+    orderBy('createdAt', 'desc'));
     
     const ordersSnapshot = await getDocs(q);
     return ordersSnapshot.docs.map((doc) => ({
@@ -161,9 +167,21 @@ export const getOrderById = async (orderId: string) : Promise<OrderDataType> => 
 export const getPendingSales = async (userId: string) : Promise<OrderDataType[]> => {
   try {
     const ordersRef = collection(db, 'orders');
-    const q = query(ordersRef, where("sellerInfo.id", "==", userId), where("status", "==", 'pending'), orderBy('createdAt', 'desc'));
+    const q = query(ordersRef,
+      and(
+        where("sellerInfo.id", "==", userId), 
+      or(
+        where("status", "==", 'pending'),
+        where("status", "==", 'delivered'),
+      )),
+      orderBy('createdAt', 'desc')
+    );
     
     const ordersSnapshot = await getDocs(q);
+    console.log(ordersSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    })))
     return ordersSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data()
@@ -173,11 +191,11 @@ export const getPendingSales = async (userId: string) : Promise<OrderDataType[]>
     throw error;
   }
 };
+
 export const getCompletedSales = async (userId: string) : Promise<OrderDataType[]> => {
   try {
     const ordersRef = collection(db, 'orders');
     const q = query(ordersRef, where("sellerInfo.id", "==", userId), where("status", "==", 'completed'), orderBy('createdAt', 'desc'));
-    
     const ordersSnapshot = await getDocs(q);
     return ordersSnapshot.docs.map((doc) => ({
       id: doc.id,

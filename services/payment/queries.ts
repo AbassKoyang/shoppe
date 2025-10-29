@@ -11,28 +11,28 @@ export const usePaymentMethods = (userId: string) => {
 };
 export const useGetPendingOrders = (userId: string) => {
     return useQuery({
-      queryKey: ["orders", userId], 
+      queryKey: ["pendingOrders", userId], 
       queryFn: () => getPendingOrders(userId),
       enabled: !!userId, 
     });
 };
 export const useGetDeliveredOrders = (userId: string) => {
     return useQuery({
-      queryKey: ["orders", userId], 
+      queryKey: ["deliveredOrders", userId], 
       queryFn: () => getDeliveredOrders(userId),
       enabled: !!userId, 
     });
 };
 export const useGetPendingSales = (userId: string) => {
     return useQuery({
-      queryKey: ["sales", userId], 
+      queryKey: ["pendingSales", userId], 
       queryFn: () => getPendingSales(userId),
       enabled: !!userId, 
     });
 };
 export const useGetCompletedSales = (userId: string) => {
     return useQuery({
-      queryKey: ["sales", userId], 
+      queryKey: ["completedSales", userId], 
       queryFn: () => getCompletedSales(userId),
       enabled: !!userId, 
     });
@@ -53,7 +53,7 @@ export const useGetTransactions = (userId: string) => {
 };
 export const useGetOrderById = (orderId: string) => {
     return useQuery({
-      queryKey: ["orders", orderId], 
+      queryKey: ["singleOrder", orderId], 
       queryFn: () => getOrderById(orderId),
       enabled: !!orderId, 
     });

@@ -31,6 +31,7 @@ const page = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>();
   const [isdateOpen, setIsdateOpen] = useState(false);
   const defaultDate = new Date(2025, 9, 10);
+
   useEffect(() => {
     const getRecentlyViewed = async () => {
       if(day === 'today'){
@@ -90,12 +91,12 @@ const page = () => {
 
 
       <motion.div
-      initial={{y: '-150%'}}
-      animate={{y: isdateOpen ? '0%' : '-150%'}}
+      initial={{y: '-110%'}}
+      animate={{y: isdateOpen ? '0%' : '-110%'}}
       transition={{duration: 0.3, ease: 'easeInOut'}}
-      className={`w-full fixed top-0 left-[50%] translate-x-[-50%] z-30`}>
-        <div onClick={() => setIsdateOpen(false)} className="w-full h-dvh absolute top-0 left-0 bg-transparent"></div>
-        <div className={`w-full flex justify-center mt-[60px]`}>
+      className={`w-full h-dvh fixed top-0 left-[50%] translate-x-[-50%] z-30`}>
+        <div onClick={() => setIsdateOpen(false)} className={`w-full h-dvh fixed top-0 left-0 z-30 bg-white/35 backdrop-blur-sm ${isdateOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}></div>
+        <div className={`w-full flex justify-center mt-[60px] relative`}>
         <Calendar
             mode="single"
             defaultMonth={defaultDate}
@@ -140,7 +141,7 @@ const page = () => {
               </div>
               </button>
             )}
-          <button onClick={() => setIsdateOpen(true)}  className='size-[30px] rounded-full bg-dark-blue flex items-center justify-center'>
+          <button onClick={() => setIsdateOpen(true)}  className='size-[30px] rounded-full bg-dark-blue flex items-center justify-center cursor-pointer'>
           <ChevronDown className='text-white text-[12px]' />
           </button>
         </div>  
