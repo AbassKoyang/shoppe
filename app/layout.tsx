@@ -50,7 +50,7 @@ export default function RootLayout({
           <meta name="theme-color" content="#004CFF" />
         </head>
       <body
-        className={`${raleway.variable} ${nunitosans.variable} antialiased`}
+        className={`${nunitosans.variable} font-[var(--font-raleway)] antialiased`}
       >
         {/* <TransitionProvider> */}
            <AuthProvider>

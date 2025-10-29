@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { BsCheck } from "react-icons/bs";
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 
 const selectCurrencyButton = ({currency, isCurrentCurrency} : {currency: '$ USD' | '€ EURO' | '₦ NGN'; isCurrentCurrency: boolean;}) => {
     const {user} = useAuth();

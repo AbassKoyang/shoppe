@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -5,7 +6,7 @@
 
 @theme {
   --font-nunito-sans: var(--font-nunito-sans), ui-sans-serif, system-ui;
-  --font-raleway: var(--font-raleway), Arial, sans-serif;
+  --font-raleway: "Raleway", Arial, sans-serif;
   --color-dark-blue: rgba(0, 76, 255, 1);
   --color-light-blue: rgba(217, 228, 255, 1);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -53,6 +54,10 @@ body {
 }
 
 :root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

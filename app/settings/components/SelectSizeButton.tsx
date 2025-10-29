@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { BsCheck } from "react-icons/bs";
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 
 const SelectSizeButton = ({size, isCurrentSize} : {size: 'US'| 'UK'| 'EU'; isCurrentSize: boolean;}) => {
     const {user} = useAuth();

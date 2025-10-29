@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { BsCheck } from "react-icons/bs";
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 const SelectLanguageButton = ({language, isCurrentLang} : {language: 'English' | 'Français'; isCurrentLang: boolean;}) => {
     const {user} = useAuth();
     const [loading, setLoading] = useState(false);

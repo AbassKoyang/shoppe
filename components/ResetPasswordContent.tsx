@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
 import { auth } from "@/lib/firebase"; // your firebase config
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 import { Input } from "@/components/ui/input";
 import { LoaderCircle } from "lucide-react";
 import Image from "next/image";

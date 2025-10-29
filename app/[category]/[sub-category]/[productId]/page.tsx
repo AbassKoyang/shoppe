@@ -20,7 +20,7 @@ import PaymentSuccesfulModal from "@/components/product-page/PaymentSuccessfulMo
 import Specification from "@/components/product-page/Specification";
 import ProductPageActionButtonsCon from "@/components/product-page/ProductPageActionButtonsCon";
 import SellerInfo from "@/components/product-page/SellerInfo";
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 
 type transactionDetailsType = {
   success: boolean;
