@@ -88,7 +88,7 @@ const page = () => {
                             },
                             uid: user.uid
                         })
-                        router.replace('/welcome')
+                        router.replace('/')
                     } catch (dbError : any) {
                         if (dbError.code === 'unavailable' || dbError.message?.includes('network')) {
                             console.error('Error occured:', dbError);
