@@ -159,7 +159,7 @@ export function handleSocketEvents(io: Server): void {
       const userDoc = await db.collection('users').doc(receiverId).get();
       const user = userDoc.data();
 
-      if (user?.fcmToken) {
+      if (!user?.fcmToken) {
         console.log(`No FCM tokens found for user ${receiverId}`);
         return null;
       }
@@ -183,7 +183,7 @@ export function handleSocketEvents(io: Server): void {
 
         io.to(receiverId).emit("newMessageNotification", {receiverId, message, type, chatId})
         console.log('Message sent to:', receiverId);
-        
+
         console.log('Notification sent successfully:', response);
         return response;
 

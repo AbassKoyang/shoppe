@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import {algoliasearch} from 'algoliasearch'
-import {deleteDoc, doc } from 'firebase/firestore';
+import {collection, deleteDoc, writeBatch, where, doc, query, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { ProductType } from '@/services/products/types';
 const ALGOLIA_APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!;
@@ -22,6 +22,29 @@ export const DELETE = async (req: Request)  => {
             objectID: productId
         })
         console.log('Product deleted from algolia succesfully');
+        const q = query(collection(db, "recentlyViewed"), where("productId", "==", productId));
+        const snapshot = await getDocs(q);
+      
+        const recentBatch = writeBatch(db);
+      
+        snapshot.docs.forEach((doc) => {
+          recentBatch.delete(doc.ref);
+        });
+      
+        await recentBatch.commit();
+        console.log("Batch delete complete!");
+
+        const wq = query(collection(db, "wishlists"), where("product.id", "==", productId));
+        const wsnapshot = await getDocs(wq);
+      
+        const wBatch = writeBatch(db);
+      
+        wsnapshot.docs.forEach((doc) => {
+            wBatch.delete(doc.ref);
+        });
+      
+        await wBatch.commit();
+        console.log("wBatch delete complete!");
         return NextResponse.json({ success: true, productId: productId });
     } catch (error) {
         console.error("Error deleting from Algolia:", error);

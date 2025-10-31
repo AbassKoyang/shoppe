@@ -71,8 +71,9 @@ const WishlistProductCard = ({product}:{product: ProductType}) => {
   return (
     <div className='w-full h-[110px] mt-3 flex items-start justify-between'>
            <div className="w-full h-full flex items-start gap-3">
-            <div className="w-[130px] relative">
-                    <Link href={productLink}  className="w-full relative h-full p-[5px] rounded-[9px] bg-white overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
+            <div className="w-[130px] h-full relative">
+                <Link href={productLink}>
+                  <div className="w-[130px] h-[110px] p-[5px] rounded-[9px] bg-white overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
                         <Image
                         src={imageUrl}
                         width={300}
@@ -83,9 +84,10 @@ const WishlistProductCard = ({product}:{product: ProductType}) => {
                         alt={product.title}
                         sizes="(max-width: 768px) 100px, 150px"
                         className="rounded-[5px] object-cover"/>
-                    </Link>
+                    </div>
+                </Link>
                     
-                    <button onClick={() => handleRemoveProductFromWishList()} className='cursor-pointer size-[35px] rounded-full bg-white flex items-center justify-center absolute z-20 bottom-3 left-3'>
+                    <button onClick={() => handleRemoveProductFromWishList()} className='cursor-pointer size-[35px] rounded-full bg-white flex items-center justify-center absolute z-20 bottom-2 left-2'>
                     {loading ? (<LoaderCircle className="animate-spin size-[28px] text-black" />) : (<Trash2 className='size-[15px] text-[#FF5790]' />)}
                     </button>
                 </div>

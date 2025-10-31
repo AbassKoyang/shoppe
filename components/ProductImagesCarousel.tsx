@@ -74,7 +74,7 @@ const ProductImagesCarousel = ({viewportWidth, images, product}: {viewportWidth:
                       sizes='100vw'
                      placeholder="blur"
                      blurDataURL="/assets/images/product-fallback-image.png"
-                     alt="Product image" className="rounded-[5px] object-cover"/>
+                     alt="Product image" className="rounded-[5px] object-cover object-center"/>
                     </CarouselItem>
                 ))}
             </CarouselContent>

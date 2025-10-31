@@ -29,7 +29,7 @@ const Specification = ({product}:{product: ProductType | null}) => {
       mutationKey: ['deleteProduct'],
       mutationFn: ({productId} : {productId: string}) => deleteProduct({productId}),
       onSuccess: (data) => {
-          queryClient.invalidateQueries({ queryKey: ['products', 'newProducts', 'popularProducts', 'personalizedProducts', 'topProducts']});
+          queryClient.invalidateQueries({ queryKey: ['products', 'newProducts', 'popularProducts', 'personalizedProducts', 'topProducts', 'wishlists', 'recentlyViewed', 'productPerUser']});
       }
     });
 
