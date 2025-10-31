@@ -18,7 +18,7 @@ const OrderDetailsCard = ({order}:{order: OrderDataType}) => {
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isCofirmationInProgress, setIsConfirmationInProgress] = useState(false);
     const [confirmationSuccessful, setConfirmationSuccessful] = useState(false);
-    const [error, setError] = useState<{message: string; error: string} | null>(null);
+    const [error, setError] = useState<{message: string; error: string} | null | any>(null);
 
     const {user} = useAuth();
     const router = useRouter();
@@ -87,6 +87,7 @@ const OrderDetailsCard = ({order}:{order: OrderDataType}) => {
           }
         } catch (error) {
           console.error('Confirmation error:', error);
+          setError(error);
         } finally {
           setIsConfirmationInProgress(false);
         }
@@ -149,7 +150,7 @@ const OrderDetailsCard = ({order}:{order: OrderDataType}) => {
         </div>
        {order.status === 'pending' || order.status === 'delivered' && (
         <div className="w-full px-3 pt-4 pb-2 bg-[#F8FAFF]">
-         <button onClick={() => setIsConfirmModalOpen(true)} className='w-full cursor-pointer bg-dark-blue hover:opacity-90 transition-all duration-200 ease-in-out text-[#F3F3F3] text-[22px] font-extralight flex items-center justify-center rounded-xl py-3 disabled:opacity-70 disabled:cursor-not-allowed'>Confirm Receival</button>
+         <button onClick={() => setIsConfirmModalOpen(true)} className='w-full cursor-pointer bg-dark-blue hover:opacity-90 transition-all duration-200 ease-in-out text-[#F3F3F3] text-[22px] font-extralight flex items-center justify-center rounded-xl py-3 disabled:opacity-70 disabled:cursor-not-allowed'>Confirm Receipt</button>
         </div>
        )}
        <ConfirmReceiptModal closeModal={() => setIsConfirmModalOpen(false)} open={isConfirmModalOpen} confirmReceipt={() => {handleConfirmReceipt(user?.uid || '', order.id || '')}} />

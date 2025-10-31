@@ -3,7 +3,6 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { updateNotification } from '@/services/users/api'
 import { NotificationType } from '@/services/users/types'
 import { QueryClient, useMutation } from '@tanstack/react-query'
-import { BanknoteArrowDown, BanknoteArrowUp, PackageCheck, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 import { toast } from 'sonner';
@@ -46,22 +45,6 @@ const NotificationCard = ({notification}:{notification: NotificationType}) => {
 
     return (
     <Link onClick={() => handleUpdateNotification(notification.id || '')} href={notification.link} className={`w-full flex justify-between items-start py-2 px-2 rounded-xl border-1 border-gray-200 mb-1 ${notification.isRead ? 'bg-white' : 'bg-[#E5EBFC]'}`}>
-        {notification.type == 'payment_released' && (
-            <BanknoteArrowDown className='text-dark-blue szie-[18px]' />
-
-        )}
-        {notification.type == 'order_pending' && (
-            <BanknoteArrowUp className='text-dark-blue szie-[18px]' />
-
-        )}
-        {notification.type == 'order_delivered' && (
-            <PackageCheck className='text-dark-blue szie-[18px]' />
-
-        )}
-        {notification.type == 'new_purchase' && (
-            <ShoppingBag className='text-dark-blue szie-[18px]' />
-
-        )}
         <div className="w-full max-w-[80%]">
             <h5 className='text-[16px] font-raleway font-semibold text-[#202020]'>{notification.title}</h5>
             <p className='font-nunito-sans text-[12px] font-light text-gray-600'>{notification.body}</p>

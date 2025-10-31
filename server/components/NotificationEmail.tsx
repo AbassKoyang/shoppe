@@ -19,7 +19,7 @@ export function notificationEmail(name: string, message: string, link: string) {
             .container {
               max-width: 500px;
               margin: 30px auto;
-              background: white;
+              background: #004cff;
               padding: 20px 30px;
               border-radius: 8px;
               box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -33,8 +33,8 @@ export function notificationEmail(name: string, message: string, link: string) {
             }
             a.button {
               display: inline-block;
-              background: #004cff;
-              color: #fff !important;
+              background: #fff !important;
+              color: #000 !important;
               text-decoration: none;
               padding: 10px 16px;
               border-radius: 6px;

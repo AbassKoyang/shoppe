@@ -20,7 +20,7 @@ return (
         </Link>
         <Link href={`/profile/${user?.uid}/orders/delivered`} className={`${pathname == `/profile/${user?.uid}/orders/delivered` ? 'text-white' : 'text-[#202020]'} relative w-[47%] bg-[#F8F8F8] font-raleway text-[16px] font-semibold py-1 rounded-[40px] flex items-center justify-center overflow-hidden`}>
             <div className={`bg-dark-blue absolute top-0 left-0 z-10 transition-all duration-300 ease-in-out h-full ${pathname == `/profile/${user?.uid}/orders/delivered`  ? 'w-full' : 'w-0'}`}></div>
-            <p className='z-20 text-[12px]'>Delivered</p>
+            <p className='z-20 text-[12px]'>Received</p>
         </Link>
        </div>
         </div>
