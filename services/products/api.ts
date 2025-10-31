@@ -25,6 +25,25 @@ export const addProduct = async (data : ProductType) => {
     }
 };
 
+export const deleteProduct = async ({productId}:{productId: string}) => {
+    try {
+        const res = await fetch('/api/products/delete', {
+          method: 'DELETE',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({productId}),
+        })
+        if(!res.ok){
+          throw new Error("Failed to delete product");
+        }
+        console.log('Product deleted succesfully 2');
+        return res.json();
+    } catch (error) {
+        console.error('Error from deleteProduct', error);
+    }
+};
+
 export const editProduct = async (data : ProductType) => {
     try {
         const res = await fetch('/api/products/edit', {

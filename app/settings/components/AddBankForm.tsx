@@ -174,12 +174,12 @@ const AddBankForm = ({open, closeModal} : AddBankFormType) => {
       
           const data = await AddBankMutation.mutateAsync(bankDetails);
           console.log(data);
-          if(data){
+          if(data.sucsess){
             closeModal();
             form.reset();
-            if (data.success) {
+            window.location.reload();
             console.log('bank details added successfully')
-        }          }
+          }
         } catch (error: any) {
           console.error("❌ Error adding bank details:", error);
       

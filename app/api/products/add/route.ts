@@ -6,7 +6,7 @@ import { ProductType } from '@/services/products/types';
 const ALGOLIA_APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!;
 const ALGOLIA_WRITE_API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_WRITE_API_KEY!;
 const ALGOLIA_SEARCH_API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!;
-const ALGOLIA_INDEX_NAME = "products"; // your Algolia index name
+const ALGOLIA_INDEX_NAME = "products"; 
 
 const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_WRITE_API_KEY);
 

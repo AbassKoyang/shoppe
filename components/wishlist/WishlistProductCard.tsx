@@ -69,10 +69,10 @@ const WishlistProductCard = ({product}:{product: ProductType}) => {
       const productLink = formatProductLink(product.category, product.subCategory, product?.id || '');
 
   return (
-    <Link  href={productLink} className='w-full h-[110px] mt-3 flex items-start justify-between'>
+    <div className='w-full h-[110px] mt-3 flex items-start justify-between'>
            <div className="w-full h-full flex items-start gap-3">
             <div className="w-[130px] relative">
-                    <div className="w-full relative h-full p-[5px] rounded-[9px] bg-white overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
+                    <Link href={productLink}  className="w-full relative h-full p-[5px] rounded-[9px] bg-white overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
                         <Image
                         src={imageUrl}
                         width={300}
@@ -83,7 +83,7 @@ const WishlistProductCard = ({product}:{product: ProductType}) => {
                         alt={product.title}
                         sizes="(max-width: 768px) 100px, 150px"
                         className="rounded-[5px] object-cover"/>
-                    </div>
+                    </Link>
                     
                     <button onClick={() => handleRemoveProductFromWishList()} className='cursor-pointer size-[35px] rounded-full bg-white flex items-center justify-center absolute z-20 bottom-3 left-3'>
                     {loading ? (<LoaderCircle className="animate-spin size-[28px] text-black" />) : (<Trash2 className='size-[15px] text-[#FF5790]' />)}
@@ -95,10 +95,10 @@ const WishlistProductCard = ({product}:{product: ProductType}) => {
                         <h5 className='font-raleway font-bold text-[18px] tracking-[-0.18px] text-[#202020]'>{formattedPrice}</h5>
                         <div className='flex items-center gap-2'>
                         {product.color && (
-                            <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product.color.length > 6 ? product.color.substring(0,6) : product.color}</span>
+                            <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product.color.length > 4 ? product.color.substring(0,3) + '...' : product.color}</span>
                         )}
                         {product.category && (
-                            <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product.category}</span>
+                            <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product.category.length > 5 ? product.category.substring(0,3) + '...' : product.category}</span>
                         )}
                         {product.size && (
                             <span className="text-[14px] text-black font-raleway font-medium bg-[#E5EBFC] py-0.5 px-3 rounded-[4px] mt-1">{product.size}</span>
@@ -108,7 +108,7 @@ const WishlistProductCard = ({product}:{product: ProductType}) => {
                 </div>
            </div>
 
-    </Link>
+    </div>
 )
 }
 

@@ -115,21 +115,21 @@ app.post('/api/products/:productId/buy', async (req: Request, res: Response) => 
           createdAt: new Date()
         })
 
-        await notificationService.sendEmail({
-          to: buyer.profile.email,
-          name: buyer.profile.name,
-          message: `Your payment for "${product.title}" has been received, payment will be released to seller when the item is delivered`,
-          link: `useshoppe.vercel.app/orders/${order.id}`,
-          subject: '⏳ Order Pending'
-        })
+        // await notificationService.sendEmail({
+        //   to: buyer.profile.email,
+        //   name: buyer.profile.name,
+        //   message: `Your payment for "${product.title}" has been received, payment will be released to seller when the item is delivered`,
+        //   link: `useshoppe.vercel.app/orders/${order.id}`,
+        //   subject: '⏳ Order Pending'
+        // })
 
-        await notificationService.sendEmail({
-          to: seller.profile.email,
-          name: seller.profile.name,
-          message: `${buyer.profile.name} just bought "${product.title}"`,
-          link: `useshoppe.vercel.app/orders/${order.id}`,
-          subject: '🎉 New Purchase!'
-        })
+        // await notificationService.sendEmail({
+        //   to: seller.profile.email,
+        //   name: seller.profile.name,
+        //   message: `${buyer.profile.name} just bought "${product.title}"`,
+        //   link: `useshoppe.vercel.app/orders/${order.id}`,
+        //   subject: '🎉 New Purchase!'
+        // })
 
         await notificationService.notifyProductPurchase(seller.id || '', buyer.profile.name, product.title ,order.id)
         await notificationService.notifyOrderPending(buyer.id || '', product.title, order.id)
@@ -242,13 +242,13 @@ app.post('/api/orders/:orderId/confirm-receipt', async (req: Request, res: Respo
 
     console.log('Sending notification to seller...');
 
-    await notificationService.sendEmail({
-      to: seller.profile.email,
-      name: seller.profile.name,
-      message: `You received ₦${transaction.sellerAmount.toLocaleString()} for "${order.productDetails.title}"`,
-      link: `useshoppe.vercel.app/orders/${orderId}`,
-      subject: '🎉 Payment Released'
-    })
+    // await notificationService.sendEmail({
+    //   to: seller.profile.email,
+    //   name: seller.profile.name,
+    //   message: `You received ₦${transaction.sellerAmount.toLocaleString()} for "${order.productDetails.title}"`,
+    //   link: `useshoppe.vercel.app/orders/${orderId}`,
+    //   subject: '🎉 Payment Released'
+    // })
 
     try {
       await notificationService.notifyReceiptConfirmed(
@@ -348,13 +348,13 @@ app.post('/api/orders/:orderId/mark-as-delivered', async (req: Request, res: Res
 
 
     console.log('Sending notification to buyer...');
-    await notificationService.sendEmail({
-      to: buyer.profile.email,
-      name: buyer.profile.name,
-      message: `Your order for "${order.productDetails.title}" has been delivered and is on its way to you. Have you received "${order.productDetails.title}"? Confirm to release payment to seller`,
-      link: `useshoppe.vercel.app/orders/${order.id}`,
-      subject: '📦 Confirm Receipt'
-    })
+    // await notificationService.sendEmail({
+    //   to: buyer.profile.email,
+    //   name: buyer.profile.name,
+    //   message: `Your order for "${order.productDetails.title}" has been delivered and is on its way to you. Have you received "${order.productDetails.title}"? Confirm to release payment to seller`,
+    //   link: `useshoppe.vercel.app/orders/${order.id}`,
+    //   subject: '📦 Confirm Receipt'
+    // })
 
     try {
       await notificationService.notifyMarkAsDelivered(
