@@ -143,7 +143,7 @@ export const ProductSchema = z
     color: z.string().optional(),
     material: z.string().optional(),
     sku: z.string().optional(),
-    location: z.string().optional(),
+    location: z.string(),
     views: z.number().optional(),
     status: z.literal(['available', 'pending', 'sold']).optional(),
     createdAt: z.date().optional(),
