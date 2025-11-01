@@ -95,6 +95,9 @@ const ProductImagesCarousel = ({viewportWidth, images, product}: {viewportWidth:
            <button onClick={() => router.back()} className="cursor-pointer absolute top-3 left-3 flex items-center justify-center bg-[#FFEBEB] rounded-full size-[43px]">
                         <ArrowLeft className="size-[22px] text-[#202020]" />
             </button>
+            {product.status === 'sold' && (
+                <p className='text-[80px] font-raleway font-semibold text-[#FF5790] bg-transparent p-3 rounded-xl border-4 border-[#FF5790] absolute top-[50%] translate-y-[-50%] left-[50%] translate-x-[-50%] rotate-[45deg]'>SOLD</p>
+            )}
         </Carousel>
         </div>
   )

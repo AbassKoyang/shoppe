@@ -1,10 +1,23 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import { db, FieldValue } from '../firebase-admin';
 import { OrderDataType, OrderStatus, ProductStatus, Transaction, TransactionStatus } from '../types';
+import {algoliasearch} from 'algoliasearch'
 
 class TransactionService {
   private collection = db.collection('transactions');
   private productsCollection = db.collection('products');
   private ordersCollection = db.collection('orders');
+  private getKeys() {
+    return {
+      ALGOLIA_APP_ID: process.env.PUBLIC_ALGOLIA_APP_ID!,
+      ALGOLIA_WRITE_API_KEY: process.env.PUBLIC_ALGOLIA_WRITE_API_KEY!,
+      ALGOLIA_SEARCH_API_KEY: process.env.PUBLIC_ALGOLIA_SEARCH_API_KEY!,
+    };
+  }
+  private ALGOLIA_INDEX_NAME = "products";
+  private client = algoliasearch(this.getKeys().ALGOLIA_APP_ID, this.getKeys().ALGOLIA_WRITE_API_KEY);
+
 
   // Create transaction
   async createTransaction(data: Omit<Transaction, 'id' | 'createdAt'>) {
@@ -82,12 +95,18 @@ class TransactionService {
     await this.ordersCollection.doc(id).update(updateData);
   }
 
-  // Update product status
   async updateProductStatus(productId: string, status: string) {
     await this.productsCollection.doc(productId).update({
       status,
       updatedAt: new Date()
     });
+    await this.client.partialUpdateObject({
+        indexName: this.ALGOLIA_INDEX_NAME,
+        objectID: productId,
+        attributesToUpdate : {
+        status: status,
+        updatedAt: Date.now(),
+      }});
   }
 }
 

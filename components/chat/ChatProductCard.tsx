@@ -23,7 +23,7 @@ const productLink = formatProductLink(product.category, product.subCategory, pro
                 <p className='font-raleway text-[20px] font-semibold text-dark-blue m-0'>{formattedPrice}</p>
             </div>
         </div>
-        <ArrowRightButton />
+        <ArrowRightButton url={productLink} />
     </div>
   )
 }

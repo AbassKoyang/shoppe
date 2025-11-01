@@ -49,6 +49,10 @@ const Message = ({m, chatId, removeDeletedMessage, updateEditedMessage} : {m: me
             toast.error("You must be logged in to delete message.");
             return;
           }  
+          if (!m.id) {
+            toast.error("Unable to delete message, message is being sent. Wait a few minutes");
+            return;
+          }  
           await deleteMessageMutation.mutateAsync({chatId: chatId, messageId: m.id || ''});
           removeDeletedMessage(m?.id || '');
         } catch (error: any) {
@@ -72,6 +76,10 @@ const Message = ({m, chatId, removeDeletedMessage, updateEditedMessage} : {m: me
             setIsEditLoading(true);
           if (!user) {
             toast.error("You must be logged in to edit message.");
+            return;
+          }  
+          if (!m.id) {
+            toast.error("Unable to edit message, message is being sent. Wait a few minutes");
             return;
           }  
           await EditMessageMutation.mutateAsync({chatId: chatId, messageId: m.id || '', text});

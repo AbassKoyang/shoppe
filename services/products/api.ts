@@ -189,7 +189,7 @@ export const fetchProductCategoryCount = async (category: string) => {
     const colRef = collection(db, "products");
 
     try {
-        const q = query(colRef, where('category', '==', category ));
+        const q = query(colRef, where('category', '==', category ), where('status', '==' , 'available'));
         const querySnapshot = (await getDocs(q));
         
         if(!querySnapshot.empty){

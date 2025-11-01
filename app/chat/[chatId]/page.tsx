@@ -314,6 +314,7 @@ const updateEditedMessage = (messageId: string, text: string) => {
                               type="file"
                               multiple
                               accept="image/*"
+                              maxLength={4}
                               onChange={handleImageUpload}
                               className='w-full h-full opacity-0 z-30 absolute left-0 top-0'
                             />

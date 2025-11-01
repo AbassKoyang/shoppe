@@ -46,7 +46,7 @@ export function NotificationProvider({children}:{children: ReactNode}) {
         chatId: string;
       }) => {
         console.log('New notification received:', { receiverId, message, type, chatId });
-        if(pathname !== `chat/${chatId}`){
+        if(pathname !== `/chat/${chatId}`){
         toast("New Message", {
           description: message.length > 50 ? message.slice(0,50) + "..." : message,
           action: {
