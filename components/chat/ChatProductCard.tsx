@@ -2,6 +2,7 @@ import { formatPrice, formatProductLink, formatTitle } from '@/lib/utils';
 import { ProductType } from '@/services/products/types'
 import React from 'react'
 import ArrowRightButton from '../ArrowRightButton';
+import Image from 'next/image';
 
 const ChatProductCard = ({product}: {product: ProductType}) => {
 const price : string = String(product.price);
@@ -17,6 +18,14 @@ const productLink = formatProductLink(product.category, product.subCategory, pro
         <div className='flex items-center gap-3'>
             <div className="size-[50px] rounded-[3px] overflow-hidden">
                 <img className='size-full object-center object-cover' src={product.images[0]} alt="Product Image" />
+                    <Image
+                    src={product.images[0]}
+                    width={50}
+                    height={50}
+                  placeholder="blur"
+                  blurDataURL="/assets/images/product-fallback-image.png"
+                  alt={product.title}
+                  className="rounded-[5px] object-cover object-center size-full"/>
             </div>
             <div className="">
                 <p className='font-nunito-sans text-[14px] font-medium text-[#202020] m-0'>{title}</p>
