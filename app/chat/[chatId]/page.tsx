@@ -4,6 +4,7 @@ import ChatSkeleton from '@/components/chat/ChatSkeleton';
 import ImageGrid from '@/components/chat/ImageGrid';
 import Message from '@/components/chat/Message';
 import JustForYouProductCard from '@/components/JustForYouProductCard';
+import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useLongPress } from '@/lib/hooks/useLongPress';
 import { registerServiceWorker } from '@/lib/registerServiceWorker';
@@ -11,7 +12,6 @@ import socket from '@/lib/socket';
 import { useGetChatData } from '@/services/chat/queries';
 import { messageType } from '@/services/chat/types';
 import { AppUserType, User } from '@/services/users/types';
-import axios from 'axios';
 import { Image, ImagePlus, LoaderCircle, SendHorizontal, X } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react'
@@ -39,12 +39,6 @@ const page = () => {
     const resolvedDate = rawTs?.toDate ? rawTs.toDate() : (rawTs instanceof Date ? rawTs : new Date(rawTs));
     const chatDate = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toLocaleString();
 
-    const handleInput = () => {
-      const el = textareaRef.current;
-      if (!el) return;
-      el.style.height = `${Math.min(el.scrollHeight, 250)}px`;
-      if(el.value == '') el.style.height = '30px';
-    };
 
     useEffect(() => {
       setMessages(data?.chatMessages || []);
@@ -62,8 +56,6 @@ const page = () => {
 
     useEffect(() => {
       const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-        e.preventDefault(); 
-        e.returnValue = '';
         socket.emit('userOffline', {productId, buyerId, sellerId})
       };
   
@@ -71,7 +63,6 @@ const page = () => {
   
       return () => {
         window.removeEventListener('beforeunload', handleBeforeUnload);
-        // also emit offline when this page unmounts (route change)
         socket.emit('userOffline', { productId, buyerId, sellerId });
       };
     }, [productId, buyerId, sellerId]);
@@ -120,7 +111,6 @@ const page = () => {
     const handleNewMessage = (msg: messageType) => {
       setMessages((prev) => [...prev, msg]);
     };
-    // Ensure no duplicate listeners
     socket.off("newMessage");
     socket.on("newMessage", handleNewMessage);
     
@@ -129,17 +119,6 @@ const page = () => {
     };
   }, []);
 
- 
-  
-
-
-  // useEffect(() => {
-  //   if(user?.uid === buyerId){
-  //       setIdentity('seller')
-  //   } else {
-  //       setIdentity('buyer')
-  //   }
-  // }, [chatId, user]);
 
 
 
@@ -233,6 +212,10 @@ const page = () => {
   ) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (files.length === 0) return;
+    if (files.length > 4) {
+      toast.warning("You can only upload up to 4 images");
+      return;
+    }
     const urls = files.map(file => URL.createObjectURL(file));
     setPreviewUrls(urls);
     setSelectedFiles(files);
@@ -297,16 +280,16 @@ const updateEditedMessage = (messageId: string, text: string) => {
                   sendMessage({});
                 }} className="w-full px-2 [@media(min-width:375px)]:px-4 relative mt-3">
                     <div className={`flex gap-2 w-full py-3 px-5 bg-[#E5EBFC] ${text.length > 0 ? 'items-end' : 'items-center'} justify-between rounded-4xl overflow-hidden transition-all duration-200 ease-in-out`}>
-                        <textarea 
+                        <Textarea 
                         onFocus={() => {
                           socket.emit('userTyping', { productId, buyerId, sellerId });
                         }} 
                         onBlur={() => {
                           socket.emit('userStopTyping', { productId, buyerId, sellerId });
                         }} 
-                        ref={textareaRef} onInput={handleInput} 
+                        ref={textareaRef} 
                         value={text} onChange={(e) => setText(e.target.value)} 
-                        className={`w-[90%] ${text === '' ? 'h-[30px]' : ''} h-[30px] max-h-[250px] overflow-y-auto scrollbar-hide placeholder:text-dark-blue border-0 stroke-none outline-0 transition-all duration-200 ease-in-out resize-none`} placeholder='Type a message...'></textarea>
+                        className={`w-[90%] min-h-[30px] h-[30px] max-h-[250px] overflow-y-auto scrollbar-hide placeholder:text-dark-blue border-0 stroke-none outline-0 transition-all duration-200 ease-in-out`} placeholder='Type a message...'></Textarea>
                         <div className="flex items-center">
                           {text === '' ? (
                             <button type='button' className='size-[28px] relative'>
