@@ -33,10 +33,14 @@ const Page = () => {
   const {data, isError, isLoading} = useQuery({
     queryKey: ['agent-messages', user?.uid],
     queryFn: async () => {
-        const thread = mastraClient.getMemoryThread(user?.uid || '', 'shoppeAgent');
-        const { messages } = await thread.getMessages();
-        console.log(messages, 'messages');
-        return messages as Message[];
+        try {
+          const thread = mastraClient.getMemoryThread(user?.uid || '', 'shoppeAgent');
+          const { messages } = await thread.getMessages();
+          console.log(messages, 'messages');
+          return messages as Message[];
+        } catch (error) {
+          console.log('Error', error)
+        }
     },
   });
   const router = useRouter();
