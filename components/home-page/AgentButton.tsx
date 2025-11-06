@@ -1,3 +1,4 @@
+'use client';
 import { useAuth } from '@/lib/contexts/auth-context'
 import { Bot } from 'lucide-react';
 import Link from 'next/link';
