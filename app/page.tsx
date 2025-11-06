@@ -11,9 +11,6 @@ import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import SponsoredBanner from "@/components/SponsoredBanner";
 import TopProductAvatar from "@/components/TopProductAvatar";
-import { useAuth } from "@/lib/contexts/auth-context";
-import { Bot } from "lucide-react";
-import Link from "next/link";
 
 export default function Home() {
 
