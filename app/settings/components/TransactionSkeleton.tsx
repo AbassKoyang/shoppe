@@ -2,7 +2,7 @@ import React from 'react'
 
 const TransactionSkeleton = () => {
   return (
-    <div className='w-full px-5 py-4 rounded-[14px] bg-gray-200 flex items-center justify-between'>
+    <div className='w-full px-5 py-4 rounded-[14px] bg-gray-200 flex items-center justify-between mb-1'>
     <div className="flex gap-4 items-center">
         <div className="size-[40px] rounded-full skeleton"></div>
         <div className="">

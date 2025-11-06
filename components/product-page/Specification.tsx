@@ -1,5 +1,5 @@
 'use client';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, formatProductLink } from '@/lib/utils';
 import { ProductType } from '@/services/products/types'
 import { BadgeCheck, CalendarPlus, MapPin, Package, PackageOpen, Palette, PenLine, Ruler, TicketPercent, Trash, User, WashingMachine } from 'lucide-react';
 import React, { useState } from 'react'
@@ -62,11 +62,29 @@ const Specification = ({product}:{product: ProductType | null}) => {
       }
     };
 
+    const productLink = formatProductLink(product?.category || '', product?.subCategory || '', product?.id || '');
+
+    const handleShare = () => {
+      if (navigator.share) {
+        navigator.share({
+          title: product?.title,
+          text: product?.description,
+          url: `https://useshoppe.vercel.app${productLink}`,
+        })
+        .then(() => toast.success('Thanks for sharing!'))
+        .catch((err) => toast.error('Error sharing:', err));
+      } else {
+        navigator.clipboard.writeText(`https://useshoppe.vercel.app${productLink}`);
+        toast.success('Product link copied to clipboard');
+      }
+    }
+    
+
   return (
     <div className="px-4 [@media(min-width:375px)]:px-6 bg-white">
     <div className="w-full flex items-center justify-between my-5">
       <h4 className="text-[26px] text-black font-raleway font-extrabold">{price}</h4>
-      <button className="size-[43px] flex items-center justify-center bg-[#FFEBEB] rounded-full cursor-pointer">
+      <button onClick={handleShare} className="size-[43px] flex items-center justify-center bg-[#FFEBEB] rounded-full cursor-pointer">
       <IoIosShareAlt className="size-[22px] text-[#B5A2A2]" />
       </button>
     </div>

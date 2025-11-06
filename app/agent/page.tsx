@@ -3,7 +3,7 @@ import { mastraClient } from '@/lib/mastra-client';
 import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send, Loader2, Bot, User } from 'lucide-react';
+import { Send, Loader2, Bot, User, ChevronLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { ProductType } from '@/services/products/types';
 import JustForYouProductCard from '@/components/JustForYouProductCard';
@@ -16,6 +16,7 @@ import ReactMarkdown  from 'react-markdown';
 import { OrderDataType } from '@/services/payment/types';
 import OrderCard from '@/components/profile/OrderCard';
 import SalesCard from '@/components/profile/SalesCard';
+import { useRouter } from 'next/navigation';
 
 interface Message {
 content: string;
@@ -38,9 +39,7 @@ const Page = () => {
         return messages as Message[];
     },
   });
-  
-  console.log(data, 'data');
-  console.log(user, 'user');
+  const router = useRouter();
   
   const [messages, setMessages] = useState<Message[]>(data || []);
   const [input, setInput] = useState('');
@@ -174,14 +173,17 @@ const Page = () => {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      <div className="border-b bg-card p-4">
+      <div className="border-b bg-card p-4 flex items-center gap-1">
+        <button onClick={() => router.back()}>
+         <ChevronLeft className='size-9 text-dark-blue' />
+        </button>
         <div className="flex items-center gap-2">
           <div className="flex-shrink-0 size-[55px] rounded-full bg-[#E5EBFC] flex items-center justify-center border-[3px] border-white shadow-[0_5px_10px_0_rgba(0,0,0,0.12)]">
                 <Bot className="size-7 text-dark-blue" />
           </div>
           <div className="">
             <h1 className="text-xl font-bold text-dark-blue font-raleway tracking-[-0.2px]">Shoppe AI</h1>
-            <p className='text-sm font-medium text-[#202020] font-raleway tracking-[-0.14px]'>Shoppe Ai Assistant</p>
+            <p className='text-xs mt-[-2px] font-medium text-[#202020] font-raleway tracking-[-0.14px]'>Shoppe Ai Assistant</p>
           </div>
         </div>
       </div>
@@ -280,7 +282,7 @@ const Page = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t bg-card p-4">
+      <div className="border-t bg-card p-4 py-3">
         <div className="flex gap-2 items-end">
           <div className="flex-1 relative">
             <Textarea
@@ -289,7 +291,7 @@ const Page = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type your message... (Press Enter to send, Shift+Enter for new line)"
-              className="min-h-[44px] max-h-[200px] resize-none pr-12"
+              className="min-h-[35px] max-h-[200px] resize-none pr-12 placeholder:text-xs"
               disabled={isStreaming}
             />
           </div>
@@ -297,7 +299,7 @@ const Page = () => {
             onClick={handleSend}
             disabled={!input.trim() || isStreaming || isLoading}
             size="icon"
-            className="h-11 w-11 shrink-0 bg-dark-blue hover:bg-dark-blue/80"
+            className="size-9 shrink-0 bg-dark-blue hover:bg-dark-blue/80"
           >
             {isStreaming ? (
               <Loader2 className="h-4 w-4 animate-spin" />

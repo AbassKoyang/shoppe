@@ -6,14 +6,14 @@ import React from 'react';
 
 const Transaction = ({transaction}: {transaction: OrderDataType}) => {
     const {user} = useAuth()
-    const price : string = String(transaction.transactionDetails.sellerId === user?.uid ? transaction.transactionDetails.sellerAmount : transaction.transactionDetails.amount);
+    const price : string = String(transaction.transactionDetails.sellerId === user?.uid ? transaction.transactionDetails.sellerAmount / 100 : transaction.transactionDetails.amount / 100);
     const rawTs = transaction.createdAt;
     const resolvedDate = rawTs?.toDate ? rawTs.toDate() : (rawTs instanceof Date ? rawTs : new Date(rawTs));
     const date = isNaN(resolvedDate?.getTime?.()) ? '' : resolvedDate.toDateString().substring(0,15);
     const amount = formatPrice(price, transaction.productDetails.currency || '');
 
   return (
-    <div className='w-full px-5 py-4 rounded-[14px] bg-[#F1F4FE] flex items-center justify-between'>
+    <div className='w-full px-5 py-4 mb-1 rounded-[14px] bg-[#F1F4FE] flex items-center justify-between'>
         <div className="flex gap-4 items-center">
             <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M2.17241 5.12598H15.8276C16.6846 5.12598 17.3793 5.81727 17.3793 6.67003L18 18.4048C18 19.2576 17.3053 19.9489 16.4483 19.9489H1.55172C0.69473 19.9489 0 19.2576 0 18.4048L0.620689 6.67003C0.620689 5.81727 1.31542 5.12598 2.17241 5.12598Z" fill={transaction.transactionDetails.sellerId === user?.uid ? '#004CFF' : '#D97474'}/>
