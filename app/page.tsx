@@ -1,5 +1,6 @@
 import ArrowRightButton from "@/components/ArrowRightButton";
 import CategoryPreview from "@/components/CategoryPreview";
+import AgentButton from "@/components/home-page/AgentButton";
 import JustForYou from "@/components/home-page/JustForYou";
 import NewProducts from "@/components/home-page/NewProducts";
 import PopularProducts from "@/components/home-page/PopularProducts";
@@ -11,6 +12,8 @@ import ProductCard from "@/components/ProductCard";
 import SponsoredBanner from "@/components/SponsoredBanner";
 import TopProductAvatar from "@/components/TopProductAvatar";
 import { useAuth } from "@/lib/contexts/auth-context";
+import { Bot } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
 
@@ -43,6 +46,8 @@ export default function Home() {
       <PopularProducts />
 
       <JustForYou />
+
+      <AgentButton />
 
     </section>
   );

@@ -11,7 +11,8 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       }
     ]
-  }
+  },
+  serverExternalPackages: ["@mastra/*"],
 };
 
 export default nextConfig;

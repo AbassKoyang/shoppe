@@ -49,6 +49,7 @@ const Navbar = () => {
 }, [pathname])
 
 if(hideNavbar) return null;
+if(pathname == '/agent') return null;
 if(pathname == '/add-product') return null;
 if(pathname.startsWith('/settings')) return null;
 if(pathname.startsWith('/edit-product')) return null;
