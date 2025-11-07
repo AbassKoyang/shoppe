@@ -168,16 +168,9 @@ const Page = () => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
   return (
     <div className="flex flex-col h-screen bg-background">
-      <div className="border-b bg-card p-4 flex items-center gap-1">
+      <div className="bg-card p-4 pl-2 flex items-center fixed top-0 left-0 w-full z-[1000]">
         <button onClick={() => router.back()}>
          <ChevronLeft className='size-9 text-dark-blue' />
         </button>
@@ -192,15 +185,19 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto p-4 pt-[100px] pb-[80px] space-y-4 scrollbar-hide">
         {isLoading && (
           <div className="w-full h-[100vh] flex flex-col justify-center bg-gray-200 px-2 [@media(min-width:375px)]:px-4 rounded-xl">
-            <div className={`w-[200px] h-10 rounded-xl ml-auto skeleton mt-3`}></div>
-            <div className={`w-[200px] h-10 rounded-xl mr-auto skeleton mt-3`}></div>
-            <div className={`w-[200px] h-10 rounded-xl ml-auto skeleton mt-3`}></div>
-            <div className={`w-[200px] h-10 rounded-xl mr-auto skeleton mt-3`}></div>
-            <div className={`w-[200px] h-10 rounded-xl ml-auto skeleton mt-3`}></div>
-            <div className={`w-[200px] h-10 rounded-xl mr-auto skeleton mt-3`}></div>
+            <div className={`w-[200px] h-10 rounded-md ml-auto skeleton mt-3`}></div>
+            <div className={`w-[200px] h-10 rounded-md mr-auto skeleton mt-3`}></div>
+            <div className={`w-[200px] h-10 rounded-md ml-auto skeleton mt-3`}></div>
+            <div className={`w-[200px] h-10 rounded-md mr-auto skeleton mt-3`}></div>
+            <div className={`w-[200px] h-10 rounded-md ml-auto skeleton mt-3`}></div>
+            <div className={`w-[200px] h-10 rounded-md mr-auto skeleton mt-3`}></div>
+            <div className={`w-[200px] h-10 rounded-md ml-auto skeleton mt-3`}></div>
+            <div className={`w-[200px] h-10 rounded-md mr-auto skeleton mt-3`}></div>
+            <div className={`w-[200px] h-10 rounded-md ml-auto skeleton mt-3`}></div>
+            <div className={`w-[200px] h-10 rounded-md mr-auto skeleton mt-3`}></div>
           </div>
         )}
 
@@ -286,16 +283,15 @@ const Page = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t bg-card p-4 py-3">
+      <div className="bg-card p-4 py-4 fixed bottom-0 left-0 w-full z-[1000]">
         <div className="flex gap-2 items-end">
           <div className="flex-1 relative">
             <Textarea
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Type your message... (Press Enter to send, Shift+Enter for new line)"
-              className="min-h-[35px] max-h-[200px] resize-none pr-12 placeholder:text-xs"
+              placeholder="Type your message..."
+              className="min-h-[40px] max-h-[200px] resize-none pr-12 placeholder:text-xs rounded-md border-0 shadow-none"
               disabled={isStreaming}
             />
           </div>
@@ -303,7 +299,7 @@ const Page = () => {
             onClick={handleSend}
             disabled={!input.trim() || isStreaming || isLoading}
             size="icon"
-            className="size-9 shrink-0 bg-dark-blue hover:bg-dark-blue/80"
+            className="size-10 shrink-0 bg-dark-blue hover:bg-dark-blue/80"
           >
             {isStreaming ? (
               <Loader2 className="h-4 w-4 animate-spin" />
