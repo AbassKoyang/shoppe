@@ -56,6 +56,9 @@ export default function RootLayout({
            <AuthProvider>
             <QueryProvider>
                 <main className="w-full min-h-dvh relative">
+                  <div className="w-screen min-h-dvh fixed top-0 left-0 lg:flex items-center justify-center bg-white hidden">
+                    <p className='font-raleway text-black text-base font-medium'>Please view on mobile.</p>
+                  </div>
                 <NotificationProvider>
                   <MobileNotificationPrompt />
                   {children}
