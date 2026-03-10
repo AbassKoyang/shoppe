@@ -52,13 +52,13 @@ export default function RootLayout({
       <body
         className={`${nunitosans.variable} font-[var(--font-raleway)] antialiased`}
       >
+        <div className="w-screen min-h-dvh fixed top-0 left-0 z-[10000] lg:flex items-center justify-center bg-white hidden">
+          <p className='font-raleway text-black text-base font-medium'>Please view on mobile.</p>
+        </div>
         {/* <TransitionProvider> */}
            <AuthProvider>
             <QueryProvider>
-                <main className="w-full min-h-dvh relative">
-                  <div className="w-screen min-h-dvh fixed top-0 left-0 z-[10000] lg:flex items-center justify-center bg-white hidden">
-                    <p className='font-raleway text-black text-base font-medium'>Please view on mobile.</p>
-                  </div>
+                <main className="w-full min-h-dvh relative lg:hidden">
                 <NotificationProvider>
                   <MobileNotificationPrompt />
                   {children}
